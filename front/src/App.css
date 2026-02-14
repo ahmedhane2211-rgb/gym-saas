@@ -79,6 +79,11 @@
   }
 }
 
+
+::-webkit-scrollbar{
+  display: none;
+}
+
 @layer components {
   .card {
     border-radius: 1.5rem;

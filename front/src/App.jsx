@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
+import {  Routes, Route, NavLink } from "react-router-dom";
 import { ThemeProvider, useTheme } from "./context/theme";
 import { Icon } from "./components/ui/Icon.jsx";
 
@@ -151,7 +151,6 @@ const AppContent = () => {
   const location = typeof window !== "undefined" ? window.location : { pathname: "/" };
   const activeId = navItems.find((item) => item.path === location.pathname)?.id || "dashboard";
   return (
-    <Router>
       <div className="relative min-h-screen overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
         <div className="pointer-events-none absolute inset-0">
           <div style={{background: 'var(--color-emerald-bg, #d1fae5)', opacity: 0.4}} className="absolute -left-20 -top-24 h-72 w-72 rounded-full blur-3xl" />
@@ -181,7 +180,6 @@ const AppContent = () => {
           </main>
         </div>
       </div>
-    </Router>
   );
 };
 

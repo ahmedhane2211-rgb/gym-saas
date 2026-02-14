@@ -1,4 +1,26 @@
 {
+  "show_details":"عرض التفاصيل",
+  "editMember":"تغيير عضو",
+  "change_photo":"تغيير الصوره",
+  "upload_photo":"رفع صوره",
+  "cancel":"إلغاء",
+  "save":"حفظ",
+  "back":"رجوع",
+  "update":"تحديث",
+  "delete":"حذف",
+  "add":"إضافة",
+  "edit":"تعديل",
+  "isActive":"متاح",
+  "fullName": "الاسم الكامل",
+  "email": "البريد الإلكتروني",
+  "phone": "الهاتف",
+  "gender": "الجنس",
+  "barCode": "الباركود",
+  "dateOfBirth": "تاريخ الميلاد",
+  "number": "الرقم",
+  "action": "الإجراءات",
+  "male":"ذكر",
+  "female":"أنثى",
   "app": {
     "name": "GymPulse Cloud",
     "tagline": "جيم, فروع متعددة، منصة SaaS متعددة"
@@ -148,7 +170,8 @@
       "member": "العضو",
       "plan": "الاشتراك",
       "status": "الحالة",
-      "lastVisit": "آخر زيارة"
+      "lastVisit": "آخر زيارة",
+      "member_name":"اسم العضو"
     }
   },
   "plans": {
@@ -289,19 +312,19 @@
   },
   "permissions": {
     "table": {
-      "action": "Ø§Ù„ÙˆØ¸ÙŠÙØ©",
-      "gymAdmin": "Ø£Ø¯Ù…Ù† Ø§Ù„Ø¬ÙŠÙ…",
-      "staff": "Ø§Ù„Ø§Ø³ØªÙ‚Ø¨Ø§Ù„",
-      "trainer": "Ø§Ù„Ù…Ø¯Ø±Ø¨"
+      "action": "اكشن",
+      "gymAdmin": "مدير الجيم",
+      "staff": "عضو الطاقم",
+      "trainer": "مدرب"
     },
     "actions": {
-      "addMember": "Ø¥Ø¶Ø§ÙØ© Ø¹Ø¶Ùˆ",
-      "viewAllMembers": "Ø±Ø¤ÙŠØ© ÙƒÙ„ Ø§Ù„Ø£Ø¹Ø¶Ø§Ø¡",
-      "barcodeAttendance": "ØªØ³Ø¬ÙŠÙ„ Ø­Ø¶ÙˆØ± Ø¨Ø§Ù„Ø¨Ø§Ø±ÙƒÙˆØ¯",
-      "seeOwnClients": "Ø±Ø¤ÙŠØ© Ø¹Ù…Ù„Ø§Ø¡Ù‡ ÙÙ‚Ø·",
-      "logTrainingSession": "ØªØ³Ø¬ÙŠÙ„ Ø¬Ù„Ø³Ø© ØªØ¯Ø±ÙŠØ¨",
-      "financialReports": "ØªÙ‚Ø§Ø±ÙŠØ± Ù…Ø§Ù„ÙŠØ©",
-      "addNotes": "Ø¥Ø¶Ø§ÙØ© Ù…Ù„Ø§Ø­Ø¸Ø§Øª"
+      "addMember": "إضافة عضو",
+      "viewAllMembers": "عرض جميع الأعضاء",
+      "barcodeAttendance": "الحضور عبر الباركود",
+      "seeOwnClients": "عرض العملاء الخاصين",
+      "logTrainingSession": "تسجيل جلسة تدريبية",
+      "financialReports": "تقارير مالية",
+      "addNotes": "إضافة ملاحظات"
     }
   },
   "trainer": {
