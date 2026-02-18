@@ -7,6 +7,7 @@ import AlertsPage from "./AlertsPage";
 import ReportsPage from "./ReportsPage";
 import SettingsPage from "./SettingsPage";
 import TrainerPage from "./TrainerPage";
+import CoachesPage from "./CoachesPage";
 
 export {
   DashboardPage,
@@ -18,4 +19,5 @@ export {
   ReportsPage,
   SettingsPage,
   TrainerPage,
+  CoachesPage,
 };

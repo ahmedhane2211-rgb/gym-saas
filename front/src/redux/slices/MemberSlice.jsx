@@ -21,6 +21,7 @@ const memberSlice = createSlice({
             state.members = state.members.filter(member => String(member.id) !== String(action.payload));
         },
         addMember: (state, action) => {
+            console.log(action.payload)
             state.members.push(action.payload);
         },
     },

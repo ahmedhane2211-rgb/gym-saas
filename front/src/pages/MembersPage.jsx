@@ -10,6 +10,7 @@ import { Delete, DeleteIcon, Edit, Eye } from "lucide-react";
 import ShowModal from "../components/ui/ShowModal";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteMember } from "../redux/slices/MemberSlice";
+import Btn from "../components/ui/Btn";
 
 const MembersPage = () => {
   const {t} = useTranslation();
@@ -19,6 +20,7 @@ const MembersPage = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   // const [members, setMembers] = useState(membersList);
   const {members} = useSelector((state) => state.members);
+  const [filteredMembers, setFilteredMembers] = useState(members);
   const dispatch = useDispatch() 
   const openEditModal = (member) => {
     setSelectedMember(member);
@@ -29,26 +31,37 @@ const MembersPage = () => {
     setShowModal(true);
   }
   
-
   const handleDelete = (id)=>{
     if(window.confirm(t("members.confirmDelete"))){
       dispatch(deleteMember(id));
     }
   }
+  const filterData = (filterValue) => {
+    if(filterValue === "all"){
+      setFilteredMembers(members);
+    } else if(filterValue === "active"){
+      console.log(filterValue)
+      setFilteredMembers(members.filter((member)=>member.isActive === true))
+    } else {
+      setFilteredMembers(members.filter((member)=>member.isActive === false))
+    }
+  }
+
   return(
     <div className="space-y-6">
       <div className="card flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2">
-          <select>
-            <option>{t("members.filters.all")}</option>
-            <option>{t("members.filters.active")}</option>
-            <option>{t("members.filters.expiring")}</option>
-            <option>{t("members.filters.expired")}</option>
+          <select onChange={(e) => filterData(e.target.value)}>
+            <option value={"all"}>{t("members.filters.all")}</option>
+            <option value={"active"}>{t("members.filters.active")}</option>
+            <option value={"expired"}>{t("members.filters.expired")}</option>
           </select>
           
         </div>
-        <button onClick={()=>setAddModal(true)} className="rounded-full bg-emerald-500 dark:bg-emerald-600 hover:bg-emerald-600 dark:hover:bg-emerald-500 px-4 py-2
-        text-xs font-semibold text-white transition-colors">{t("actions.newMember")}</button>
+        <Btn
+          onClick={() => setAddModal(true)}
+          title={t("actions.newMember")}
+        />
       </div>
 
       <div className="card space-y-4">
@@ -65,7 +78,7 @@ const MembersPage = () => {
               </tr>
             </thead>
             <tbody>
-              {members.map((member) => (
+              {filteredMembers.map((member) => (
                 <tr 
                   key={member.id || member.name} 
                   className="cursor-pointer border-t border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
@@ -112,8 +125,10 @@ const MembersPage = () => {
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("fullName")}: <span>{selectedMember.fullName || selectedMember.name}</span></p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("email")}: <span>{selectedMember.email}</span></p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("phone")}: <span>{selectedMember.phone}</span></p>
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("gender")}: <span>{selectedMember.gender}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("gender")}: <span>{t(selectedMember.gender)}</span></p>
+            {/* <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("role")}: <span>{selectedMember.role}</span></p> */}
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("dateOfBirth")}: <span>{selectedMember.dateOfBirth}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("isActive")}: <span>{selectedMember.isActive ? t("active") : t("inactive")}</span></p>
           </div>
         </ShowModal>
       )}

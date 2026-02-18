@@ -1,6 +1,25 @@
 {
+  "price_paid ":"السعر المدفوع",
+  "payment_method":"طريقة الدفع",
+  "select_member":"اختر عضو",
+  "select_plan":"اختر باقة",
+  "start_date":"تاريخ البدء",
+  "end_date":"تاريخ الانتهاء",
+  "member":"عضو",
+  "coach":"مدرب",
+  "admin":"مدير",
+  "staff":"موظف",
+  "role":"الدور",
+  "confirmDelete":"هل أنت متأكد أنك تريد حذف هذه الباقة؟",
+  "plan_name":" اسم الباقة",
+  "plan_price":" سعر الباقة",
+  "plan_duration":" مدة الباقة",
+  "plan_perks":" مزايا الباقة",
+  "plan_active":" باقة نشطة",
+  "plan_activeHint":"متاحة للاشتراكات الجديدة",
   "show_details":"عرض التفاصيل",
   "editMember":"تغيير عضو",
+  "editCoach":"تعديل مدرب",
   "change_photo":"تغيير الصوره",
   "upload_photo":"رفع صوره",
   "cancel":"إلغاء",
@@ -11,6 +30,13 @@
   "add":"إضافة",
   "edit":"تعديل",
   "isActive":"متاح",
+  "active":"نشط",
+  "inactive":"غير نشط",
+  "userId":"معرّف المستخدم",
+  "gymId":"معرّف الجيم",
+  "specialty":"التخصص",
+  "bio":"نبذة",
+  "commissionRate":"نسبة العمولة",
   "fullName": "الاسم الكامل",
   "email": "البريد الإلكتروني",
   "phone": "الهاتف",
@@ -26,9 +52,17 @@
     "tagline": "جيم, فروع متعددة، منصة SaaS متعددة"
   },
   "language": {
-    "switchToEnglish": "English",
-    "switchToArabic": "العربية"
+    "switchLanguage": "انجليزي",
+    "quarterlyUnlimited": {
+      "name": "ربع سنوية غير محدودة",
+      "description": "دخول غير محدود لكل مرافق الجيم لمدة ثلاثة أشهر.",
+      "price": "١٢٠٠",
+      "durationDays": "٩٠ يوم",
+      "isActive": "نشطة"
+    }
   },
+    "switchToArabic": "العربية"
+  ,
   "labels": {
     "navigation": "التنقل",
     "saasBadge": "SaaS متعددة الجيمات",
@@ -42,14 +76,20 @@
     "searchPlaceholder": "ابحث عن عضو، فاتورة، جلسة..."
   },
   "actions": {
+    "addSubscriber": "إضافة مشترك",
     "export": "تصدير سريعة",
     "newMember": "إضافة عضو جديد",
+    "newCoach": "إضافة مدرب",
     "startScan": "بدء المسح",
     "addPlan": "إضافة باقة",
     "sendAlerts": "إرسال التنبيهات",
     "updateSettings": "تحديث الإعدادات"
   },
   "pages": {
+    "coaches":{
+      "title": "المدربين",
+      "intro": "لوحة خاصة للمدربين وادارة العضويات والجلسات."
+    },
     "dashboard": {
       "title": "لوحة التحكم",
       "intro": "نظرة شاملة لكل الجيمات والفروع."
@@ -93,6 +133,7 @@
     "checkins": "تسجيل الحضور",
     "checkinsDescription": "سجل حضور الأعضاء اليوم.",
     "members": "قائمة الأعضاء",
+    "coaches": "قائمة المدربين",
     "invoices": "الفواتير",
     "permissions": "صلاحيات المستخدمين",
     "sessions": "جلسات التدريب الخاصة"
@@ -104,6 +145,7 @@
     "daysAgo": "منذ {{count}} أيام"
   },
   "plan": {
+    "title": "باقه",
     "activeTitle": "الباقة النشطة",
     "monthlyTitle": "اشتراك شهري للجيمات",
     "supportsBranches": "يدعم حتى {{count}} فرع",
@@ -164,7 +206,8 @@
     },
     "status": {
       "active": "نشطة",
-      "expired": "منتهية"
+      "expired": "منتهية",
+      "pending": "معلق"
     },
     "table": {
       "member": "العضو",
@@ -172,6 +215,35 @@
       "status": "الحالة",
       "lastVisit": "آخر زيارة",
       "member_name":"اسم العضو"
+    }
+  },
+  "coaches": {
+    "description": "إدارة المدربين والتخصصات ونِسب العمولة.",
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا المدرب؟",
+    "editTitle": "تعديل مدرب",
+    "filters": {
+      "all": "الكل",
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "table": {
+      "userId": "معرّف المستخدم",
+      "gymId": "معرّف الجيم",
+      "specialty": "التخصص",
+      "commissionRate": "العمولة",
+      "name":"الاسم",
+      "status":"الحالة"
+    },
+    "fields": {
+      "userId": "معرّف المستخدم",
+      "gymId": "معرّف الجيم",
+      "specialty": "التخصص",
+      "bio": "نبذة",
+      "commissionRate": "نسبة العمولة"
+    },
+    "placeholders": {
+      "specialty": "مثال: قوة، تخسيس",
+      "bio": "نبذة قصيرة عن المدرب..."
     }
   },
   "plans": {
@@ -206,6 +278,7 @@
     "description": "إضافة أنواع الاشتراكات والأسعار."
   },
   "attendance": {
+    "memberNotFound": "عضو غير موجود",
     "description": "مسح QR/Barcode مع معرفة بيانات العضو وسجل الدخول للأشتراكات النشطة.",
     "readyToScan": "جاهز للمسح",
     "scanSource": "كاميرا أو جهاز مسح باركود",

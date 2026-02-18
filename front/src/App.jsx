@@ -7,6 +7,7 @@ import { Icon } from "./components/ui/Icon.jsx";
 
 import {
   DashboardPage,
+  CoachesPage,
   MembersPage,
   SubscriptionsPage,
   AttendancePage,
@@ -31,7 +32,7 @@ const AppContent = () => {
 
   const pageTitle = (id) => t(`pages.${id}.title`);
   const pageIntro = (id) => t(`pages.${id}.intro`);
-  const languageSwitchLabel = lang === "ar" ? t("language.switchToEnglish") : t("language.switchToArabic");
+  const languageSwitchLabel = lang === "ar" ? t("language.switchLanguage") : t("language.switchLanguage");
 
   const navItems = [
     {
@@ -59,6 +60,19 @@ const AppContent = () => {
         </Icon>
       ),
       path: "/members",
+    },
+    {
+      id: "coaches",
+      label: pageTitle("coaches"),
+      icon: (
+        <Icon className="h-5 w-5">
+          <path d="M16 11a4 4 0 1 0-8 0" />
+          <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+          <path d="M20 8V5" />
+          <path d="M22 6h-4" />
+        </Icon>
+      ),
+      path: "/coaches",
     },
     {
       id: "subscriptions",
@@ -168,6 +182,7 @@ const AppContent = () => {
             <Navbar t={t} changeLang={changeLang} theme={theme} languageSwitchLabel={languageSwitchLabel} toggleTheme={toggleTheme} lang={lang}/>
             <Routes>
                 <Route path="/" element={<DashboardPage t={t} />} />
+                <Route path="/coaches" element={<CoachesPage t={t} />} />
                 <Route path="/members" element={<MembersPage t={t} />} />
                 <Route path="/payments" element={<PaymentsPage t={t}/>} />
                 <Route path="/reports" element={<ReportsPage t={t} />} />
