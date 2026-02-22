@@ -8,6 +8,7 @@ import ReportsPage from "./ReportsPage";
 import SettingsPage from "./SettingsPage";
 import TrainerPage from "./TrainerPage";
 import CoachesPage from "./CoachesPage";
+import UsersPage from "./user";
 
 export {
   DashboardPage,
@@ -20,4 +21,5 @@ export {
   SettingsPage,
   TrainerPage,
   CoachesPage,
+  UsersPage,
 };

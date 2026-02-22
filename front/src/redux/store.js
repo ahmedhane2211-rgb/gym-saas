@@ -4,6 +4,7 @@ import memberReducer from "./slices/MemberSlice";
 import subscriptionReducer from "./slices/SubscriptionSlice";
 import attendanceReducer from "./slices/AttendanceSlice";
 import coachReducer from "./slices/CoachSlice";
+import userReducer from "./slices/UserSlice";
 
 export const store = configureStore({
     reducer: {
@@ -11,5 +12,6 @@ export const store = configureStore({
         coaches: coachReducer,
         subscriptions: subscriptionReducer,
         attendance: attendanceReducer,
+        users: userReducer,
     },
 });

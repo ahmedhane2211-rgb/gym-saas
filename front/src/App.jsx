@@ -16,6 +16,7 @@ import {
   ReportsPage,
   SettingsPage,
   TrainerPage,
+  UsersPage,
 } from "./pages";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
@@ -73,6 +74,19 @@ const AppContent = () => {
         </Icon>
       ),
       path: "/coaches",
+    },
+    {
+      id: "users",
+      label: pageTitle("users"),
+      icon: (
+        <Icon className="h-5 w-5">
+          <path d="M16 11a4 4 0 1 0-8 0" />
+          <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+          <path d="M20 8V5" />
+          <path d="M22 6h-4" />
+        </Icon>
+      ),
+      path: "/users",
     },
     {
       id: "subscriptions",
@@ -184,6 +198,7 @@ const AppContent = () => {
                 <Route path="/" element={<DashboardPage t={t} />} />
                 <Route path="/coaches" element={<CoachesPage t={t} />} />
                 <Route path="/members" element={<MembersPage t={t} />} />
+                <Route path="/users" element={<UsersPage t={t} />} />
                 <Route path="/payments" element={<PaymentsPage t={t}/>} />
                 <Route path="/reports" element={<ReportsPage t={t} />} />
                 <Route path="/trainers" element={<TrainerPage t={t} />} />
