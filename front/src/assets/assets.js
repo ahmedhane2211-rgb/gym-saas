@@ -1,7 +1,55 @@
 
+export const gyms = [
+  {
+    id: "550e8400-e29b-41d4-a716-446655440003",
+    name: "Fitness Pro Gym",
+    address: "123 Main St, Cairo",
+    phone: "01012345678",
+    email: "b8FtO@example.com",
+  },
+]
 
-
-
+export const users = [
+        {
+            id: 1,
+            gymId: "gym-001",
+            branchId: "branch-001",
+            password: "hashedpassword123",
+            lastLogin:"2023-06-01T10:00:00Z",
+            fullName: "أحمد محمد",
+            email: "ahmed@example.com",
+            phone: "01012345678",
+            role: "admin",
+            isActive: true,
+            photoUrl: null,
+        },
+        {
+            id: 2,
+            gymId: "gym-001",
+            branchId: "branch-001",
+            password: "hashedpassword123",
+            lastLogin:"2023-06-01T10:00:00Z",
+            fullName: "فاطمة علي",
+            email: "fatima@example.com",
+            phone: "01112345678",
+            role: "manager",
+            isActive: true,
+            photoUrl: null,
+        },
+        {
+            id: 3,
+            gymId: "gym-001",
+            branchId: "branch-001",
+            password: "hashedpassword123",
+            lastLogin:"2023-06-01T10:00:00Z",
+            fullName: "محمود حسن",
+            email: "mahmoud@example.com",
+            phone: "01212345678",
+            role: "staff",
+            isActive: false,
+            photoUrl: null,
+        },]
+    
 export const revenueBars = [65, 45, 80, 55, 92, 70, 88, 60, 75, 50, 84, 66];
 export const alerts = [
     {

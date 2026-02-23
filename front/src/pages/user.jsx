@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUser } from '../redux/slices/UserSlice';
+import { deleteUser, getAllUsers } from '../redux/slices/UserSlice';
 import { useTranslation } from 'react-i18next';
-import { Edit, Eye, Trash2 } from 'lucide-react';
+import { Edit, Eye,Delete, Trash2 } from 'lucide-react';
 import AddUserModal from '../components/user/AddUserModal';
 import EditUserModal from '../components/user/EditUserModal';
 import ShowModal from '../components/ui/ShowModal';
@@ -21,14 +21,18 @@ const UsersPage = () => {
   const { users } = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
-  const filteredUsers = filterRole === 'all' 
-    ? users 
-    : users.filter((user) => user.role === filterRole);
+  const filteredUsers = filterRole === 'all' ? users : users.filter((user) => user.role === filterRole);
 
   const openEditModal = (user) => {
     setSelectedUser(user);
     setEditModal(true);
   };
+
+  useEffect(()=>{
+    dispatch(getAllUsers());
+  },[])
+
+  
 
   const handleShowModal = (user) => {
     setSelectedUser(user);
@@ -61,22 +65,24 @@ const UsersPage = () => {
             className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
           >
             <option value="all">{t('all') || 'All'}</option>
-            <option value="admin">{t('role.admin') || 'Admin'}</option>
-            <option value="manager">{t('role.manager') || 'Manager'}</option>
-            <option value="staff">{t('role.staff') || 'Staff'}</option>
+            <option value="admin">{t('admin') || 'Admin'}</option>
+            <option value="manager">{t('manager') || 'Manager'}</option>
+            <option value="staff">{t('staff') || 'Staff'}</option>
+            <option value="coach">{t('coach') || 'Coach'}</option>
+            <option value="member">{t('member') || 'member'}</option>
           </select>
         </div>
         <Btn
           onClick={() => setAddModal(true)}
-          title={t('permissions.actions.addUser') || 'Add New User'}
+          title={t('user.addUser') || 'Add New User'}
         />
       </div>
 
       {/* Users Table */}
       <div className="card space-y-4">
         <SectionHeader 
-          title={t('tables.users') || 'Users'} 
-          description={t('users.description') || 'Manage system users and their roles'}
+          title={t('pages.users.title') || 'Users'} 
+          description={t('pages.users.intro') || 'Manage system users and their roles'}
         />
         
         <div className="overflow-auto rounded-2xl border border-slate-200/70 dark:border-slate-700/70">
@@ -87,7 +93,7 @@ const UsersPage = () => {
                 <th className="px-4 py-3 text-center">{t('email') || 'Email'}</th>
                 <th className="px-4 py-3 text-center">{t('phone') || 'Phone'}</th>
                 <th className="px-4 py-3 text-center">{t('role') || 'Role'}</th>
-                <th className="px-4 py-3 text-center">{t('status') || 'Status'}</th>
+                <th className="px-4 py-3 text-center">{t('members.table.status') || 'Status'}</th>
                 <th className="px-4 py-3 text-center">{t('action') || 'Actions'}</th>
               </tr>
             </thead>
@@ -112,7 +118,7 @@ const UsersPage = () => {
                           </div>
                         )}
                         <span className="font-semibold text-slate-900 dark:text-slate-100">
-                          {user.fullName}
+                          {user.fullname}
                         </span>
                       </div>
                     </td>
@@ -124,37 +130,19 @@ const UsersPage = () => {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <Badge tone={getRoleBadge(user.role)}>
-                        {t(`role.${user.role}`) || user.role}
+                        {t(`${user.role}`) || user.role}
                       </Badge>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <Badge tone={user.isActive ? 'emerald' : 'rose'}>
-                        {user.isActive ? t('active') || 'Active' : t('inactive') || 'Inactive'}
+                      <Badge tone={user.isactive ? 'emerald' : 'rose'}>
+                        {user.isactive ? t('active') || 'Active' : t('inactive') || 'Inactive'}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 flex gap-2 justify-center text-slate-600 dark:text-slate-400">
-                      <button
-                        onClick={() => openEditModal(user)}
-                        className="cursor-pointer hover:text-emerald-500 transition-colors"
-                        title={t('edit') || 'Edit'}
-                      >
-                        <Edit size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleShowModal(user)}
-                        className="cursor-pointer hover:text-emerald-500 transition-colors"
-                        title={t('view') || 'View'}
-                      >
-                        <Eye size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(user.id)}
-                        className="cursor-pointer hover:text-red-500 transition-colors"
-                        title={t('delete') || 'Delete'}
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </td>
+                    <td className="px-4 flex gap-2 justify-center py-3 text-slate-600 dark:text-slate-400">
+                    <span className="cursor-pointer hover:text-emerald-500 w-6" onClick={() => openEditModal(user)}><Edit /></span>
+                    <span className="cursor-pointer hover:text-emerald-500 w-6" onClick={() => handleShowModal(user)}><Eye /></span>
+                    <span className="cursor-pointer hover:text-emerald-500 w-6" onClick={() => handleDelete(user?.id)}><Delete /></span>
+                  </td>
                   </tr>
                 ))
               ) : (
@@ -172,7 +160,35 @@ const UsersPage = () => {
       {/* Modals */}
       <AddUserModal isOpen={addModal} onClose={() => setAddModal(false)} t={t} />
       <EditUserModal isOpen={editModal} onClose={() => setEditModal(false)} user={selectedUser} t={t} />
-      <ShowModal isOpen={showModal} onClose={() => setShowModal(false)} data={selectedUser} t={t} />
+      {showModal && selectedUser && (
+        <ShowModal isOpen={showModal} title={'pages.users.title'} onClose={() => setShowModal(false)} data={selectedUser} t={t} >
+          <div className="grid grid-cols-2 gap-4">
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("fullName")}: <span>{selectedUser.fullname}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("gym_name")}: <span>{selectedUser.gymid}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("role")}: <span>{selectedUser.role}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("isActive")}: <span>{selectedUser.isactive ? t("active") || "Active" : t("inactive") || "Inactive"}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("email")}: <span>{selectedUser.email}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("branch_name")}: <span>{selectedUser.branchid}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("created_at")}: <span>{selectedUser.createdat}</span>
+            </p>
+              <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+                {t("phone")}: <span>{selectedUser.phone || "-"}</span>
+              </p>
+          </div>
+        </ShowModal>)}
     </div>
   );
 };

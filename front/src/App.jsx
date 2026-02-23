@@ -50,6 +50,19 @@ const AppContent = () => {
       path: "/",
     },
     {
+      id: "users",
+      label: pageTitle("users"),
+      icon: (
+        <Icon className="h-5 w-5">
+          <path d="M16 11a4 4 0 1 0-8 0" />
+          <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+          <path d="M20 8V5" />
+          <path d="M22 6h-4" />
+        </Icon>
+      ),
+      path: "/users",
+    },
+    {
       id: "members",
       label: pageTitle("members"),
       icon: (
@@ -74,19 +87,6 @@ const AppContent = () => {
         </Icon>
       ),
       path: "/coaches",
-    },
-    {
-      id: "users",
-      label: pageTitle("users"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M16 11a4 4 0 1 0-8 0" />
-          <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-          <path d="M20 8V5" />
-          <path d="M22 6h-4" />
-        </Icon>
-      ),
-      path: "/users",
     },
     {
       id: "subscriptions",

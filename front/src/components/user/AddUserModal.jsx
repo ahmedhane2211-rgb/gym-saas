@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { addUser } from '../../redux/slices/UserSlice';
 import { useForm } from 'react-hook-form';
 import Input from '../ui/Input';
+import { gyms } from '../../assets/assets';
 
 const AddUserModal = ({ isOpen, onClose, t }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -19,12 +20,16 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
 
   const handleAdd = (data) => {
     const userObj = {
-      fullName: data.fullName,
+      fullName: data.fullname,
       email: data.email,
       phone: data.phone,
       role: data.role,
-      isActive: data.isActive === 'on' || data.isActive === true,
+      isactive: data.isActive === 'on' || data.isActive === true,
       photoUrl: data.photoUrl || null,
+      gymId: data.gymid,
+      branchId: data.branchid || '550e8400-e29b-41d4-a716-446655240003',
+      password: data.password,
+      address: data.address || "null",
     };
     dispatch(addUser(userObj));
     reset();
@@ -40,7 +45,7 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between border-b border-slate-200 pb-4 dark:border-slate-700">
           <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            {t('permissions.actions.addUser') || 'Add New User'}
+            {t('user.addUser') || 'Add New User'}
           </h2>
           <button
             onClick={onClose}
@@ -77,7 +82,7 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
           <Input 
             type="text" 
             t={t} 
-            name="fullName" 
+            name="fullname" 
             label='fullName' 
             register={register} 
             required 
@@ -94,6 +99,15 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
             required 
             errors={errors}
           />
+          {/* Password */}
+          <Input 
+            type="text" 
+            t={t} 
+            name="password" 
+            label='password' 
+            register={register} 
+            errors={errors}
+          />
 
           {/* Phone */}
           <Input 
@@ -106,6 +120,42 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
             errors={errors}
           />
 
+          {/* GYM Name */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              {t('gym_name') || 'gym-name'}
+            </label>
+            <select
+              {...register('gymid', { required: true })}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+            >
+              <option value="">-- {t('selectGym') || 'Select Gym'} --</option>
+              {gyms.map((gym) => (
+                <option key={gym.id} value={gym.id}>
+                  {gym.name}
+                </option>
+              ))}
+            </select>
+            {errors.gymid && <span className="text-red-500 text-sm">{t('required')}</span>}
+          </div>
+          {/* Gym Branch */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              {t('gym_branch') || 'Gym Branch'}
+            </label>
+            <select
+              {...register('address', { required: true })}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+            >
+              <option value="">-- {t('selectGymBranch') || 'Select Gym Branch'} --</option>
+              {gyms.map((gym) => (
+                <option key={gym.address} value={gym.address}>
+                  {gym.address}
+                </option>
+              ))}
+            </select>
+            {errors.branchid && <span className="text-red-500 text-sm">{t('required')}</span>}
+          </div>
           {/* Role */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
@@ -116,9 +166,11 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
               className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
             >
               <option value="">-- {t('selectRole') || 'Select Role'} --</option>
-              <option value="admin">{t('role.admin') || 'Admin'}</option>
-              <option value="manager">{t('role.manager') || 'Manager'}</option>
-              <option value="staff">{t('role.staff') || 'Staff'}</option>
+              <option value="admin">{t('admin') || 'Admin'}</option>
+              <option value="manager">{t('manager') || 'Manager'}</option>
+              <option value="staff">{t('staff') || 'Staff'}</option>
+              <option value="coach">{t('coach') || 'Coach'}</option>
+              <option value="member">{t('member') || 'Member'}</option>
             </select>
             {errors.role && <span className="text-red-500 text-sm">{t('required')}</span>}
           </div>
@@ -128,7 +180,7 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
             <input
               type="checkbox"
               id="isActive"
-              {...register('isActive')}
+              {...register('isactive')}
               className="rounded border-slate-300 dark:border-slate-600 dark:bg-slate-800"
             />
             <label htmlFor="isActive" className="text-sm font-semibold text-slate-700 dark:text-slate-300">

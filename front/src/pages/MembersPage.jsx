@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks/preserve-manual-memoization */
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { membersList } from "../assets/assets";
 import { Badge } from "../components/ui/Badge";
 import { SectionHeader } from "../components/ui/SectionHeader";
@@ -9,8 +11,9 @@ import { useTranslation } from "react-i18next";
 import { Delete, DeleteIcon, Edit, Eye } from "lucide-react";
 import ShowModal from "../components/ui/ShowModal";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMember } from "../redux/slices/MemberSlice";
+import { deleteMember, getAllMembers } from "../redux/slices/MemberSlice";
 import Btn from "../components/ui/Btn";
+import { formatDate } from "../utils/formatDate";
 
 const MembersPage = () => {
   const {t} = useTranslation();
@@ -20,8 +23,17 @@ const MembersPage = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   // const [members, setMembers] = useState(membersList);
   const {members} = useSelector((state) => state.members);
-  const [filteredMembers, setFilteredMembers] = useState(members);
+  console.log(members)
+  const [filteredMembers, setFilteredMembers] = useState([]);
   const dispatch = useDispatch() 
+
+  useEffect(() => {
+  dispatch(getAllMembers());
+}, [dispatch]); 
+
+  useEffect(() => {
+    setFilteredMembers(members);
+  }, [members])
   const openEditModal = (member) => {
     setSelectedMember(member);
     setEditModal(true);
@@ -36,16 +48,17 @@ const MembersPage = () => {
       dispatch(deleteMember(id));
     }
   }
-  const filterData = (filterValue) => {
-    if(filterValue === "all"){
-      setFilteredMembers(members);
-    } else if(filterValue === "active"){
-      console.log(filterValue)
-      setFilteredMembers(members.filter((member)=>member.isActive === true))
-    } else {
-      setFilteredMembers(members.filter((member)=>member.isActive === false))
-    }
+  const filterData = useCallback((filterValue) => {
+  const memberList = Array.isArray(members) ? members : [];
+  if (filterValue === "all") {
+    setFilteredMembers(memberList);
+  } else if (filterValue === "active") {
+    setFilteredMembers(memberList.filter((member) => member.isactive === true));
+  } else if (filterValue === "expired") {
+    setFilteredMembers(memberList.filter((member) => member.isactive === false));
   }
+}, [members]);
+  
 
   return(
     <div className="space-y-6">
@@ -78,27 +91,27 @@ const MembersPage = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredMembers.map((member) => (
+              {filteredMembers?.map((member) => (
                 <tr 
                   key={member.id || member.name} 
                   className="cursor-pointer border-t border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 >
-                  <td className="px-4 text-center py-3 font-semibold text-slate-900 dark:text-slate-100">{member.fullName || member.name}</td>
+                  <td className="px-4 text-center py-3 font-semibold text-slate-900 dark:text-slate-100">{member.fullname || "name"}</td>
                   <td className="px-4 text-center py-3 text-slate-600 dark:text-slate-400">{t(member.email)}</td>
                   <td className="px-4 text-center py-3">
                     <Badge tone={member.statusKey === "members.status.expired" ? "rose" : "emerald"}>{t(member.phone)}</Badge>
                   </td>
                   <td className="px-4 text-center py-3 text-slate-600 dark:text-slate-400">
-                    {member.isActive ? (
+                    {member.isactive ? (
                       <Badge tone="emerald">{t("active")}</Badge>
                     ) : (
                       <Badge tone="rose">{t("inactive")}</Badge>
                     )}
                   </td>
                   <td className="px-4 flex gap-2 justify-center py-3 text-slate-600 dark:text-slate-400">
-                    <span className="cursor-pointer hover:text-emerald-500" onClick={() => openEditModal(member)}><Edit /></span>
-                    <span className="cursor-pointer hover:text-emerald-500" onClick={() => handleShowModal(member)}><Eye /></span>
-                    <span className="cursor-pointer hover:text-emerald-500" onClick={() => handleDelete(member.id)}><Delete /></span>
+                    <span className="cursor-pointer hover:text-emerald-500 w-6" onClick={() => openEditModal(member)}><Edit /></span>
+                    <span className="cursor-pointer hover:text-emerald-500 w-6" onClick={() => handleShowModal(member)}><Eye /></span>
+                    <span className="cursor-pointer hover:text-emerald-500 w-6" onClick={() => handleDelete(member?.id)}><Delete /></span>
                   </td>
                 </tr>
               ))}
@@ -120,15 +133,15 @@ const MembersPage = () => {
       />
 
       {showModal && (
-        <ShowModal setShowModal={setShowModal} t={t} showModal={showModal} title={"show_details"}>
+        <ShowModal onClose={()=>setShowModal(false)} setShowModal={setShowModal} t={t} showModal={showModal} title={"show_details"}>
           <div className="grid grid-cols-2 gap-4">
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("fullName")}: <span>{selectedMember.fullName || selectedMember.name}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("fullName")}: <span>{selectedMember.fullname || selectedMember.name}</span></p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("email")}: <span>{selectedMember.email}</span></p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("phone")}: <span>{selectedMember.phone}</span></p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("gender")}: <span>{t(selectedMember.gender)}</span></p>
             {/* <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("role")}: <span>{selectedMember.role}</span></p> */}
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("dateOfBirth")}: <span>{selectedMember.dateOfBirth}</span></p>
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("isActive")}: <span>{selectedMember.isActive ? t("active") : t("inactive")}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("dateOfBirth")}: <span>{formatDate(selectedMember?.dateofbirth)}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("isActive")}: <span>{selectedMember.isactive ? t("active") : t("inactive")}</span></p>
           </div>
         </ShowModal>
       )}

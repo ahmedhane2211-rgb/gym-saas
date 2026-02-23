@@ -1,4 +1,15 @@
 {
+  "gym_branch":"Gym Branch",
+  "gym_name":"Gym Name" ,
+  "gym_address":"Gym Address" ,  
+  "selectRole":"Select role",
+  "user":{
+    "addUser":"Add new user",
+    "editUser":"Edit user",
+    "title":"Users"
+  },
+  "all":"All",
+  "manager":"Manager",
   "price_paid ":"Price paid",
   "payment_method":"Payment method",
   "member":"Member",
@@ -86,6 +97,10 @@
     "updateSettings": "Save settings"
   },
   "pages": {
+    "users":{
+      "title": "Users",
+      "intro": "Manage gym staff, roles, and permissions."
+    },
     "coaches":{
       "title": "Coaches",
       "intro": "Trainer-specific dashboard for managing members and sessions."

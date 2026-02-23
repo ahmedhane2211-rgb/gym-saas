@@ -135,9 +135,11 @@ const EditUserModal = ({ isOpen, onClose, user, t }) => {
               className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
             >
               <option value="">-- {t('selectRole') || 'Select Role'} --</option>
-              <option value="admin">{t('role.admin') || 'Admin'}</option>
-              <option value="manager">{t('role.manager') || 'Manager'}</option>
-              <option value="staff">{t('role.staff') || 'Staff'}</option>
+              <option value="admin">{t('admin') || 'Admin'}</option>
+              <option value="manager">{t('manager') || 'Manager'}</option>
+              <option value="staff">{t('staff') || 'Staff'}</option>
+              <option value="coach">{t('coach') || 'Coach'}</option>
+              <option value="member">{t('member') || 'Member'}</option>
             </select>
             {errors.role && <span className="text-red-500 text-sm">{t('required')}</span>}
           </div>

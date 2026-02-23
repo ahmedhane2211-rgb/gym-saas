@@ -2,8 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "../ui/Input";
+import { useDispatch } from "react-redux";
+import { updateMember } from "../../redux/slices/MemberSlice";
+import { formatDate } from "../../utils/formatDate";
 
-const EditMemberModal = ({ isOpen, onClose, onSubmit, member, t }) => {
+const EditMemberModal = ({ isOpen, onClose, member, t }) => {
+  console.log(member)
   const {
     register,
     handleSubmit,
@@ -12,21 +16,20 @@ const EditMemberModal = ({ isOpen, onClose, onSubmit, member, t }) => {
   } = useForm();
 
   const [photoPreview, setPhotoPreview] = useState(null);
-
+  const dispatch = useDispatch();
   // 👇 لما المودال يفتح أو العضو يتغير نعمل reset
   useEffect(() => {
     if (member && isOpen) {
       reset({
-        fullName: member.fullName || "",
+        fullName: member.fullname || "",
         email: member.email || "",
         phone: member.phone || "",
-        idNumber: member.idNumber || "",
+        idNumber: member.idnumber || "",
         barcode: member.barcode || "",
-        dateOfBirth: member.dateOfBirth || "",
+        dateOfBirth: formatDate(member.dateofbirth) || "",
         gender: member.gender || "male",
-        isActive: member.isActive ?? false,
+        isActive: member.isactive ?? false,
         subscriptionId: member.subscriptionId || "",
-        role: member.role || "",
         photoUrl: member.photoUrl || "",
       });
 
@@ -43,12 +46,15 @@ const EditMemberModal = ({ isOpen, onClose, onSubmit, member, t }) => {
   };
 
   const submitHandler = (data) => {
-    onSubmit({
-      id: member.id,
-      ...data,
-    });
-    onClose?.();
-  };
+  dispatch(updateMember({ 
+    id: member.id, 
+    gymId: member.gymid,
+    branchId: member.branchid,
+    photoUrl: photoPreview || member.photourl || "",
+    ...data 
+  }));
+  onClose();
+};
 
   if (!isOpen) return null;
 

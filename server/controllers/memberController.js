@@ -15,8 +15,9 @@ export const createMember = async (req, res) => {
     dateOfBirth,
     gender,
     isActive,
+    subscriptionId,
   } = req.body;
-
+  console.log(fullName)
   if (
     !gymId ||
     !branchId ||
@@ -24,7 +25,6 @@ export const createMember = async (req, res) => {
     !phone ||
     !email ||
     !barcode ||
-    !photoUrl ||
     !idNumber ||
     !dateOfBirth ||
     !gender ||
@@ -59,7 +59,12 @@ export const createMember = async (req, res) => {
         createdAt,
       ],
     );
-    res.status(201).json(result.rows[0]);
+    if (result.rows.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "فشل إنشاء العضو", status: false });
+    }
+    res.status(201).json({ data: result.rows[0], status: true, message: "تم إنشاء العضو بنجاح" });
   } catch (error) {
     res.status(500).json({ message: error.message, status: false });
   }
@@ -69,10 +74,8 @@ export const createMember = async (req, res) => {
 export const getAllMembers = async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM members");
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "لا يوجد أعضاء", status: false });
-    }
-    res.status(200).json({ data: result.rows, status: true });
+    
+    res.status(200).json({ data: result.rows || [], status: true });
   } catch (error) {
     res.status(500).json({ message: error.message, status: false });
   }
@@ -120,6 +123,7 @@ export const updateMember = async (req, res) => {
     gender,
     isActive,
   } = req.body;
+  console.log(req.body)
   if (
     !gymId ||
     !branchId ||
@@ -127,7 +131,6 @@ export const updateMember = async (req, res) => {
     !phone ||
     !email ||
     !barcode ||
-    !photoUrl ||
     !idNumber ||
     !dateOfBirth ||
     !gender ||

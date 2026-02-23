@@ -117,7 +117,7 @@ const CoachesPage = () => {
       <EditCoachModal isOpen={editModal} onClose={() => setEditModal(false)} coach={selectedCoach} t={t} />
 
       {showModal && selectedCoach && (
-        <ShowModal setShowModal={setShowModal} t={t} showModal={showModal} title={"show_details"}>
+        <ShowModal onClose={()=>setShowModal(false)} setShowModal={setShowModal} t={t} showModal={showModal} title={"show_details"}>
           <div className="grid grid-cols-2 gap-4">
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
               {t("coaches.fields.userId")}: <span>{selectedCoach.userId}</span>

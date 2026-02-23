@@ -14,6 +14,7 @@ app.use(express.json());
 // routes
 app.use("/api/members",memberRouter);
 app.use("/api/users",userRouter);
+app.use("/api/coaches",userRouter);
 
 
 // Start the server

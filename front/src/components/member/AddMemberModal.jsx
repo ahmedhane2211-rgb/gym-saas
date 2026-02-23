@@ -2,9 +2,9 @@
 /* eslint-disable no-undef */
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addMember } from '../../redux/slices/MemberSlice';
 import { useForm } from 'react-hook-form';
 import Input from '../ui/Input';
+import { addMember } from '../../redux/slices/MemberSlice';
 
 const AddMemberModal = ({ isOpen, onClose, onSubmit, t }) => {
   
@@ -22,23 +22,27 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t }) => {
 
   const handleAdd = (data) => {
     console.log(data)
-    const formData = new FormData()
-    formData.append('fullName',data.fullName)
-    formData.append('phone',data.phone)
-    formData.append('email',data.email)
-    formData.append('barcode',data.barcode)
-    formData.append('photoUrl',data.photoUrl)
-    formData.append('idNumber',data.idNumber)
-    formData.append('dateOfBirth',data.dateOfBirth)
-    formData.append('gender',data.gender)
-    formData.append('isActive',data.isActive)
-    formData.append('subscriptionId',data.subscriptionId)
+    // const formData = new FormData()
+    // formData.append('fullName',data.fullName)
+    // formData.append('phone',data.phone)
+    // formData.append('email',data.email)
+    // formData.append('barcode',data.barcode)
+    // formData.append('photoUrl',data.photoUrl)
+    // formData.append('idNumber',data.idNumber)
+    // formData.append('dateOfBirth',data.dateOfBirth)
+    // formData.append('gender',data.gender)
+    // formData.append('isActive',data.isActive)
+    // formData.append('subscriptionId',data.subscriptionId)
     // formData.append('role',data.role)
     // Convert FormData to plain object
-    const memberObj = {};
-    for (let [key, value] of formData.entries()) {
-      memberObj[key] = value;
-    }
+    const memberObj = {
+      ...data,
+      branchId:"b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a28",
+      gymId:"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15",
+    };
+    // for (let [key, value] of formData.entries()) {
+    //   memberObj[key] = value;
+    // }
     dispatch(addMember(memberObj));
     reset();
     setPhotoPreview(null);
