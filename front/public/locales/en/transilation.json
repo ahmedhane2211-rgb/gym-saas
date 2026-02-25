@@ -1,4 +1,8 @@
 {
+  "address":"Address",
+  "branch_name":"Branch name",
+  "created_at":"Created at",
+  "lastlogin":"Last login",
   "gym_branch":"Gym Branch",
   "gym_name":"Gym Name" ,
   "gym_address":"Gym Address" ,  

@@ -1,4 +1,8 @@
 {
+  "address":"العنوان",
+  "branch_name":"اسم الفرع",
+  "created_at":"انشأ في",
+  "lastlogin":"آخر تسجيل دخول",
   "gym_branch":"فرع الجيم",
   "gym_name":"اسم الجيم" ,
   "gym_address":"عنوان الجيم" ,

@@ -3,8 +3,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addSubscriptions } from '../../redux/slices/SubscriptionSlice';
 import { useForm } from 'react-hook-form';
+import Input from '../ui/Input';
 
-const AddSubscriptionModal = ({ isOpen, onClose, onSubmit, t }) => {
+const AddSubscriptionModal = ({ isOpen, onClose, t }) => {
   const dispatch = useDispatch();
 
     const durationOptions = useMemo(
@@ -57,7 +58,7 @@ const AddSubscriptionModal = ({ isOpen, onClose, onSubmit, t }) => {
         <div className="flex items-start justify-between gap-4 border-b border-card-border p-6 dark:border-dark-card-border">
           <div>
             <h2 className="text-xl font-bold text-text dark:text-dark-text">
-              {t?.('actions.addPlan') || 'Add Subscription Plan'}
+              {t('actions.addPlan') || 'Add Subscription Plan'}
             </h2>
           </div>
           <button
@@ -74,50 +75,11 @@ const AddSubscriptionModal = ({ isOpen, onClose, onSubmit, t }) => {
   <div className="grid gap-4 md:grid-cols-2">
 
     <div className="md:col-span-2">
-      <label className="mb-2 block text-sm font-semibold">
-        {t?.('plan_name') || 'Plan name'} *
-      </label>
-      <input
-        {...register("name", { required: true })}
-        placeholder="Monthly Unlimited"
-        className="w-full rounded-2xl border px-4 py-2"
-      />
-      {errors.name && (
-        <p className="text-red-500 text-xs mt-1">Name is required</p>
-      )}
+      <Input label={'plan_name'} register={register} name={'name'} errors={errors} required t={t} />
     </div>
 
-    <div>
-      <label className="mb-2 block text-sm font-semibold">
-        {t?.('plan_price') || 'Price'} *
-      </label>
-      <input
-        type="number"
-        step="0.01"
-        {...register("price", { required: true, min: 0 })}
-        placeholder="0.00"
-        className="w-full rounded-2xl border px-4 py-2"
-      />
-      {errors.price && (
-        <p className="text-red-500 text-xs mt-1">Valid price required</p>
-      )}
-    </div>
-
-    <div>
-      <label className="mb-2 block text-sm font-semibold">
-        {t?.('plan_duration') || 'Duration'} *
-      </label>
-      <select
-        {...register("duration", { required: true })}
-        className="w-full rounded-2xl border px-4 py-2"
-      >
-        {durationOptions.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    </div>
+      <Input label={'plan_price'} register={register} type="number" name={'price'} errors={errors} required={{required:true,min:0}} t={t} />
+      <Input label={'plan_duration'} register={register} name={'duration'} required errors={errors} t={t} />
   </div>
 
   <label className="flex items-center gap-3">

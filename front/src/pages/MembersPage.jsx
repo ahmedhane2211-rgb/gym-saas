@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks/preserve-manual-memoization */
 /* eslint-disable no-unused-vars */
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { membersList } from "../assets/assets";
 import { Badge } from "../components/ui/Badge";
 import { SectionHeader } from "../components/ui/SectionHeader";
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteMember, getAllMembers } from "../redux/slices/MemberSlice";
 import Btn from "../components/ui/Btn";
 import { formatDate } from "../utils/formatDate";
+import { getAllUsers } from "../redux/slices/UserSlice";
 
 const MembersPage = () => {
   const {t} = useTranslation();
@@ -23,9 +24,19 @@ const MembersPage = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   // const [members, setMembers] = useState(membersList);
   const {members} = useSelector((state) => state.members);
+  const { users } = useSelector((state) => state.users);
+  const { subscriptions } = useSelector((state) => state.subscriptions);
   console.log(members)
   const [filteredMembers, setFilteredMembers] = useState([]);
   const dispatch = useDispatch() 
+  const membersList = useMemo(()=>{
+    return users.filter((user) => user.role === "member")
+  },[users])
+
+
+  useEffect(()=>{
+    dispatch(getAllUsers());
+  },[])
 
   useEffect(() => {
   dispatch(getAllMembers());
@@ -121,11 +132,15 @@ const MembersPage = () => {
       </div>
 
       <AddMemberModal 
+        members={membersList}
+        subscriptions={subscriptions}
         isOpen={addModal} 
         onClose={() => setAddModal(false)}
         t={t}
       />
       <EditMemberModal 
+        members={membersList}
+        subscriptions={subscriptions}
         isOpen={editModal} 
         onClose={() => setEditModal(false)}
         member={selectedMember}

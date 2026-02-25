@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Input from '../ui/Input';
 import { addMember } from '../../redux/slices/MemberSlice';
+import Select from '../ui/Select';
+import { data } from 'autoprefixer';
 
-const AddMemberModal = ({ isOpen, onClose, onSubmit, t }) => {
+const AddMemberModal = ({ isOpen, onClose, onSubmit, t,members,subscriptions }) => {
   
   const {register,handleSubmit,formState:{errors},reset} = useForm()
   const dispatch = useDispatch();
@@ -18,8 +20,14 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t }) => {
       setPhotoPreview(url);
     }
   };
-  // const { subscriptions } = useSelector((state) => state.subscriptions);
-
+  const membersObj = members.map(member => ({
+    id: member.id,
+    name: member.fullname,
+  }));
+  const subscriptionObj = subscriptions.map(subscription => ({
+    id: subscription.id,
+    name: subscription.name,
+  }));
   const handleAdd = (data) => {
     console.log(data)
     // const formData = new FormData()
@@ -35,11 +43,18 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t }) => {
     // formData.append('subscriptionId',data.subscriptionId)
     // formData.append('role',data.role)
     // Convert FormData to plain object
-    const memberObj = {
-      ...data,
-      branchId:"b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a28",
-      gymId:"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15",
-    };
+  const memberObj = {
+    idNumber: data.idNumber,
+    subscriptionId: data.subscriptionid,
+    userId: data.userid,
+    barcode: data.barcode,
+  };
+
+  dispatch(addMember(memberObj));
+  reset();
+  setPhotoPreview(null);
+  onClose();
+;
     // for (let [key, value] of formData.entries()) {
     //   memberObj[key] = value;
     // }
@@ -69,102 +84,18 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t }) => {
         </div>
 
         <form onSubmit={handleSubmit(handleAdd)} className="space-y-4">
-          {/* Photo Upload */}
-          <div className="mb-6 flex flex-col items-center">
-            <div className="mb-4 h-24 w-24 overflow-hidden rounded-full border-2 border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-800">
-              {photoPreview ? (
-                <img src={photoPreview} alt="Preview" className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-4xl text-slate-400">
-                  👤
-                </div>
-              )}
-            </div>
-            <label className="cursor-pointer rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-500">
-              {t("upload_photo") || 'Upload Photo'}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                className="hidden"
-              />
-            </label>
-          </div>
-
-          {/* Full Name */}
-          <Input type="text" t={t} name="fullName" label='fullName' register={register} required errors={errors}/>
-          {/* Email */}
-          <Input type="email" t={t} name="email" label='email' register={register} required errors={errors}/>
-          {/* Phone */}
-          <Input type="tel" t={t} name="phone" label='phone' register={register} required errors={errors}/>
           
+          {/* User */}
+          <Select t={t} name="userid" label='member' register={register} required errors={errors} options={membersObj}/>
+
+          {/* Subscriptions */}
+          <Select t={t} name="subscriptionid" label='subscription' register={register} required errors={errors} options={subscriptionObj}/>
+
           {/* ID Number */}
           <Input type="number" t={t} name="idNumber" label='idNumber' register={register} required errors={errors}/>
 
           {/* Barcode */}
           <Input t={t} name="barcode" label='barCode' register={register} required errors={errors}/>
-
-          {/* Date of Birth */}
-          <Input type="date" t={t} name="dateOfBirth" label='dateOfBirth' register={register} required errors={errors}/>
-
-          {/* Gender */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t?.('gender') || 'Gender'}
-            </label>
-            <select
-              {...register('gender',{required:true})}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
-            >
-              <option value="male">{t?.('male') || 'Male'}</option>
-              <option value="female">{t?.('female') || 'Female'}</option>
-            </select>
-          </div>
-          {/* Subscriptions */}
-          {/* <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t('pages.subscriptions.title') || 'Subscriptions'}
-            </label>
-            <select
-              {...register('subscriptionId')}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
-            >
-              {subscriptions.map((subscription) => (
-                <option key={subscription.id} value={subscription.id}>
-                  { t(subscription?.name)}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          {/* Role */}
-          {/* <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t?.('role') || 'Role'}
-            </label>
-            <select
-              {...register('role',{required:true})}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
-            >
-              <option value="member">{t?.('member') || 'Member'}</option>
-              <option value="admin">{t?.('admin') || 'Admin'}</option>
-              <option value="coach">{t?.('coach') || 'Coach'}</option>
-              <option value="staff">{t?.('staff') || 'Staff'}</option>
-            </select>
-          </div> */}
-
-          {/* Active Status */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              {...register('isActive')}
-              id="isActive"
-              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-800"
-            />
-            <label htmlFor="isActive" className="ml-3 cursor-pointer select-none text-sm font-medium text-slate-700 dark:text-slate-300">
-              {t?.('isActive') || 'Active Member'}
-            </label>
-          </div>
 
           {/* Buttons */}
           <div className="flex gap-3 border-t border-slate-200 pt-6 dark:border-slate-700">

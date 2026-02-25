@@ -9,6 +9,7 @@ import ShowModal from '../components/ui/ShowModal';
 import { SectionHeader } from '../components/ui/SectionHeader';
 import { Badge } from '../components/ui/Badge';
 import Btn from '../components/ui/Btn';
+import { formatDate } from '../utils/formatDate';
 
 const UsersPage = () => {
   const { t } = useTranslation();
@@ -179,10 +180,22 @@ const UsersPage = () => {
               {t("email")}: <span>{selectedUser.email}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("address")}: <span>{selectedUser.address || "-"}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("address")}: <span>{formatDate(selectedUser.address) || "-"}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("gender")}: <span>{selectedUser.gender || "-"}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
+              {t("lastlogin")}: <span>{formatDate(selectedUser.lastlogin) || "-"}</span>
+            </p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
               {t("branch_name")}: <span>{selectedUser.branchid}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
-              {t("created_at")}: <span>{selectedUser.createdat}</span>
+              {t("created_at")}: <span>{formatDate(selectedUser.createdat)}</span>
             </p>
               <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
                 {t("phone")}: <span>{selectedUser.phone || "-"}</span>

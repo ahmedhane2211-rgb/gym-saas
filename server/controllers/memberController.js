@@ -4,31 +4,18 @@ import { v4 as uuidv4 } from "uuid";
 // إضافة عضو جديد
 export const createMember = async (req, res) => {
   const {
-    gymId,
-    branchId,
-    fullName,
-    phone,
-    email,
-    barcode,
-    photoUrl,
-    idNumber,
-    dateOfBirth,
-    gender,
-    isActive,
+    userId,
     subscriptionId,
+    barcode,
+    idNumber,
   } = req.body;
-  console.log(fullName)
+  console.log(req.body)
   if (
-    !gymId ||
-    !branchId ||
-    !fullName ||
-    !phone ||
-    !email ||
+    
+    !userId ||
+    !subscriptionId ||
     !barcode ||
-    !idNumber ||
-    !dateOfBirth ||
-    !gender ||
-    isActive === undefined
+    !idNumber
   ) {
     return res
       .status(400)
@@ -39,23 +26,20 @@ export const createMember = async (req, res) => {
   const createdAt = new Date();
 
   try {
+    const user = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
+    if (user.rows.length === 0) {
+      return res.status(404).json({ message: "المستخدم غير موجود", status: false });
+    }
     const result = await pool.query(
       `INSERT INTO members (
-        id, gymId, branchId, fullName, phone, email, barcode, photoUrl, idNumber, dateOfBirth, gender, isActive, createdAt
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *`,
+        id, barcode, idNumber, userId, subscriptionId, createdAt
+      ) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
       [
         id,
-        gymId,
-        branchId,
-        fullName,
-        phone,
-        email,
         barcode,
-        photoUrl,
         idNumber,
-        dateOfBirth,
-        gender,
-        isActive,
+        userId,
+        subscriptionId,
         createdAt,
       ],
     );
@@ -111,30 +95,16 @@ export const updateMember = async (req, res) => {
       .json({ message: "الرجاء توفير معرف العضو", status: false });
   }
   const {
-    gymId,
-    branchId,
-    fullName,
-    phone,
-    email,
+    userId,
+    subscriptionId,
     barcode,
-    photoUrl,
     idNumber,
-    dateOfBirth,
-    gender,
-    isActive,
   } = req.body;
-  console.log(req.body)
   if (
-    !gymId ||
-    !branchId ||
-    !fullName ||
-    !phone ||
-    !email ||
+    !userId ||
+    !subscriptionId ||
     !barcode ||
-    !idNumber ||
-    !dateOfBirth ||
-    !gender ||
-    isActive === undefined
+    !idNumber
   ) {
     return res
       .status(400)
@@ -142,20 +112,13 @@ export const updateMember = async (req, res) => {
   }
   try {
     const result = await pool.query(
-      `UPDATE members SET gymId=$1, branchId=$2, fullName=$3, phone=$4, email=$5, barcode=$6, photoUrl=$7, idNumber=$8, dateOfBirth=$9, gender=$10, isActive=$11 WHERE id=$12 RETURNING *`,
+      `UPDATE members SET userId=$1, subscriptionId=$2, barcode=$3, idNumber=$4 WHERE id=$5 RETURNING *`,
       [
-        gymId,
-        branchId,
-        fullName,
-        phone,
-        email,
+        userId,
+        subscriptionId,
         barcode,
-        photoUrl,
         idNumber,
-        dateOfBirth,
-        gender,
-        isActive,
-        id,
+        id
       ],
     );
     if (result.rows.length === 0) {

@@ -4,6 +4,7 @@ import { addUser } from '../../redux/slices/UserSlice';
 import { useForm } from 'react-hook-form';
 import Input from '../ui/Input';
 import { gyms } from '../../assets/assets';
+import Select from '../ui/Select';
 
 const AddUserModal = ({ isOpen, onClose, t }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -24,12 +25,14 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
       email: data.email,
       phone: data.phone,
       role: data.role,
-      isactive: data.isActive === 'on' || data.isActive === true,
+      isActive: data.isActive === 'on' || data.isActive === true,
       photoUrl: data.photoUrl || null,
       gymId: data.gymid,
-      branchId: data.branchid || '550e8400-e29b-41d4-a716-446655240003',
+      branchId: '550e8400-e29b-41d4-a716-446655240003',
       password: data.password,
       address: data.address || "null",
+      gender: data.gender || "null",
+      dateOfBirth: data.dateofbirth || "null",
     };
     dispatch(addUser(userObj));
     reset();
@@ -38,7 +41,7 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
   };
 
   if (!isOpen) return null;
-
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="card max-h-[90vh] w-full max-w-lg overflow-y-auto">
@@ -109,6 +112,16 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
             errors={errors}
           />
 
+          {/* Date */}
+          <Input 
+            type="date" 
+            t={t} 
+            name="dateofbirth" 
+            label='dateOfBirth' 
+            register={register} 
+            required 
+            errors={errors}
+          />
           {/* Phone */}
           <Input 
             type="tel" 
@@ -119,68 +132,56 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
             required 
             errors={errors}
           />
+          {/* Address */}
+          <Input 
+            type="address" 
+            t={t} 
+            name="address" 
+            label='address' 
+            register={register} 
+            required 
+            errors={errors}
+          />
+          {/* Gender */}
+          <Select t={t} register={register} options={
+            [{id:"male", name: t('male') || 'Male'}, {id:"female", name: t('female') || 'Female'}]} 
+          label='gender' name="gender" required={true} />
 
-          {/* GYM Name */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t('gym_name') || 'gym-name'}
-            </label>
-            <select
-              {...register('gymid', { required: true })}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
-            >
-              <option value="">-- {t('selectGym') || 'Select Gym'} --</option>
-              {gyms.map((gym) => (
-                <option key={gym.id} value={gym.id}>
-                  {gym.name}
-                </option>
-              ))}
-            </select>
-            {errors.gymid && <span className="text-red-500 text-sm">{t('required')}</span>}
-          </div>
+          {/* GYM Id */}
+          <Select 
+            t={t} 
+            register={register} 
+            options={gyms} 
+            label='gym_name' 
+            name="gymid" 
+            required={true}
+          />
+          
           {/* Gym Branch */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t('gym_branch') || 'Gym Branch'}
-            </label>
-            <select
-              {...register('address', { required: true })}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
-            >
-              <option value="">-- {t('selectGymBranch') || 'Select Gym Branch'} --</option>
-              {gyms.map((gym) => (
-                <option key={gym.address} value={gym.address}>
-                  {gym.address}
-                </option>
-              ))}
-            </select>
-            {errors.branchid && <span className="text-red-500 text-sm">{t('required')}</span>}
-          </div>
+          <Select 
+            t={t} register={register} options={gyms} label='gym_branch' name="branchid" required={true}/>
           {/* Role */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t('role') || 'Role'}
-            </label>
-            <select
-              {...register('role', { required: true })}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
-            >
-              <option value="">-- {t('selectRole') || 'Select Role'} --</option>
-              <option value="admin">{t('admin') || 'Admin'}</option>
-              <option value="manager">{t('manager') || 'Manager'}</option>
-              <option value="staff">{t('staff') || 'Staff'}</option>
-              <option value="coach">{t('coach') || 'Coach'}</option>
-              <option value="member">{t('member') || 'Member'}</option>
-            </select>
-            {errors.role && <span className="text-red-500 text-sm">{t('required')}</span>}
-          </div>
-
+            <Select 
+            t={t} 
+            register={register} 
+            options={
+              [
+                {id:"admin", name: t('admin') || 'Admin'}, 
+                {id:"manager", name: t('manager') || 'Manager'}, 
+                {id:"staff", name: t('staff') || 'Staff'},
+                {id:"member", name: t('member') || 'Member'},
+                {id:"coach", name: t('coach') || 'Coach'},
+              ]} 
+            label='role' 
+            name="role" 
+            required={true}
+          />
           {/* Is Active */}
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="isActive"
-              {...register('isactive')}
+              {...register('isActive')}
               className="rounded border-slate-300 dark:border-slate-600 dark:bg-slate-800"
             />
             <label htmlFor="isActive" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
