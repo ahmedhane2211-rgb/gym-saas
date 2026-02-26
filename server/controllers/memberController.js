@@ -7,6 +7,7 @@ export const createMember = async (req, res) => {
     userId,
     subscriptionId,
     barcode,
+    branchId,
     idNumber,
   } = req.body;
   console.log(req.body)
@@ -15,7 +16,7 @@ export const createMember = async (req, res) => {
     !userId ||
     !subscriptionId ||
     !barcode ||
-    !idNumber
+    !idNumber || !branchId
   ) {
     return res
       .status(400)
@@ -24,6 +25,7 @@ export const createMember = async (req, res) => {
 
   const id = uuidv4();
   const createdAt = new Date();
+  const updatedAt = new Date();
 
   try {
     const user = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
@@ -32,8 +34,8 @@ export const createMember = async (req, res) => {
     }
     const result = await pool.query(
       `INSERT INTO members (
-        id, barcode, idNumber, userId, subscriptionId, createdAt
-      ) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+        id, barcode, idNumber, userId, subscription_Id, createdAt,updatedAt,branch_id
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
       [
         id,
         barcode,
@@ -41,6 +43,8 @@ export const createMember = async (req, res) => {
         userId,
         subscriptionId,
         createdAt,
+        updatedAt,
+        branchId
       ],
     );
     if (result.rows.length === 0) {
@@ -97,6 +101,7 @@ export const updateMember = async (req, res) => {
   const {
     userId,
     subscriptionId,
+    branchId,
     barcode,
     idNumber,
   } = req.body;
@@ -104,7 +109,7 @@ export const updateMember = async (req, res) => {
     !userId ||
     !subscriptionId ||
     !barcode ||
-    !idNumber
+    !idNumber || !branchId
   ) {
     return res
       .status(400)
@@ -112,12 +117,13 @@ export const updateMember = async (req, res) => {
   }
   try {
     const result = await pool.query(
-      `UPDATE members SET userId=$1, subscriptionId=$2, barcode=$3, idNumber=$4 WHERE id=$5 RETURNING *`,
+      `UPDATE members SET userId=$1, subscription_Id=$2, barcode=$3, idNumber=$4,branch_id=$5 WHERE id=$6 RETURNING *`,
       [
         userId,
         subscriptionId,
         barcode,
         idNumber,
+        branchId,
         id
       ],
     );

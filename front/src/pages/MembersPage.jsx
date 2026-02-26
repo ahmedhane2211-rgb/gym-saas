@@ -15,6 +15,7 @@ import { deleteMember, getAllMembers } from "../redux/slices/MemberSlice";
 import Btn from "../components/ui/Btn";
 import { formatDate } from "../utils/formatDate";
 import { getAllUsers } from "../redux/slices/UserSlice";
+import { getSubscriptions } from "../redux/slices/SubscriptionSlice";
 
 const MembersPage = () => {
   const {t} = useTranslation();
@@ -36,11 +37,10 @@ const MembersPage = () => {
 
   useEffect(()=>{
     dispatch(getAllUsers());
-  },[])
+    dispatch(getAllMembers());
+    dispatch(getSubscriptions())
+  },[dispatch])
 
-  useEffect(() => {
-  dispatch(getAllMembers());
-}, [dispatch]); 
 
   useEffect(() => {
     setFilteredMembers(members);

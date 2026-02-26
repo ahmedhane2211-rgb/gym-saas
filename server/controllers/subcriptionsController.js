@@ -1,5 +1,5 @@
 import { pool } from "../models/db.js"
-
+import { v4 as uuidv4 } from "uuid";
 
 const getSubscriptions = async (req,res)=>{
     try {
@@ -12,19 +12,18 @@ const getSubscriptions = async (req,res)=>{
 const createSubscription = async (req,res)=>{
  const {
     duration,
-    gymId,
+    gym_id,
     name,
     price,
     isActive,
     description,
   } = req.body;
-  console.log(req.body)
   if (
     !duration ||
-    !gymId ||
+    !gym_id ||
     !name ||
     !price ||
-    !isActive || description
+    !isActive || !description
   ) {
     return res
       .status(400)
@@ -38,12 +37,12 @@ const createSubscription = async (req,res)=>{
   try {
     const result = await pool.query(
       `INSERT INTO subscription_plans (
-        id, duration, gymId, name, price, isActive,description,createdAt,updatedAt
+        id, duration, gym_id, name, price, is_active,description,created_At,updated_At
       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
       [
         id,
         duration,
-        gymId,
+        gym_id,
         name,
         price,
         isActive,

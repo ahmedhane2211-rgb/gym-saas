@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "../components/ui/Badge";
 import { SectionHeader } from "../components/ui/SectionHeader";
 import AddSubscriptionModal from "../components/subscriptions/AddSubscriptionModal";
 import { useDispatch, useSelector } from "react-redux";
 import { Trash } from "lucide-react";
-import { deleteSubscription } from "../redux/slices/SubscriptionSlice";
 import Btn from "../components/ui/Btn";
 import AddSubscriberModal from "../components/subscriptions/AddSubscriberModal";
+import { deleteSubscription, getSubscriptions } from "../redux/slices/SubscriptionSlice";
 
 const SubscriptionsPage = ({t,pageTitle}) =>{ 
   const dispatch = useDispatch();
   const [openAdd, setOpenAdd] = useState(false);
   const [openSubscriber, setOpenSubscriber] = useState(false);
   const { subscriptions } = useSelector((state) => state.subscriptions);
+
+  useEffect(()=>{
+    dispatch(getSubscriptions());
+    // dispatch(getGyms());
+  },[dispatch])
+  
   const handleDelete = (id)=>{
     if(window.confirm(t("confirmDelete"))){
       dispatch(deleteSubscription(id));
@@ -26,7 +32,7 @@ const SubscriptionsPage = ({t,pageTitle}) =>{
         action={<div><Btn onClick={()=>setOpenAdd(true)} title={t("actions.addPlan")} /> <Btn onClick={()=>setOpenSubscriber(true)} title={t("actions.addSubscriber")}/> </div>}
       />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {subscriptions.map((plan) => (
+        {Array.isArray(subscriptions) && subscriptions.map((plan) => (
           <div key={plan.id ?? plan.titleKey} className="card">
             <div className="flex items-center justify-between">
               <div>

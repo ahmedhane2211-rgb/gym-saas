@@ -1,5 +1,5 @@
 import { pool } from "../models/db.js"
-
+import {v4 as uuidv4} from "uuid"
 
 const getGyms = async (req,res)=>{
     try {
@@ -15,14 +15,13 @@ const createGym = async (req,res)=>{
     name,
     logo,
     isActive,
-    description,
   } = req.body;
   console.log(req.body)
   if (
     !logo ||
     !phone ||
     !name ||
-    !isActive || description
+    !isActive
   ) {
     return res
       .status(400)
@@ -36,15 +35,14 @@ const createGym = async (req,res)=>{
   try {
     const result = await pool.query(
       `INSERT INTO gym (
-        id, logo, phone, name, isActive,description,createdAt,updatedAt
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+        id, logo, phone, name, is_Active,created_At,updated_At
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
       [
         id,
         logo,
         phone,
         name,
         isActive,
-        description,
         createdAt,
         updatedAt
       ],

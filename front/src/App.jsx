@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import {  Routes, Route, NavLink } from "react-router-dom";
+import {  Routes, Route, NavLink, useLocation } from "react-router-dom";
 import { ThemeProvider, useTheme } from "./context/theme";
 import { Icon } from "./components/ui/Icon.jsx";
 
@@ -17,20 +17,38 @@ import {
   SettingsPage,
   TrainerPage,
   UsersPage,
+  GymsPage,
 } from "./pages";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
+import Login from "./pages/auth/Login.jsx";
+import Register from "./pages/auth/Register.jsx";
 
 const AppContent = () => {
   const { t, i18n } = useTranslation();
   const { theme, toggleTheme, lang, changeLang } = useTheme();
+  const locate = useLocation();
   const isRTL = lang === "ar";
+  const isAuthPage = locate.pathname === "/login" || locate.pathname === "/register";
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
     if (i18n.language !== lang) i18n.changeLanguage(lang);
   }, [isRTL, lang, i18n]);
 
+  // Auth pages layout
+  if (isAuthPage) {
+    return (
+      <div dir={isRTL ? "rtl" : "ltr"}>
+        <Routes>
+          <Route path="/login" element={<Login t={t} />} />
+          <Route path="/register" element={<Register t={t} />} />
+        </Routes>
+      </div>
+    );
+  }
+
+  // Main app layout
   const pageTitle = (id) => t(`pages.${id}.title`);
   const pageIntro = (id) => t(`pages.${id}.intro`);
   const languageSwitchLabel = lang === "ar" ? t("language.switchLanguage") : t("language.switchLanguage");
@@ -173,6 +191,17 @@ const AppContent = () => {
       ),
       path: "/trainers",
     },
+    {
+      id: "gyms",
+      label: pageTitle("gyms"),
+      icon: (
+        <Icon className="h-5 w-5">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <path d="M9 22V12h6v10" />
+        </Icon>
+      ),
+      path: "/gyms",
+    },
   ];
 
   // Get current route for active nav
@@ -195,6 +224,7 @@ const AppContent = () => {
           <main className="flex-1 space-y-6 pb-12">
             <Navbar t={t} changeLang={changeLang} theme={theme} languageSwitchLabel={languageSwitchLabel} toggleTheme={toggleTheme} lang={lang}/>
             <Routes>
+                <Route path="/gyms" element={<GymsPage t={t} pageTitle={pageTitle}/>} />
                 <Route path="/" element={<DashboardPage t={t} />} />
                 <Route path="/coaches" element={<CoachesPage t={t} />} />
                 <Route path="/members" element={<MembersPage t={t} />} />

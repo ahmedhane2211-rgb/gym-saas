@@ -55,6 +55,8 @@
   "fullName": "Full name",
   "email": "Email",
   "phone": "Phone",
+  "logo": "Logo",
+  "description": "Description",
   "gender": "Gender",
   "barCode": "Barcode",
   "dateOfBirth": "Date of birth",
@@ -62,9 +64,43 @@
   "action": "Actions",
   "male":"Male",
   "female":"Female",
+  "save":"Save",
+  "saving":"Saving...",
+  "update":"Update",
+  "updating":"Updating...",
+  "cancel":"Cancel",
+  "loading":"Loading",
+  "noData":"No data available",
+  "preview":"Preview",
   "app": {
     "name": "GymPulse Cloud",
     "tagline": "Multi-gym, multi-branch SaaS platform"
+  },
+  "auth": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordMismatch": "Passwords do not match",
+    "nameMinLength": "Name must be at least 3 characters",
+    "or": "OR",
+    "loggingIn": "Logging in...",
+    "registering": "Creating account...",
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your gym management account",
+      "button": "Sign In",
+      "link": "Sign in here"
+    },
+    "register": {
+      "title": "Get Started",
+      "subtitle": "Create your gym management account",
+      "button": "Create Account",
+      "link": "Create account"
+    },
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "password": "Password",
+    "confirmPassword": "Confirm Password"
   },
   "language": {
     "switchLanguage": "Arabic",
@@ -92,6 +128,7 @@
   },
   "actions": {
     "addSubscriber": "Add subscriber",
+    "addGym": "Add Gym",
     "export": "Quick export",
     "newMember": "New member",
     "newCoach": "New coach",
@@ -144,6 +181,10 @@
     "trainer": {
       "title": "Trainer System",
       "intro": "Trainer dashboard with clients and sessions."
+    },
+    "gyms": {
+      "title": "Gyms",
+      "intro": "Manage gym locations, branches, and contact information."
     }
   },
   "tables": {
@@ -291,7 +332,12 @@
       "freePtSession": "Free PT session",
       "retailVouchers": "Retail vouchers"
     }
+  }gyms": {
+    "description": "Manage gym locations and branch information.",
+    "addTitle": "Add Gym",
+    "editTitle": "Edit Gym"
   },
+  ",
   "subscriptions": {
     "description": "Manage subscription types and pricing."
   },

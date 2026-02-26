@@ -9,6 +9,7 @@ import SettingsPage from "./SettingsPage";
 import TrainerPage from "./TrainerPage";
 import CoachesPage from "./CoachesPage";
 import UsersPage from "./user";
+import GymsPage from "./GymsPage";
 
 export {
   DashboardPage,
@@ -22,4 +23,5 @@ export {
   TrainerPage,
   CoachesPage,
   UsersPage,
+  GymsPage,
 };
