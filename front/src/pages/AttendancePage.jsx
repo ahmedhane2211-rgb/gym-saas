@@ -20,7 +20,7 @@ const AttendancePage = ({t,pageTitle}) => {
     const barcode = e.target.value;
     if (!barcode) return;
     const member = members.find(m => m.barcode === barcode);
-    console.log(barcode,member)
+    // console.log(barcode,member)
 
     if (member) {
       setScannedMember(member);

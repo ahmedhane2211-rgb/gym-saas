@@ -3,10 +3,9 @@ import { useDispatch } from 'react-redux';
 import { addUser } from '../../redux/slices/UserSlice';
 import { useForm } from 'react-hook-form';
 import Input from '../ui/Input';
-import { gyms } from '../../assets/assets';
 import Select from '../ui/Select';
 
-const AddUserModal = ({ isOpen, onClose, t }) => {
+const AddUserModal = ({ isOpen, onClose, t,gyms}) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const dispatch = useDispatch();
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -28,7 +27,6 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
       isActive: data.isActive === 'on' || data.isActive === true,
       photoUrl: data.photoUrl || null,
       gymId: data.gymid,
-      branchId: '550e8400-e29b-41d4-a716-446655240003',
       password: data.password,
       address: data.address || "null",
       gender: data.gender || "null",
@@ -158,8 +156,8 @@ const AddUserModal = ({ isOpen, onClose, t }) => {
           />
           
           {/* Gym Branch */}
-          <Select 
-            t={t} register={register} options={gyms} label='gym_branch' name="branchid" required={true}/>
+          {/* <Select 
+            t={t} register={register} options={gyms} label='gym_branch' name="branchid" required={true}/> */}
           {/* Role */}
             <Select 
             t={t} 

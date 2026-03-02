@@ -16,7 +16,7 @@ const AddSubscriberModal = ({ isOpen, onClose, t }) => {
 
   const onSubmit = (data) => {
     // TODO: dispatch add subscription action
-    console.log(data);
+    // console.log(data);
     handleClose();
   };
 

@@ -29,7 +29,7 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t,members,subscriptions }) 
     name: subscription.name,
   }));
   const handleAdd = (data) => {
-    console.log(data)
+    // console.log(data)
     // const formData = new FormData()
     // formData.append('fullName',data.fullName)
     // formData.append('phone',data.phone)

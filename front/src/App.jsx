@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import {  Routes, Route, NavLink, useLocation } from "react-router-dom";
+import {  Routes, Route, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider, useTheme } from "./context/theme";
 import { Icon } from "./components/ui/Icon.jsx";
 
@@ -23,19 +23,40 @@ import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import OnboardingPage from "./pages/auth/OnboardingPage.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "./redux/slices/AuthSlice.jsx";
+import { ProtectedRoute } from "./providers/ProtectedRoute.jsx";
 
 const AppContent = () => {
   const { t, i18n } = useTranslation();
   const { theme, toggleTheme, lang, changeLang } = useTheme();
+  const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const locate = useLocation();
   const isRTL = lang === "ar";
-  const isAuthPage = locate.pathname === "/login" || locate.pathname === "/register";
+  const isAuthPage = locate.pathname === "/login" || locate.pathname === "/register" || locate.pathname === "/onboarding";
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
     if (i18n.language !== lang) i18n.changeLanguage(lang);
   }, [isRTL, lang, i18n]);
 
+  useEffect(() => {
+    // لو مش مسجل دخول ومش في صفحة Login أو Onboarding، وده لـ Onboarding
+    const authPages = ["/login", "/register", "/onboarding"];
+    if (!token && !authPages.includes(locate.pathname)) {
+      navigate("/onboarding");
+    }
+  }, [token, locate.pathname, navigate]);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getUser());
+    }
+  }, [token]);
   // Auth pages layout
   if (isAuthPage) {
     return (
@@ -43,6 +64,7 @@ const AppContent = () => {
         <Routes>
           <Route path="/login" element={<Login t={t} />} />
           <Route path="/register" element={<Register t={t} />} />
+          <Route path="/onboarding" element={<OnboardingPage t={t} />} />
         </Routes>
       </div>
     );
@@ -207,6 +229,8 @@ const AppContent = () => {
   // Get current route for active nav
   const location = typeof window !== "undefined" ? window.location : { pathname: "/" };
   const activeId = navItems.find((item) => item.path === location.pathname)?.id || "dashboard";
+
+  if (!token) return null; // حماية عشان المكونات متظهرش ثانية قبل الـ redirect
   return (
       <div className="relative min-h-screen overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
         <div className="pointer-events-none absolute inset-0">
@@ -224,6 +248,7 @@ const AppContent = () => {
           <main className="flex-1 space-y-6 pb-12">
             <Navbar t={t} changeLang={changeLang} theme={theme} languageSwitchLabel={languageSwitchLabel} toggleTheme={toggleTheme} lang={lang}/>
             <Routes>
+              <Route element={<ProtectedRoute />}>
                 <Route path="/gyms" element={<GymsPage t={t} pageTitle={pageTitle}/>} />
                 <Route path="/" element={<DashboardPage t={t} />} />
                 <Route path="/coaches" element={<CoachesPage t={t} />} />
@@ -236,6 +261,7 @@ const AppContent = () => {
                 <Route path="/settings" element={<SettingsPage t={t}/>} />
                 <Route path="/subscriptions" element={<SubscriptionsPage pageTitle ={pageTitle} t={t}/>} />
                 <Route path="/alerts" element={<AlertsPage t={t} pageTitle={pageTitle}/>} />
+              </Route>
             </Routes>
           </main>
         </div>

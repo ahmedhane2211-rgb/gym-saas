@@ -10,6 +10,7 @@ import { SectionHeader } from '../components/ui/SectionHeader';
 import { Badge } from '../components/ui/Badge';
 import Btn from '../components/ui/Btn';
 import { formatDate } from '../utils/formatDate';
+import { getGyms } from '../redux/slices/GymSlice';
 
 const UsersPage = () => {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ const UsersPage = () => {
   const [filterRole, setFilterRole] = useState('all');
   
   const { users } = useSelector((state) => state.users);
+  const { gyms } = useSelector((state) => state.gyms);
   const dispatch = useDispatch();
 
   const filteredUsers = filterRole === 'all' ? users : users.filter((user) => user.role === filterRole);
@@ -31,6 +33,7 @@ const UsersPage = () => {
 
   useEffect(()=>{
     dispatch(getAllUsers());
+    dispatch(getGyms());
   },[])
 
   
@@ -159,8 +162,8 @@ const UsersPage = () => {
       </div>
 
       {/* Modals */}
-      <AddUserModal isOpen={addModal} onClose={() => setAddModal(false)} t={t} />
-      <EditUserModal isOpen={editModal} onClose={() => setEditModal(false)} user={selectedUser} t={t} />
+      <AddUserModal gyms={gyms} isOpen={addModal} onClose={() => setAddModal(false)} t={t} />
+      <EditUserModal gyms={gyms} isOpen={editModal} onClose={() => setEditModal(false)} user={selectedUser} t={t} />
       {showModal && selectedUser && (
         <ShowModal isOpen={showModal} title={'pages.users.title'} onClose={() => setShowModal(false)} data={selectedUser} t={t} >
           <div className="grid grid-cols-2 gap-4">

@@ -10,6 +10,7 @@ const AddGymModal = ({ isOpen, onClose, t }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.gyms);
   const [logoPreview, setLogoPreview] = useState(null);
+  const [logoFile, setLogoFile] = useState(null);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -27,6 +28,7 @@ const AddGymModal = ({ isOpen, onClose, t }) => {
   const handleLogoChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
+      setLogoFile(file); 
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoPreview(reader.result);
@@ -36,17 +38,18 @@ const AddGymModal = ({ isOpen, onClose, t }) => {
   };
 
   const handleAdd = (data) => {
-    const gymData = {
-      logo: logoPreview,
-      phone: data.phone,
-      name: data.name,
-      isActive: data.isActive === "true" || data.isActive === true,
-      description: data.description,
-    };
+    const formData = new FormData()
+    if (logoFile) {
+      formData.append("logo", logoFile)
+    }
+    formData.append("phone", data.phone)
+    formData.append("name", data.name)
+    formData.append("isActive", data.isActive == "true" || data.isActive == true)
 
-    dispatch(createGym(gymData)).then(() => {
+    dispatch(createGym(formData)).then(() => {
       reset();
       setLogoPreview(null);
+      setLogoFile(null);
       handleClose();
     });
   };
@@ -124,21 +127,6 @@ const AddGymModal = ({ isOpen, onClose, t }) => {
                     {t("preview")}
                   </span>
                 </div>
-              )}
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                {t("description")}
-              </label>
-              <textarea
-                {...register("description", { required: true })}
-                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:ring-emerald-900"
-                placeholder={`Enter description`}
-                rows="3"
-              />
-              {errors.description && (
-                <span className="text-red-500 text-sm mt-1 block">{t("required")}</span>
               )}
             </div>
           </div>

@@ -1,31 +1,44 @@
 import { pool } from "../models/db.js"
-import {v4 as uuidv4} from "uuid"
+import { v4 as uuidv4 } from "uuid"
 
-const getGyms = async (req,res)=>{
-    try {
-        const result = await pool.query('SELECT * FROM gym')
-        return res.status(200).json({ data: result.rows || [], status: true });
-    } catch (error) {
-        return res.status(500).json({ message: error.message, status: false });
-    }
+const getGyms = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM gym')
+    return res.status(200).json({ data: result.rows || [], status: true });
+  } catch (error) {
+    return res.status(500).json({ message: error.message, status: false });
+  }
 }
-const createGym = async (req,res)=>{
- const {
+const createGym = async (req, res) => {
+  const {
     phone,
     name,
-    logo,
     isActive,
   } = req.body;
-  console.log(req.body)
-  if (
-    !logo ||
-    !phone ||
-    !name ||
-    !isActive
-  ) {
+
+  const logo = req.file?.path || null;
+
+  console.log(req.body);
+
+  if (!logo) {
     return res
       .status(400)
-      .json({ message: "الرجاء ملء جميع الحقول", status: false });
+      .json({ message: "الرجاء ملء جميع الحقول (لوجو)", status: false });
+  }
+  if (!phone) {
+    return res
+      .status(400)
+      .json({ message: "الرجاء ملء جميع الحقول (هاتف)", status: false });
+  }
+  if (!name) {
+    return res
+      .status(400)
+      .json({ message: "الرجاء ملء جميع الحقول (اسم)", status: false });
+  }
+  if (isActive === undefined) {
+    return res
+      .status(400)
+      .json({ message: "الرجاء ملء جميع الحقول (الحالة)", status: false });
   }
 
   const id = uuidv4();
@@ -35,62 +48,60 @@ const createGym = async (req,res)=>{
   try {
     const result = await pool.query(
       `INSERT INTO gym (
-        id, logo, phone, name, is_Active,created_At,updated_At
+        id, logo, phone, name, is_Active, created_At, updated_At
       ) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-      [
-        id,
-        logo,
-        phone,
-        name,
-        isActive,
-        createdAt,
-        updatedAt
-      ],
+      [id, logo, phone, name, isActive, createdAt, updatedAt],
     );
     if (result.rows.length === 0) {
       return res
         .status(400)
-        .json({ message: "فشل إنشاء العضو", status: false });
+        .json({ message: "فشل إنشاء الجيم", status: false });
     }
-    res.status(201).json({ data: result.rows[0], status: true, message: "تم إنشاء العضو بنجاح" });
+    res.status(201).json({ data: result.rows[0], status: true, message: "تم إنشاء الجيم بنجاح" });
   } catch (error) {
     res.status(500).json({ message: error.message, status: false });
   }
 }
-const getGym = async (req,res)=>{
-    const {id} = req.params()
-try {
-        const result = await pool.query('SELECT * FROM gym WHERE id=$1',[id])
-        return res.status(200).json({ data: result.rows[0] || [], status: true });
-    } catch (error) {
-        return res.status(500).json({ message: error.message, status: false });
-    }
+const getGym = async (req, res) => {
+  const { id } = req.params; // تمت إزالة الأقواس من params
+  try {
+    const result = await pool.query('SELECT * FROM gym WHERE id=$1', [id])
+    return res.status(200).json({ data: result.rows[0] || [], status: true });
+  } catch (error) {
+    return res.status(500).json({ message: error.message, status: false });
+  }
 }
-const deleteGym = async (req,res)=>{
-const { id } = req.params;
-    if (!id) {
-        return res.status(400).json({ message: "الرجاء توفير معرف العضو", status: false });
-    }
+const deleteGym = async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ message: "الرجاء توفير معرف الجيم", status: false });
+  }
   try {
     const result = await pool.query(
       "DELETE FROM gym WHERE id = $1 RETURNING *",
       [id],
     );
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: "عضو غير موجود", status: false });
+      return res.status(404).json({ message: "جيم غير موجود", status: false });
     }
-    res.status(200).json({ message: "تم حذف العضو بنجاح", status: true });
+    res.status(200).json({ message: "تم حذف الجيم بنجاح", status: true });
   } catch (error) {
     res.status(500).json({ message: error.message, status: false });
   }
 }
-const updateGym = async (req,res)=>{
-try {
-    
-} catch (error) {
-    
-}
+const updateGym = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { phone, name, isActive } = req.body;
+    const logo = req.file?.path || null;
+    const updatedAt = new Date();
+    const data = { id, logo, phone, name, isActive, updatedAt };
+
+    return res.status(200).json({ data: data, status: true });
+  } catch (error) {
+    res.status(500).json({ message: error.message, status: false });
+  }
 }
 
 
-export {getGyms,getGym,deleteGym,updateGym,createGym}
+export { getGyms, getGym, deleteGym, updateGym, createGym }

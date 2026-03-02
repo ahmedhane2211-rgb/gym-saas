@@ -7,7 +7,7 @@ import { updateMember } from "../../redux/slices/MemberSlice";
 import { formatDate } from "../../utils/formatDate";
 
 const EditMemberModal = ({ isOpen, onClose, member, t }) => {
-  console.log(member)
+  // console.log(member)
   const {
     register,
     handleSubmit,

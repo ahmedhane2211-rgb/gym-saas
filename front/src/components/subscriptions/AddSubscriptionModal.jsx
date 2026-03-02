@@ -5,7 +5,7 @@ import { createSubscription } from "../../redux/slices/SubscriptionSlice";
 import { useForm } from "react-hook-form";
 import Input from "../ui/Input";
 
-const AddSubscriptionModal = ({ isOpen, onClose, t }) => {
+const AddSubscriptionModal = ({ isOpen, onClose, t,user }) => {
   const dispatch = useDispatch();
   const {
     register,
@@ -13,7 +13,7 @@ const AddSubscriptionModal = ({ isOpen, onClose, t }) => {
     handleSubmit,
     reset,
   } = useForm();
-
+// console.log(user);
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
@@ -27,10 +27,13 @@ const AddSubscriptionModal = ({ isOpen, onClose, t }) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [handleClose, isOpen]);
 
-  let id = 1;
   const handleAdd = (data) => {
-    console.log(data);
-    dispatch(createSubscription(data));
+    const dataObj = {
+      ...data,
+      gym_id: user?.gymId,
+    }
+    console.log("Creating subscription:", dataObj);
+    dispatch(createSubscription(dataObj));
     reset();
     handleClose();
   };
@@ -89,7 +92,16 @@ const AddSubscriptionModal = ({ isOpen, onClose, t }) => {
             <Input
               label={"plan_duration"}
               register={register}
+              type="number"
               name={"duration"}
+              required
+              errors={errors}
+              t={t}
+            />
+            <Input
+              label={"description"}
+              register={register}
+              name={"description"}
               required
               errors={errors}
               t={t}
@@ -99,7 +111,7 @@ const AddSubscriptionModal = ({ isOpen, onClose, t }) => {
           <label className="flex items-center gap-3">
             <input
               type="checkbox"
-              {...register("active")}
+              {...register("isActive")}
               className="h-5 w-5"
             />
             <span>{t?.("plan_active") || "Active plan"}</span>

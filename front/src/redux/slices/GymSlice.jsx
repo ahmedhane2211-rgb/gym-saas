@@ -40,14 +40,22 @@ export const getGym = createAsyncThunk("gyms/getSingle", async (id) => {
 });
 
 export const createGym = createAsyncThunk("gyms/create", async (data) => {
+    for (const [key, value] of data.entries()) {
+        // console.log(key, value);
+    }
     try {
-        const response = await axios.post(import.meta.env.VITE_API_END_POINT + "/gym", data);
+        const response = await axios.post(import.meta.env.VITE_API_END_POINT + "/gym", data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         if (response.status !== 201) {
-            toast.error("Creation failed");
+            // console.log(response.data);
             return toast.error(response.data.message);
         }
         toast.success("Gym created successfully");
         return response.data.data;
+        return;
     } catch (error) {
         console.error(error);
         toast.error(error.response?.data?.message || "Failed to create gym");
@@ -55,9 +63,13 @@ export const createGym = createAsyncThunk("gyms/create", async (data) => {
     }
 });
 
-export const updateGym = createAsyncThunk("gyms/update", async ({id, ...data}) => {
+export const updateGym = createAsyncThunk("gyms/update", async ({id, data}) => {
     try {
-        const response = await axios.put(import.meta.env.VITE_API_END_POINT + `/gym/${id}`, data);
+        const response = await axios.put(import.meta.env.VITE_API_END_POINT + `/gym/${id}`, data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         if (response.status !== 200) {
             toast.error("Update failed");
             return toast.error(response.data.message);

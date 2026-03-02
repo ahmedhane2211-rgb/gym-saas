@@ -2,8 +2,16 @@ import React from 'react'
 import { Badge } from './ui/Badge'
 import { Icon } from './ui/Icon'
 import { NavLink } from 'react-router-dom'
-
+import { LogOut } from 'lucide-react'
+import { useDispatch } from 'react-redux'
+import { logoutUser } from '../redux/slices/AuthSlice'
+import Cookies from "js-cookie"
 const Sidebar = ({t,activeId,navItems}) => {
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    Cookies.remove("token");
+  }
   return (
     <aside className="flex w-full flex-col gap-4 lg:sticky lg:top-6 lg:w-72 lg:self-start">
             <div className="card space-y-3">
@@ -41,6 +49,10 @@ const Sidebar = ({t,activeId,navItems}) => {
                     </span>
                   </NavLink>
                 ))}
+                <button className="nav-item" onClick={handleLogout}>
+                  <LogOut className="h-5 w-5"/>
+                  <span>{t("labels.logout")}</span>
+                </button>
               </nav>
             </div>
 

@@ -1,57 +1,57 @@
 {
-  "address":"Address",
-  "branch_name":"Branch name",
-  "created_at":"Created at",
-  "lastlogin":"Last login",
-  "gym_branch":"Gym Branch",
-  "gym_name":"Gym Name" ,
-  "gym_address":"Gym Address" ,  
-  "selectRole":"Select role",
-  "user":{
-    "addUser":"Add new user",
-    "editUser":"Edit user",
-    "title":"Users"
+  "address": "Address",
+  "branch_name": "Branch name",
+  "created_at": "Created at",
+  "lastlogin": "Last login",
+  "gym_branch": "Gym Branch",
+  "gym_name": "Gym Name",
+  "gym_address": "Gym Address",
+  "selectRole": "Select role",
+  "user": {
+    "addUser": "Add new user",
+    "editUser": "Edit user",
+    "title": "Users"
   },
-  "all":"All",
-  "manager":"Manager",
-  "price_paid ":"Price paid",
-  "payment_method":"Payment method",
-  "member":"Member",
-  "select_member":"Select member",
-  "select_plan":"Select plan",
-  "start_date":"Start date",
-  "end_date":"End date",
-  "coach":"Coach",
-  "admin":"Admin",
-  "staff":"Staff",
-  "role":"Role",
-  "confirmDelete":"Are you sure you want to delete this plan?",
-  "plan_name":" Plan name",
-  "plan_price":" Plan price",
-  "plan_duration":" Plan duration",
-  "plan_perks":" Plan perks",
-  "plan_active":" Active plan",
-  "plan_activeHint":"Visible for new subscriptions.",
-  "show_details":"Show details",
-  "editMember":"Edit member",
-  "editCoach":"Edit coach",
-  "change_photo":"Change photo",
-  "upload_photo":"Upload photo",
-  "cancel":"Cancel",
-  "save":"Save",
-  "back":"Back",
-  "update":"Update",
-  "delete":"Delete",
-  "add":"Add",
-  "edit":"Edit",
-  "isActive":"Active",
-  "active":"Active",
-  "inactive":"Inactive",
-  "userId":"User ID",
-  "gymId":"Gym ID",
-  "specialty":"Specialty",
-  "bio":"Bio",
-  "commissionRate":"Commission rate",
+  "all": "All",
+  "manager": "Manager",
+  "price_paid ": "Price paid",
+  "payment_method": "Payment method",
+  "member": "Member",
+  "select_member": "Select member",
+  "select_plan": "Select plan",
+  "start_date": "Start date",
+  "end_date": "End date",
+  "coach": "Coach",
+  "admin": "Admin",
+  "staff": "Staff",
+  "role": "Role",
+  "confirmDelete": "Are you sure you want to delete this plan?",
+  "plan_name": " Plan name",
+  "plan_price": " Plan price",
+  "plan_duration": " Plan duration",
+  "plan_perks": " Plan perks",
+  "plan_active": " Active plan",
+  "plan_activeHint": "Visible for new subscriptions.",
+  "show_details": "Show details",
+  "editMember": "Edit member",
+  "editCoach": "Edit coach",
+  "change_photo": "Change photo",
+  "upload_photo": "Upload photo",
+  "cancel": "Cancel",
+  "save": "Save",
+  "back": "Back",
+  "update": "Update",
+  "delete": "Delete",
+  "add": "Add",
+  "edit": "Edit",
+  "isActive": "Active",
+  "active": "Active",
+  "inactive": "Inactive",
+  "userId": "User ID",
+  "gymId": "Gym ID",
+  "specialty": "Specialty",
+  "bio": "Bio",
+  "commissionRate": "Commission rate",
   "fullName": "Full name",
   "email": "Email",
   "phone": "Phone",
@@ -62,16 +62,16 @@
   "dateOfBirth": "Date of birth",
   "number": "Number",
   "action": "Actions",
-  "male":"Male",
-  "female":"Female",
-  "save":"Save",
-  "saving":"Saving...",
-  "update":"Update",
-  "updating":"Updating...",
-  "cancel":"Cancel",
-  "loading":"Loading",
-  "noData":"No data available",
-  "preview":"Preview",
+  "male": "Male",
+  "female": "Female",
+  "save": "Save",
+  "saving": "Saving...",
+  "update": "Update",
+  "updating": "Updating...",
+  "cancel": "Cancel",
+  "loading": "Loading",
+  "noData": "No data available",
+  "preview": "Preview",
   "app": {
     "name": "GymPulse Cloud",
     "tagline": "Multi-gym, multi-branch SaaS platform"
@@ -112,8 +112,7 @@
       "isActive": "Active"
     }
   },
-    "switchToArabic": "العربيه"
-  ,
+  "switchToArabic": "العربيه",
   "labels": {
     "navigation": "Navigation",
     "saasBadge": "Multi-gym SaaS",
@@ -128,7 +127,7 @@
   },
   "actions": {
     "addSubscriber": "Add subscriber",
-    "addGym": "Add Gym",
+    "addGym": "Add Branch",
     "export": "Quick export",
     "newMember": "New member",
     "newCoach": "New coach",
@@ -138,11 +137,11 @@
     "updateSettings": "Save settings"
   },
   "pages": {
-    "users":{
+    "users": {
       "title": "Users",
       "intro": "Manage gym staff, roles, and permissions."
     },
-    "coaches":{
+    "coaches": {
       "title": "Coaches",
       "intro": "Trainer-specific dashboard for managing members and sessions."
     },
@@ -183,8 +182,8 @@
       "intro": "Trainer dashboard with clients and sessions."
     },
     "gyms": {
-      "title": "Gyms",
-      "intro": "Manage gym locations, branches, and contact information."
+      "title": "Branches",
+      "intro": "Manage gym branches, locations, and contact information."
     }
   },
   "tables": {
@@ -290,8 +289,8 @@
       "gymId": "Gym ID",
       "specialty": "Specialty",
       "commissionRate": "Commission",
-      "name":"Name",
-      "status":"Status"
+      "name": "Name",
+      "status": "Status"
     },
     "fields": {
       "userId": "User ID",
@@ -332,12 +331,12 @@
       "freePtSession": "Free PT session",
       "retailVouchers": "Retail vouchers"
     }
-  }gyms": {
-    "description": "Manage gym locations and branch information.",
-    "addTitle": "Add Gym",
-    "editTitle": "Edit Gym"
   },
-  ",
+  "gyms": {
+    "description": "Manage gym branches, locations, and contact information.",
+    "addTitle": "Add Branch",
+    "editTitle": "Edit Branch"
+  },
   "subscriptions": {
     "description": "Manage subscription types and pricing."
   },

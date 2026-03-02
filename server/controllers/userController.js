@@ -15,7 +15,7 @@ const getAllUsers = async(req,res)=>{
 const createUser = async(req,res)=>{
     const {fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl} = req.body;
     console.log(req.body)
-    if(!fullName || !email || !phone || !address || !branchId || !gymId || !role || isActive === undefined || !dateOfBirth || !gender){
+    if(!fullName || !email || !phone || !address || !gymId || !role || isActive === undefined || !dateOfBirth || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
     try {
@@ -51,7 +51,7 @@ const updateUser = async(req,res)=>{
     }
     const {fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl} = req.body;
     console.log(req.body)
-    if(!fullName || !email || !phone || !address || !branchId || !gymId || !role || isActive === undefined || !dateOfBirth || !gender){
+    if(!fullName || !email || !phone || !address || !gymId || !role || isActive === undefined || !dateOfBirth || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
     try {

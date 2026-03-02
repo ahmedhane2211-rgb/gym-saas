@@ -27,7 +27,7 @@ const MembersPage = () => {
   const {members} = useSelector((state) => state.members);
   const { users } = useSelector((state) => state.users);
   const { subscriptions } = useSelector((state) => state.subscriptions);
-  console.log(members)
+  // console.log(members)
   const [filteredMembers, setFilteredMembers] = useState([]);
   const dispatch = useDispatch() 
   const membersList = useMemo(()=>{

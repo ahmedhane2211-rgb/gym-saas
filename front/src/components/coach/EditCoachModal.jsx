@@ -20,7 +20,7 @@ const EditCoachModal = ({ isOpen, onClose, coach, t }) => {
     }
   });
   const dispatch = useDispatch();
-  console.log(coach);
+  // console.log(coach);
 useEffect(() => {
   if (coach && isOpen) {
     reset({

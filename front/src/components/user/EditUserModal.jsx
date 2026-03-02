@@ -61,7 +61,7 @@ const EditUserModal = ({ isOpen, onClose, user, t }) => {
   };
 
   const submitHandler = (data) => {
-    console.log(data)
+    // console.log(data)
     dispatch(updateUser({
       id: user.id,
       fullName: data.fullName,

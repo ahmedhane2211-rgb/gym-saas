@@ -21,10 +21,11 @@ const login = async(req,res)=>{
 
         const token = await generateToken({
         id: safeUser.id,
-        role: safeUser.role
+        role: safeUser.role,
+        gymId: safeUser.gymid
         });
 
-        return res.json({
+        return res.status(201).json({
         message:"تم تسجيل الدخول بنجاح",
         status:true,
         data:safeUser,
@@ -38,19 +39,30 @@ const login = async(req,res)=>{
 }
 const register = async(req,res)=>{
     try {
-        const {email,fullname,password,role,address} = req.body
+        const {email,fullname,password,role,address,gymid} = req.body
         console.log(req.body)
         if (!email || !fullname || !password || !role|| !address) {
             return res.json({message:"الرجاء توفير البريد الالكتروني واسم المستخدم وكلمة المرور والدور والعنوان",status:false})
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password,salt);
-        const user = await pool.query("INSERT INTO users (fullname,email,password,role,address) VALUES ($1,$2,$3,$4,$5) RETURNING *",[fullname,email,hashedPassword,role,address]);
+        const user = await pool.query("INSERT INTO users (fullname,email,password,role,address,gymid) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",[fullname,email,hashedPassword,role,address,gymid]);
         if(user.rows.length === 0){
             return res.json({message:"فشل عملية التسجيل",status:false})
         }
-        return res.json({message:"تم التسجيل بنجاح",status:true})
+        return res.status(201).json({message:"تم التسجيل بنجاح",status:true})
     } catch (error) {
+        if(error){
+            return res.json({message:error.message,status:false})
+        }
+    }
+}
+const getUser = async(req,res)=>{
+    const {user} = req
+    console.log(user)
+    try {
+        return res.status(200).json({message:"تم الحصول على المستخدم بنجاح",status:true,data:user})
+        } catch (error) {
         if(error){
             return res.json({message:error.message,status:false})
         }
@@ -58,4 +70,4 @@ const register = async(req,res)=>{
 }
 
 
-export {login,register}
+export {login,register,getUser}

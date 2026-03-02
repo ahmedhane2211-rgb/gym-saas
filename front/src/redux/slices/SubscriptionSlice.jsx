@@ -9,9 +9,9 @@ const initialState = {
     error: null,
 }
 
-export const getSubscriptions = createAsyncThunk("subscriptions/get", async (data) => {
+export const getSubscriptions = createAsyncThunk("subscriptions/get", async (params) => {
     try {
-        const response = await axios.get(import.meta.env.VITE_API_END_POINT + "/subscriptions", data);
+        const response = await axios.get(import.meta.env.VITE_API_END_POINT + "/subscriptions", { params });
         if (response.status !== 200) {
             toast.error("Fetch failed");
             return toast.error(response.data.message);
@@ -45,7 +45,8 @@ export const createSubscription = createAsyncThunk("subscriptions/create", async
             toast.error("Registration failed");
             return toast.error(response.data.message);
         }
-        return response.data;
+
+        return response.data.data;
     } catch (error) {
         console.error(error);
         toast.error(error.response?.data?.message || "Registration failed");

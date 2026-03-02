@@ -1,56 +1,56 @@
 {
-  "address":"العنوان",
-  "branch_name":"اسم الفرع",
-  "created_at":"انشأ في",
-  "lastlogin":"آخر تسجيل دخول",
-  "gym_branch":"فرع الجيم",
-  "gym_name":"اسم الجيم" ,
-  "gym_address":"عنوان الجيم" ,
-  "selectRole":"اختر دور المستخدم",
-  "user":{
-    "addUser":"إضافة مستخدم جديد",
-    "editUser":"تعديل المستخدم"
+  "address": "العنوان",
+  "branch_name": "اسم الفرع",
+  "created_at": "انشأ في",
+  "lastlogin": "آخر تسجيل دخول",
+  "gym_branch": "فرع الجيم",
+  "gym_name": "اسم الجيم",
+  "gym_address": "عنوان الجيم",
+  "selectRole": "اختر دور المستخدم",
+  "user": {
+    "addUser": "إضافة مستخدم جديد",
+    "editUser": "تعديل المستخدم"
   },
-  "all":"جميع",
-  "manager":"مسؤول",
-  "price_paid ":"السعر المدفوع",
-  "payment_method":"طريقة الدفع",
-  "select_member":"اختر عضو",
-  "select_plan":"اختر باقة",
-  "start_date":"تاريخ البدء",
-  "end_date":"تاريخ الانتهاء",
-  "member":"عضو",
-  "coach":"مدرب",
-  "admin":"مدير",
-  "staff":"موظف",
-  "role":"الدور",
-  "confirmDelete":"هل أنت متأكد أنك تريد حذف هذه الباقة؟",
-  "plan_name":" اسم الباقة",
-  "plan_price":" سعر الباقة",
-  "plan_duration":" مدة الباقة",
-  "plan_perks":" مزايا الباقة",
-  "plan_active":" باقة نشطة",
-  "plan_activeHint":"متاحة للاشتراكات الجديدة",
-  "show_details":"عرض التفاصيل",
-  "editMember":"تغيير عضو",
-  "editCoach":"تعديل مدرب",
-  "change_photo":"تغيير الصوره",
-  "upload_photo":"رفع صوره",
-  "cancel":"إلغاء",
-  "save":"حفظ",
-  "back":"رجوع",
-  "update":"تحديث",
-  "delete":"حذف",
-  "add":"إضافة",
-  "edit":"تعديل",
-  "isActive":"متاح",
-  "active":"نشط",
-  "inactive":"غير نشط",
-  "userId":"معرّف المستخدم",
-  "gymId":"معرّف الجيم",
-  "specialty":"التخصص",
-  "bio":"نبذة",
-  "commissionRate":"نسبة العمولة",
+  "all": "جميع",
+  "manager": "مسؤول",
+  "price_paid ": "السعر المدفوع",
+  "payment_method": "طريقة الدفع",
+  "select_member": "اختر عضو",
+  "select_plan": "اختر باقة",
+  "start_date": "تاريخ البدء",
+  "end_date": "تاريخ الانتهاء",
+  "member": "عضو",
+  "coach": "مدرب",
+  "admin": "مدير",
+  "staff": "موظف",
+  "role": "الدور",
+  "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الباقة؟",
+  "plan_name": " اسم الباقة",
+  "plan_price": " سعر الباقة",
+  "plan_duration": " مدة الباقة",
+  "plan_perks": " مزايا الباقة",
+  "plan_active": " باقة نشطة",
+  "plan_activeHint": "متاحة للاشتراكات الجديدة",
+  "show_details": "عرض التفاصيل",
+  "editMember": "تغيير عضو",
+  "editCoach": "تعديل مدرب",
+  "change_photo": "تغيير الصوره",
+  "upload_photo": "رفع صوره",
+  "cancel": "إلغاء",
+  "save": "حفظ",
+  "back": "رجوع",
+  "update": "تحديث",
+  "delete": "حذف",
+  "add": "إضافة",
+  "edit": "تعديل",
+  "isActive": "متاح",
+  "active": "نشط",
+  "inactive": "غير نشط",
+  "userId": "معرّف المستخدم",
+  "gymId": "معرّف الجيم",
+  "specialty": "التخصص",
+  "bio": "نبذة",
+  "commissionRate": "نسبة العمولة",
   "fullName": "الاسم الكامل",
   "email": "البريد الإلكتروني",
   "phone": "الهاتف",
@@ -61,16 +61,16 @@
   "dateOfBirth": "تاريخ الميلاد",
   "number": "الرقم",
   "action": "الإجراءات",
-  "male":"ذكر",
-  "female":"أنثى",
-  "save":"حفظ",
-  "saving":"جارِ الحفظ...",
-  "update":"تحديث",
-  "updating":"جارِ التحديث...",
-  "cancel":"إلغاء",
-  "loading":"جارِ التحميل",
-  "noData":"لا توجد بيانات",
-  "preview":"معاينة",
+  "male": "ذكر",
+  "female": "أنثى",
+  "save": "حفظ",
+  "saving": "جارِ الحفظ...",
+  "update": "تحديث",
+  "updating": "جارِ التحديث...",
+  "cancel": "إلغاء",
+  "loading": "جارِ التحميل",
+  "noData": "لا توجد بيانات",
+  "preview": "معاينة",
   "app": {
     "name": "GymPulse Cloud",
     "tagline": "جيم, فروع متعددة، منصة SaaS متعددة"
@@ -111,8 +111,7 @@
       "isActive": "نشطة"
     }
   },
-    "switchToArabic": "العربية"
-  ,
+  "switchToArabic": "العربية",
   "labels": {
     "navigation": "التنقل",
     "saasBadge": "SaaS متعددة الجيمات",
@@ -127,7 +126,7 @@
   },
   "actions": {
     "addSubscriber": "إضافة مشترك",
-    "addGym": "إضافة جيم",
+    "addGym": "إضافة فرع",
     "export": "تصدير سريعة",
     "newMember": "إضافة عضو جديد",
     "newCoach": "إضافة مدرب",
@@ -137,11 +136,11 @@
     "updateSettings": "تحديث الإعدادات"
   },
   "pages": {
-    "users":{
+    "users": {
       "title": "المستخدمون",
       "intro": "إدارة موظفي الجيم، الأدوار، والصلاحيات."
     },
-    "coaches":{
+    "coaches": {
       "title": "المدربين",
       "intro": "لوحة خاصة للمدربين وادارة العضويات والجلسات."
     },
@@ -182,7 +181,7 @@
       "intro": "لوحة خاصّة للمدرّبين وإدارة العضويات والجلسات."
     },
     "gyms": {
-      "title": "صالات الجيم",
+      "title": "الفروع",
       "intro": "إدارة فروع الجيم والبيانات الأساسية والتواصل."
     }
   },
@@ -273,7 +272,7 @@
       "plan": "الاشتراك",
       "status": "الحالة",
       "lastVisit": "آخر زيارة",
-      "member_name":"اسم العضو"
+      "member_name": "اسم العضو"
     }
   },
   "coaches": {
@@ -290,8 +289,8 @@
       "gymId": "معرّف الجيم",
       "specialty": "التخصص",
       "commissionRate": "العمولة",
-      "name":"الاسم",
-      "status":"الحالة"
+      "name": "الاسم",
+      "status": "الحالة"
     },
     "fields": {
       "userId": "معرّف المستخدم",
@@ -335,11 +334,13 @@
   },
   "subscriptions": {
     "description": "إضافة أنواع الاشتراكات والأسعار."
-  },  "gyms": {
+  },
+  "gyms": {
     "description": "إدارة فروع ومواقع الجيم والبيانات الأساسية.",
     "addTitle": "إضافة جيم",
     "editTitle": "تعديل جيم"
-  },  "attendance": {
+  },
+  "attendance": {
     "memberNotFound": "عضو غير موجود",
     "description": "مسح QR/Barcode مع معرفة بيانات العضو وسجل الدخول للأشتراكات النشطة.",
     "readyToScan": "جاهز للمسح",
