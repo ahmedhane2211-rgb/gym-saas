@@ -10,7 +10,6 @@ export const createMember = async (req, res) => {
     branchId,
     idNumber,
   } = req.body;
-  console.log(req.body)
   if (
     
     !userId ||
