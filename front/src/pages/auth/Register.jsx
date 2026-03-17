@@ -72,7 +72,7 @@ const Register = ({t}) => {
               </label>
               <input
                 type="text"
-                {...register("fullname", { 
+                {...register("fullName", { 
                   required: t("auth.required"),
                   minLength: {
                     value: 3,
