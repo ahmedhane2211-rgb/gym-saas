@@ -23,7 +23,7 @@ import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
-import OnboardingPage from "./pages/auth/OnboardingPage.jsx";
+// import OnboardingPage from "./pages/auth/OnboardingPage.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./redux/slices/AuthSlice.jsx";
 import { ProtectedRoute } from "./providers/ProtectedRoute.jsx";
@@ -37,7 +37,7 @@ const AppContent = () => {
   const dispatch = useDispatch();
   const locate = useLocation();
   const isRTL = lang === "ar";
-  const isAuthPage = locate.pathname === "/login" || locate.pathname === "/register" || locate.pathname === "/onboarding";
+  const isAuthPage = locate.pathname === "/login" || locate.pathname === "/register";
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -46,9 +46,9 @@ const AppContent = () => {
 
   useEffect(() => {
     // لو مش مسجل دخول ومش في صفحة Login أو Onboarding، وده لـ Onboarding
-    const authPages = ["/login", "/register", "/onboarding"];
+    const authPages = ["/login", "/register"];
     if (!token && !authPages.includes(locate.pathname)) {
-      navigate("/onboarding");
+      navigate("/login");
     }
   }, [token, locate.pathname, navigate]);
 
@@ -64,7 +64,7 @@ const AppContent = () => {
         <Routes>
           <Route path="/login" element={<Login t={t} />} />
           <Route path="/register" element={<Register t={t} />} />
-          <Route path="/onboarding" element={<OnboardingPage t={t} />} />
+          {/* <Route path="/onboarding" element={<OnboardingPage t={t} />} /> */}
         </Routes>
       </div>
     );
