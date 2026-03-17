@@ -1,0 +1,4 @@
+.env
+*.sql
+backup/
+node_modules

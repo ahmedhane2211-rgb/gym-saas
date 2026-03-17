@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Cookies from 'js-cookie'
+
 const initialState = {
     user: null,
     onlineUser:null,

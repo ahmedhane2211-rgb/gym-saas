@@ -7,6 +7,7 @@ import userRouter from "./routes/userRoute.js";
 import subscriptionRouter from "./routes/subscriptionRoute.js";
 import gymRouter from "./routes/gymRoute.js";
 import authRouter from "./routes/authRoute.js";
+import branchRouter from "./routes/branchRoute.js";
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // routes
 app.use("/api/gym",gymRouter);
+app.use("/api/branches",branchRouter);
 app.use("/api/members",memberRouter);
 app.use("/api/users",userRouter);
 app.use("/api/coaches",userRouter);
