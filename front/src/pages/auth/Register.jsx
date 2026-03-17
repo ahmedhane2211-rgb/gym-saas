@@ -20,7 +20,7 @@ const Register = ({t}) => {
     const { confirmPassword, ...registrationData } = data;
     const result = await dispatch(registerUser(registrationData));
     if (result.payload) {
-      navigate("/");
+      navigate("/login");
     }
   };
 
@@ -72,7 +72,7 @@ const Register = ({t}) => {
               </label>
               <input
                 type="text"
-                {...register("fullName", { 
+                {...register("fullname", { 
                   required: t("auth.required"),
                   minLength: {
                     value: 3,

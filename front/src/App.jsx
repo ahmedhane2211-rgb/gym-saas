@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import {  Routes, Route, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider, useTheme } from "./context/theme";
 import { Icon } from "./components/ui/Icon.jsx";
-
+import Cookies from "js-cookie";
 import {
   DashboardPage,
   CoachesPage,
@@ -17,13 +17,12 @@ import {
   SettingsPage,
   TrainerPage,
   UsersPage,
-  GymsPage,
+  BranchesPage,
 } from "./pages";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
-import OnboardingPage from "./pages/auth/OnboardingPage.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./redux/slices/AuthSlice.jsx";
 import { ProtectedRoute } from "./providers/ProtectedRoute.jsx";
@@ -31,13 +30,13 @@ import { ProtectedRoute } from "./providers/ProtectedRoute.jsx";
 const AppContent = () => {
   const { t, i18n } = useTranslation();
   const { theme, toggleTheme, lang, changeLang } = useTheme();
-  const { token } = useSelector((state) => state.auth);
+  const token = Cookies.get("token");
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const locate = useLocation();
   const isRTL = lang === "ar";
-  const isAuthPage = locate.pathname === "/login" || locate.pathname === "/register" || locate.pathname === "/onboarding";
+  const isAuthPage = locate.pathname === "/login" || locate.pathname === "/register" ;
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -45,10 +44,10 @@ const AppContent = () => {
   }, [isRTL, lang, i18n]);
 
   useEffect(() => {
-    // لو مش مسجل دخول ومش في صفحة Login أو Onboarding، وده لـ Onboarding
-    const authPages = ["/login", "/register", "/onboarding"];
+    // لو مش مسجل دخول ومش في صفحة Login
+    const authPages = ["/login", "/register"];
     if (!token && !authPages.includes(locate.pathname)) {
-      navigate("/onboarding");
+      navigate("/login");
     }
   }, [token, locate.pathname, navigate]);
 
@@ -64,7 +63,6 @@ const AppContent = () => {
         <Routes>
           <Route path="/login" element={<Login t={t} />} />
           <Route path="/register" element={<Register t={t} />} />
-          <Route path="/onboarding" element={<OnboardingPage t={t} />} />
         </Routes>
       </div>
     );
@@ -249,7 +247,7 @@ const AppContent = () => {
             <Navbar t={t} changeLang={changeLang} theme={theme} languageSwitchLabel={languageSwitchLabel} toggleTheme={toggleTheme} lang={lang}/>
             <Routes>
               <Route element={<ProtectedRoute />}>
-                <Route path="/gyms" element={<GymsPage t={t} pageTitle={pageTitle}/>} />
+                <Route path="/gyms" element={<BranchesPage t={t} pageTitle={pageTitle}/>} />
                 <Route path="/" element={<DashboardPage t={t} />} />
                 <Route path="/coaches" element={<CoachesPage t={t} />} />
                 <Route path="/members" element={<MembersPage t={t} />} />

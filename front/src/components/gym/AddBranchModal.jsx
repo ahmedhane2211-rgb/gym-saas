@@ -2,19 +2,25 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { createGym } from "../../redux/slices/GymSlice";
+import { createBranch } from "../../redux/slices/BranchesSlice";
+import { getGyms } from "../../redux/slices/GymSlice";
 import Input from "../ui/Input";
 
-const AddGymModal = ({ isOpen, onClose, t }) => {
+const AddBranchModal = ({ isOpen, onClose, t }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.gyms);
-  const [logoPreview, setLogoPreview] = useState(null);
-  const [logoFile, setLogoFile] = useState(null);
+  const { loading } = useSelector((state) => state.branches);
+  const { gyms } = useSelector((state) => state.gyms);
 
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
+
+  useEffect(() => {
+    if (isOpen) {
+      dispatch(getGyms());
+    }
+  }, [isOpen, dispatch]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -25,31 +31,9 @@ const AddGymModal = ({ isOpen, onClose, t }) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [handleClose, isOpen]);
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setLogoFile(file); 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleAdd = (data) => {
-    const formData = new FormData()
-    if (logoFile) {
-      formData.append("logo", logoFile)
-    }
-    formData.append("phone", data.phone)
-    formData.append("name", data.name)
-    formData.append("isActive", data.isActive == "true" || data.isActive == true)
-
-    dispatch(createGym(formData)).then(() => {
+    dispatch(createBranch(data)).then(() => {
       reset();
-      setLogoPreview(null);
-      setLogoFile(null);
       handleClose();
     });
   };
@@ -106,28 +90,31 @@ const AddGymModal = ({ isOpen, onClose, t }) => {
               t={t}
             />
 
+              <Input
+                label="address"
+                register={register}
+                name="address"
+                errors={errors}
+                required
+                t={t}
+              />
+
             <div className="md:col-span-2">
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                {t("logo")}
+                {t("gym")}
               </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleLogoChange}
+              <select
+                {...register("gym_id", { required: true })}
                 className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
-              />
-              {logoPreview && (
-                <div className="mt-3 flex items-center gap-4">
-                  <img
-                    src={logoPreview}
-                    alt="Logo preview"
-                    className="h-16 w-16 rounded object-cover"
-                  />
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
-                    {t("preview")}
-                  </span>
-                </div>
-              )}
+              >
+                <option value="">{t("selectGym") || "Select Gym"}</option>
+                {Array.isArray(gyms) && gyms.map((gym) => (
+                  <option key={gym.id} value={gym.id}>
+                    {gym.name}
+                  </option>
+                ))}
+              </select>
+              {errors.gymId && <span className="text-xs text-red-500">{t("required")}</span>}
             </div>
           </div>
 
@@ -165,4 +152,4 @@ const AddGymModal = ({ isOpen, onClose, t }) => {
   );
 };
 
-export default AddGymModal;
+export default AddBranchModal;

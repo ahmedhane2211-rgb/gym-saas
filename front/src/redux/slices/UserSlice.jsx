@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-
+import Cookies from 'js-cookie';
 
 const initialState = {
     users: [],
@@ -10,41 +10,56 @@ const initialState = {
 };
 
     export const getAllUsers = createAsyncThunk("users/getAll", async () => {
-        try {
-            const response = await axios.get(import.meta.env.VITE_API_END_POINT + "/users");
-            if(response.status !== 200){
-                toast.error("Failed to fetch users");
-                return [];
-            }
-            // console.log(response.data)
-            return response.data;
-        } catch (error) {
-            console.error(error);
+    try {
+        const token = Cookies.get("token");
+        const response = await axios.get(import.meta.env.VITE_API_END_POINT + "/users", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if(response.status !== 200){
             toast.error("Failed to fetch users");
             return [];
         }
-    })
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch users");
+        return [];
+    }
+})
 
-    export const addUser = createAsyncThunk("users/add", async (data, {dispatch}) => {
-        try {
-            const response = await axios.post(import.meta.env.VITE_API_END_POINT + "/users", data);
-            if(response.status !== 201){
-                toast.error("Failed to add user");
-                return null;
-            }
-            toast.success("User added successfully");
-            dispatch(getAllUsers());
-            return response.data;   
-        } catch (error) {
-            console.error(error.response?.data?.message);
-            toast.error("Failed to add user");
-            return null;
+
+export const addUser = createAsyncThunk("users/add", async (data, {dispatch}) => {
+    try {
+        const token = Cookies.get("token");
+        const response = await axios.post(import.meta.env.VITE_API_END_POINT + "/users", data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if(response.data.status !== 201 || response.data.status === false){
+            console.log(response.data)
+            return toast.error(response.data.message || "Failed to add user");
         }
-    })
+        toast.success("User added successfully");
+        dispatch(getAllUsers());
+        return response.data;
+    } catch (error) {
+        console.error(error.response?.data?.message);
+        toast.error("Failed to add user");
+        return null;
+    }
+})
     
     export const deleteUser = createAsyncThunk("users/delete", async (id,{dispatch}) => {
         try {
-            const response = await axios.delete(import.meta.env.VITE_API_END_POINT + `/users/${id}`);
+            const response = await axios.delete(import.meta.env.VITE_API_END_POINT + `/users/${id}`,{
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Cookies.get("token")}`,
+            },
+        });
             if(response.status !== 200){
                 toast.error("Failed to delete user");
                 return null;
@@ -61,7 +76,12 @@ const initialState = {
 
     export const updateUser = createAsyncThunk("users/update", async ({id,...data},{dispatch}) => {
         try {
-            const response = await axios.put(import.meta.env.VITE_API_END_POINT + `/users/${id}`, data);
+            const response = await axios.put(import.meta.env.VITE_API_END_POINT + `/users/${id}`, data,{
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Cookies.get("token")}`,
+            },
+        });
             if(response.status !== 200){
                 toast.error("Failed to update user");
                 return null;
@@ -75,6 +95,7 @@ const initialState = {
             return null;
         }
     })
+
 
 const userSlice = createSlice({
     name: "users",
@@ -103,8 +124,13 @@ const userSlice = createSlice({
             })
             .addCase(addUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.users.push(action.payload);
-                state.error = null;
+                // فقط أضف الـ user إذا كان الـ payload صالح وليس null
+                if (action.payload && typeof action.payload === 'object' && !Array.isArray(action.payload)) {
+                    state.users.push(action.payload);
+                    state.error = null;
+                } else {
+                    state.error = 'Failed to add user';
+                }
             })
             .addCase(addUser.rejected, (state, action) => {
                 state.loading = false;

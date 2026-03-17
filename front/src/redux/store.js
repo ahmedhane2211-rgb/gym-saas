@@ -7,6 +7,7 @@ import coachReducer from "./slices/CoachSlice";
 import userReducer from "./slices/UserSlice";
 import authReducer from "./slices/AuthSlice";
 import gymReducer from "./slices/GymSlice";
+import branchesReducer from "./slices/BranchesSlice";
 
 export const store = configureStore({
     reducer: {
@@ -17,5 +18,6 @@ export const store = configureStore({
         users: userReducer,
         auth: authReducer,
         gyms: gymReducer,
+        branches: branchesReducer,
     },
 });

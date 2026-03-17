@@ -2,26 +2,26 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Trash, Edit } from "lucide-react";
 import { SectionHeader } from "../components/ui/SectionHeader";
-import { getGyms, deleteGym } from "../redux/slices/GymSlice";
-import AddGymModal from "../components/gym/AddGymModal";
-import EditGymModal from "../components/gym/EditGymModal";
+import AddBranchModal from "../components/gym/AddBranchModal";
+import EditBranchModal from "../components/gym/EditBranchModal";
 import Btn from "../components/ui/Btn";
 import { Badge } from "../components/ui/Badge";
+import { deleteBranch, getBranches } from "../redux/slices/BranchesSlice";
 
-const GymsPage = ({ t, pageTitle }) => {
+const BranchesPage = ({ t, pageTitle }) => {
   const dispatch = useDispatch();
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [selectedGym, setSelectedGym] = useState(null);
-  const { gyms, loading } = useSelector((state) => state.gyms);
+  const { branches, loading } = useSelector((state) => state.branches);
 
   useEffect(() => {
-    dispatch(getGyms());
+    dispatch(getBranches());
   }, [dispatch]);
 
   const handleDelete = (id) => {
     if (window.confirm(t("confirmDelete"))) {
-      dispatch(deleteGym(id));
+      dispatch(deleteBranch(id));
     }
   };
 
@@ -56,12 +56,6 @@ const GymsPage = ({ t, pageTitle }) => {
                   {t("phone")}
                 </th>
                 <th className="px-6 py-3 text-center text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  {t("logo")}
-                </th>
-                <th className="px-6 py-3 text-center text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  {t("description")}
-                </th>
-                <th className="px-6 py-3 text-center text-sm font-semibold text-slate-700 dark:text-slate-300">
                   {t("isActive")}
                 </th>
                 <th className="px-6 py-3 text-center text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -76,8 +70,8 @@ const GymsPage = ({ t, pageTitle }) => {
                     {t("loading")}...
                   </td>
                 </tr>
-              ) : Array.isArray(gyms) && gyms.length > 0 ? (
-                gyms.map((gym) => (
+              ) : Array.isArray(branches) && branches.length > 0 ? (
+                branches.map((gym) => (
                   <tr
                     key={gym.id}
                     className="hover:bg-slate-50 text-center dark:hover:bg-slate-800/50 transition-colors"
@@ -87,20 +81,6 @@ const GymsPage = ({ t, pageTitle }) => {
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
                       {gym.phone || "-"}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                      {gym.logo ? (
-                        <img
-                          src={gym.logo}
-                          alt={gym.name}
-                          className="h-8 w-8 rounded object-cover"
-                        />
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 max-w-xs truncate">
-                      {gym.description || "-"}
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <Badge tone={gym.isActive ? "emerald" : "slate"}>
@@ -138,8 +118,8 @@ const GymsPage = ({ t, pageTitle }) => {
       </div>
 
       {/* Modals */}
-      <AddGymModal isOpen={addModal} onClose={() => setAddModal(false)} t={t} />
-      <EditGymModal
+      <AddBranchModal isOpen={addModal} onClose={() => setAddModal(false)} t={t} />
+      <EditBranchModal
         isOpen={editModal}
         onClose={() => {
           setEditModal(false);
@@ -152,4 +132,4 @@ const GymsPage = ({ t, pageTitle }) => {
   );
 };
 
-export default GymsPage;
+export default BranchesPage;

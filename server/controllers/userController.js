@@ -2,8 +2,9 @@ import { pool } from "../models/db.js";
 
 
 const getAllUsers = async(req,res)=>{
+    const {user} = req;
     try {
-        const result = await pool.query("SELECT * FROM users");
+        const result = await pool.query("SELECT * FROM users WHERE gymid = $1", [user.gymId]);
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدمين",status:false})
         }
@@ -13,45 +14,51 @@ const getAllUsers = async(req,res)=>{
     }
 }
 const createUser = async(req,res)=>{
-    const {fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl} = req.body;
-    console.log(req.body)
-    if(!fullName || !email || !phone || !address || !gymId || !role || isActive === undefined || !dateOfBirth || !gender){
+    const {gymId} = req.user;
+    const {fullName,email,password,phone,address,branchId,role,isActive,gender,dateOfBirth,photoUrl} = req.body;
+    if(!fullName || !email || !phone || !address || !role || isActive === undefined || !dateOfBirth || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
     try {
+        const existingUser = await pool.query("SELECT * FROM users WHERE email = $1",[email]);
+        if(existingUser.rows.length > 0){
+            return res.status(400).json({message:"المستخدم موجود بالفعل",status:false})
+        }
         const result = await pool.query("INSERT INTO users (fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *",
         [fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl])
         if(result.rows.length === 0){
             return res.status(400).json({message:"فشل إنشاء المستخدم",status:false})
         }
-        res.status(201).json(result.rows[0]);
+        return res.status(201).json({message:"تم إنشاء المستخدم بنجاح",data:result.rows[0]});
     } catch (error) {
-        res.status(500).json({message:error.message,status:false})
+        return res.status(500).json({message:error.message,status:false})
     }
 }
 const getUser = async(req,res)=>{
     const {id} = req.params;
+    const {user} = req;
     if(!id){
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
     try {
-        const result = await pool.query("SELECT * FROM users WHERE id = $1",[id]);
+        const result = await pool.query("SELECT * FROM users WHERE id = $1 AND gymId = $2",[id, user.gymId]);
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدم بهذا المعرف",status:false})
         }
-        res.status(200).json(result.rows[0]);
+        res.status(200).json({data:result.rows[0],status:true});
     } catch (error) {
         res.status(500).json({message:error.message,status:false})
     }
 }
 const updateUser = async(req,res)=>{
     const {id} = req.params;
+    const {gymId} = req.user;
     if(!id){
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
-    const {fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl} = req.body;
+    const {fullName,email,password,phone,address,branchId,role,isActive,gender,dateOfBirth,photoUrl} = req.body;
     console.log(req.body)
-    if(!fullName || !email || !phone || !address || !gymId || !role || isActive === undefined || !dateOfBirth || !gender){
+    if(!fullName || !email || !phone || !address || !role || isActive === undefined || !dateOfBirth || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
     try {
@@ -68,11 +75,12 @@ const updateUser = async(req,res)=>{
 }
 const deleteUser = async(req,res)=>{
     const {id} = req.params;
+    const {user} = req;
     if(!id){
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
     try {
-        const result = await pool.query("DELETE FROM users WHERE id = $1 RETURNING *",[id]);
+        const result = await pool.query("DELETE FROM users WHERE id = $1 AND gymId = $2 RETURNING *",[id, user.gymId]);
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدم بهذا المعرف",status:false})
         }
