@@ -39,19 +39,24 @@ const login = async(req,res)=>{
 }
 const register = async(req,res)=>{
     try {
-        const {email,fullname,password,role,address,gymid} = req.body
-        console.log(req.body)
-        if (!email || !fullname || !password || !role|| !address) {
-            return res.json({message:"الرجاء توفير البريد الالكتروني واسم المستخدم وكلمة المرور والدور والعنوان",status:false})
+        await pool.query("BEGIN");
+        const {email,fullname,password,role,address} = req.body
+
+        if (!email || !fullname || !password || !role) {
+            await pool.query("ROLLBACK");
+            return res.json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password,salt);
+        
         const user = await pool.query("INSERT INTO users (fullname,email,password,role,address,gymid) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",[fullname,email,hashedPassword,role,address,gymid]);
         if(user.rows.length === 0){
             return res.json({message:"فشل عملية التسجيل",status:false})
         }
+        await pool.query("COMMIT");
         return res.status(201).json({message:"تم التسجيل بنجاح",status:true})
     } catch (error) {
+        await pool.query("ROLLBACK");
         if(error){
             return res.json({message:error.message,status:false})
         }
