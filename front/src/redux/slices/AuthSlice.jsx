@@ -18,7 +18,7 @@ export const loginUser = createAsyncThunk("auth/login", async (data) => {
             toast.error("Login failed");
             return null;
         }
-        const { token, user } = response.data;
+        const { token, data: user } = response.data;
         Cookies.set("token", token, { expires: 7, secure: true, sameSite: "strict" });
         toast.success("Login successful");
         return { token, user };
@@ -54,6 +54,9 @@ export const getUser = createAsyncThunk("auth/getUser", async () => {
                 Authorization: `Bearer ${Cookies.get("token")}`,
             },
         });
+        if (response.data.token) {
+            Cookies.set("token", response.data.token);
+        }
         if (response.status !== 200) {
             toast.error("Failed to get user");
             return null;

@@ -9,7 +9,7 @@ import SettingsPage from "./SettingsPage";
 import TrainerPage from "./TrainerPage";
 import CoachesPage from "./CoachesPage";
 import UsersPage from "./user";
-import GymsPage from "./GymsPage";
+import BranchesPage from "./BranchesPage";
 
 export {
   DashboardPage,
@@ -23,5 +23,5 @@ export {
   TrainerPage,
   CoachesPage,
   UsersPage,
-  GymsPage,
+  BranchesPage,
 };

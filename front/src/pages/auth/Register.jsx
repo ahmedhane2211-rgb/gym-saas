@@ -20,7 +20,7 @@ const Register = ({t}) => {
     const { confirmPassword, ...registrationData } = data;
     const result = await dispatch(registerUser(registrationData));
     if (result.payload) {
-      navigate("/");
+      navigate("/login");
     }
   };
 

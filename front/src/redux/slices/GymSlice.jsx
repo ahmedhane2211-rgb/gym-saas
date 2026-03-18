@@ -40,9 +40,6 @@ export const getGym = createAsyncThunk("gyms/getSingle", async (id) => {
 });
 
 export const createGym = createAsyncThunk("gyms/create", async (data) => {
-    for (const [key, value] of data.entries()) {
-        // console.log(key, value);
-    }
     try {
         const response = await axios.post(import.meta.env.VITE_API_END_POINT + "/gym", data, {
             headers: {
@@ -55,7 +52,6 @@ export const createGym = createAsyncThunk("gyms/create", async (data) => {
         }
         toast.success("Gym created successfully");
         return response.data.data;
-        return;
     } catch (error) {
         console.error(error);
         toast.error(error.response?.data?.message || "Failed to create gym");

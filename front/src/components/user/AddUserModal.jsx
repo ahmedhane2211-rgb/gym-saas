@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
 
-const AddUserModal = ({ isOpen, onClose, t,gyms}) => {
+const AddUserModal = ({ isOpen, onClose, t,branches}) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const dispatch = useDispatch();
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -149,15 +149,15 @@ const AddUserModal = ({ isOpen, onClose, t,gyms}) => {
           <Select 
             t={t} 
             register={register} 
-            options={gyms} 
+            options={branches} 
             label='gym_name' 
             name="gymid" 
-            required={true}
+            required={false}
           />
           
           {/* Gym Branch */}
           {/* <Select 
-            t={t} register={register} options={gyms} label='gym_branch' name="branchid" required={true}/> */}
+            t={t} register={register} options={branches} label='gym_branch' name="branchid" required={true}/> */}
           {/* Role */}
             <Select 
             t={t} 

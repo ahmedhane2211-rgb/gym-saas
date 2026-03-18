@@ -1,15 +1,17 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useEffect, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { updateGym } from "../../redux/slices/GymSlice";
+import { updateBranch } from "../../redux/slices/BranchesSlice";
+import { getGyms } from "../../redux/slices/GymSlice";
 import Input from "../ui/Input";
 
-const EditGymModal = ({ isOpen, onClose, t, gym }) => {
+const EditBranchModal = ({ isOpen, onClose, t, gym }) => {
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.gyms);
-  const [logoPreview, setLogoPreview] = useState(null);
-  const [logoFile, setLogoFile] = useState(null);
+  const { loading } = useSelector((state) => state.branches);
+  const { gyms } = useSelector((state) => state.gyms);
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
@@ -24,44 +26,26 @@ const EditGymModal = ({ isOpen, onClose, t, gym }) => {
   }, [handleClose, isOpen]);
 
   useEffect(() => {
+    if (isOpen) {
+      dispatch(getGyms());
+    }
+  }, [isOpen, dispatch]);
+
+  useEffect(() => {
     if (isOpen && gym) {
       setValue("name", gym.name || "");
       setValue("phone", gym.phone || "");
+      setValue("address", gym.address || "");
+      setValue("gymId", gym.gymId || "");
       setValue("isActive", String(gym.isActive || false));
-      if (gym.logo) {
-        setLogoPreview(gym.logo);
-      }
     }
   }, [isOpen, gym, setValue]);
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setLogoFile(file)
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleEdit = (data) => {
-    if (!gym?.id) return;
 
-    const formData = new FormData()
-    if (logoFile) {
-      formData.append("logo", logoFile)
-    }
-    formData.append("phone", data.phone)
-    formData.append("name", data.name)
-    formData.append("isActive", data.isActive === "true" || data.isActive === true)
-    
 
-    dispatch(updateGym({id: gym.id, data:formData})).then(() => {
+    dispatch(updateBranch({id: gym.id, data})).then(() => {
       reset();
-      setLogoPreview(null);
-      setLogoFile(null);
       handleClose();
     });
   };
@@ -119,27 +103,32 @@ const EditGymModal = ({ isOpen, onClose, t, gym }) => {
             />
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                {t("logo")}
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleLogoChange}
-                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
+              <Input
+                label="address"
+                register={register}
+                name="address"
+                errors={errors}
+                required
+                t={t}
               />
-              {logoPreview && (
-                <div className="mt-3 flex items-center gap-4">
-                  <img
-                    src={logoPreview}
-                    alt="Logo preview"
-                    className="h-16 w-16 rounded object-cover"
-                  />
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
-                    {t("preview")}
-                  </span>
-                </div>
-              )}
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                {t("gym")}
+              </label>
+              <select
+                {...register("gymId", { required: true })}
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
+              >
+                <option value="">{t("selectGym") || "Select Gym"}</option>
+                {Array.isArray(gyms) && gyms.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.name}
+                  </option>
+                ))}
+              </select>
+              {errors.gymId && <span className="text-xs text-red-500">{t("required")}</span>}
             </div>
           </div>
 
@@ -177,4 +166,4 @@ const EditGymModal = ({ isOpen, onClose, t, gym }) => {
   );
 };
 
-export default EditGymModal;
+export default EditBranchModal;

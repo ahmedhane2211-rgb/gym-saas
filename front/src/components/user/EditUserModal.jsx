@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../redux/slices/UserSlice';
 import Input from '../ui/Input';
-import { gyms } from '../../assets/assets';
 import { formatDate } from '../../utils/formatDate';
+import Select from '../ui/Select';
 
-const EditUserModal = ({ isOpen, onClose, user, t }) => {
+const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
   const {
     register,
     handleSubmit,
@@ -22,7 +22,6 @@ const EditUserModal = ({ isOpen, onClose, user, t }) => {
       dateofbirth: '',
       address: '',
       gender: '',
-      gymid: '',
       branchid: '',
       role: '',
       isActive: true,
@@ -42,7 +41,6 @@ const EditUserModal = ({ isOpen, onClose, user, t }) => {
         dateofbirth: formatDate(user.dateofbirth) ||"",
         address: user.address || '',
         gender: user.gender || '',
-        gymid: user.gymId || '',
         branchid: user.branchId || '',
         role: user.role || '',
         isActive: user.isactive ?? true,
@@ -71,7 +69,6 @@ const EditUserModal = ({ isOpen, onClose, user, t }) => {
       dateOfBirth: formatDate(data.dateofbirth) || null,
       address: data.address || null,
       gender: data.gender || null,
-      gymId: data.gymid,
       branchId: data.branchid,
       role: data.role,
       isActive: data.isactive === 'on' || data.isactive === true,
@@ -200,43 +197,16 @@ const EditUserModal = ({ isOpen, onClose, user, t }) => {
             {errors.gender && <span className="text-red-500 text-sm">{t('required')}</span>}
           </div>
 
-          {/* GYM Id */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t('gym_name') || 'gym-name'}
-            </label>
-            <select
-              {...register('gymid', { required: true })}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
-            >
-              <option value="">-- {t('selectGym') || 'Select Gym'} --</option>
-              {gyms.map((gym) => (
-                <option key={gym.id} value={gym.id}>
-                  {gym.name}
-                </option>
-              ))}
-            </select>
-            {errors.gymid && <span className="text-red-500 text-sm">{t('required')}</span>}
-          </div>
-
+          
           {/* Gym Branch */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t('gym_branch') || 'Gym Branch'}
-            </label>
-            <select
-              {...register('branchid', { required: true })}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
-            >
-              <option value="">-- {t('selectGymBranch') || 'Select Gym Branch'} --</option>
-              {gyms.map((gym) => (
-                <option key={gym.id} value={gym.id}>
-                  {gym.name}
-                </option>
-              ))}
-            </select>
-            {errors.branchid && <span className="text-red-500 text-sm">{t('required')}</span>}
-          </div>
+          <Select 
+            t={t} 
+            register={register} 
+            options={branches} 
+            label='gym_name' 
+            name="gymid" 
+            required={false}
+          />
 
           {/* Role */}
           <div>
