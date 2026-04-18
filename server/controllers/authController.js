@@ -55,6 +55,7 @@ const login = async (req, res) => {
     }
   }
 };
+
 const register = async (req, res) => {
   try {
     await pool.query("BEGIN");
