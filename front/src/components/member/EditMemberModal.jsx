@@ -5,8 +5,9 @@ import Input from "../ui/Input";
 import { useDispatch } from "react-redux";
 import { updateMember } from "../../redux/slices/MemberSlice";
 import { formatDate } from "../../utils/formatDate";
+import Select from "../ui/Select";
 
-const EditMemberModal = ({ isOpen, onClose, member, t }) => {
+const EditMemberModal = ({ isOpen, onClose, member, t,members }) => {
   // console.log(member)
   const {
     register,
@@ -15,43 +16,35 @@ const EditMemberModal = ({ isOpen, onClose, member, t }) => {
     formState: { errors },
   } = useForm();
 
-  const [photoPreview, setPhotoPreview] = useState(null);
   const dispatch = useDispatch();
   // 👇 لما المودال يفتح أو العضو يتغير نعمل reset
   useEffect(() => {
-    if (member && isOpen) {
-      reset({
-        fullName: member.fullname || "",
-        email: member.email || "",
-        phone: member.phone || "",
-        idNumber: member.idnumber || "",
-        barcode: member.barcode || "",
-        dateOfBirth: formatDate(member.dateofbirth) || "",
-        gender: member.gender || "male",
-        isActive: member.isactive ?? false,
-        subscriptionId: member.subscriptionId || "",
-        photoUrl: member.photoUrl || "",
-      });
+  if (member && isOpen) {
+    reset({
+      userid: member.userid || "", // تأكد من الحروف الصغيرة/الكبيرة حسب الـ DB
+      idNumber: member.idnumber || "",
+      barcode: member.barcode || "",
+      subscriptionid: member.subscription_id || "",
+    });
+  }
+}, [member, isOpen, reset]);
 
-      setPhotoPreview(member.photoUrl || null);
-    }
-  }, [member, isOpen]);
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPhotoPreview(url);
-    }
-  };
+  const membersObj = (members || []).map(member => ({
+    id: member.id,
+    name: member.fullname,
+  }));
 
   const submitHandler = (data) => {
+  // لاحظ أننا نمرر الكائن بالشكل الذي يتوقعه الـ Thunk الجديد
   dispatch(updateMember({ 
     id: member.id, 
-    gymId: member.gymid,
-    branchId: member.branchid,
-    photoUrl: photoPreview || member.photourl || "",
-    ...data 
+    data: {
+      userId: data.userid, // تأكد من مطابقة الاسم مع الـ Select (userid)
+      idNumber: data.idNumber,
+      barcode: data.barcode,
+      subscriptionId: data.subscriptionid || member.subscription_id // أضف الاشتراك
+    }
   }));
   onClose();
 };
@@ -71,102 +64,17 @@ const EditMemberModal = ({ isOpen, onClose, member, t }) => {
         </div>
 
         <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
-          {/* Photo Upload */}
-          <div className="mb-6 flex flex-col items-center">
-            <div className="mb-4 h-24 w-24 overflow-hidden rounded-full border-2 border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-800">
-              {photoPreview ? (
-                <img src={photoPreview} alt="Preview" className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-4xl text-slate-400">
-                  👤
-                </div>
-              )}
-            </div>
-            <label className="cursor-pointer rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-500">
-              {t("upload_photo") || 'Upload Photo'}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                className="hidden"
-              />
-            </label>
-          </div>
+          {/* User */}
+          <Select t={t} name="userid" label='member' register={register} required errors={errors} options={membersObj}/>
 
-          {/* Full Name */}
-          <Input type="text" t={t} name="fullName" label='fullName' register={register} required errors={errors}/>
-          {/* Email */}
-          <Input type="email" t={t} name="email" label='email' register={register} required errors={errors}/>
-          {/* Phone */}
-          <Input type="tel" t={t} name="phone" label='phone' register={register} required errors={errors}/>
-          
+          {/* Subscriptions */}
+          {/* <Select t={t} name="subscriptionid" label='subscription' register={register} required errors={errors} options={subscriptionObj}/> */}
+
           {/* ID Number */}
           <Input type="number" t={t} name="idNumber" label='idNumber' register={register} required errors={errors}/>
 
           {/* Barcode */}
           <Input t={t} name="barcode" label='barCode' register={register} required errors={errors}/>
-
-          {/* Date of Birth */}
-          <Input type="date" t={t} name="dateOfBirth" label='dateOfBirth' register={register} required errors={errors}/>
-
-          {/* Gender */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t?.('gender') || 'Gender'}
-            </label>
-            <select
-              {...register('gender',{required:true})}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
-            >
-              <option value="male">{t?.('male') || 'Male'}</option>
-              <option value="female">{t?.('female') || 'Female'}</option>
-            </select>
-          </div>
-          {/* Subscriptions */}
-          {/* <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t('pages.subscriptions.title') || 'Subscriptions'}
-            </label>
-            <select
-              {...register('subscriptionId')}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
-            >
-              {subscriptions.map((subscription) => (
-                <option key={subscription.id} value={subscription.id}>
-                  { t(subscription?.name)}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          {/* Role */}
-          {/* <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              {t?.('role') || 'Role'}
-            </label>
-            <select
-              {...register('role',{required:true})}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-emerald-900"
-            >
-              <option value="member">{t?.('member') || 'Member'}</option>
-              <option value="admin">{t?.('admin') || 'Admin'}</option>
-              <option value="coach">{t?.('coach') || 'Coach'}</option>
-              <option value="staff">{t?.('staff') || 'Staff'}</option>
-            </select>
-          </div> */}
-
-          {/* Active Status */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              {...register('isActive')}
-              id="isActive"
-              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-800"
-            />
-            <label htmlFor="isActive" className="ml-3 cursor-pointer select-none text-sm font-medium text-slate-700 dark:text-slate-300">
-              {t?.('isActive') || 'Active Member'}
-            </label>
-          </div>
 
           {/* Buttons */}
           <div className="flex gap-3 border-t border-slate-200 pt-6 dark:border-slate-700">

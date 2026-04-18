@@ -7,7 +7,7 @@ import Input from '../ui/Input';
 import { formatDate } from '../../utils/formatDate';
 import Select from '../ui/Select';
 
-const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
+const EditUserModal = ({ isOpen, onClose, user, t, branches }) => {
   const {
     register,
     handleSubmit,
@@ -15,16 +15,16 @@ const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      fullName: '',
+      full_name: '',
       email: '',
       phone: '',
       password: '',
       dateofbirth: '',
       address: '',
       gender: '',
-      branchid: '',
+      branch_id: '',
       role: '',
-      isActive: true,
+      is_active: true,
     }
   });
 
@@ -32,23 +32,21 @@ const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
   const [photoPreview, setPhotoPreview] = useState(null);
 
   useEffect(() => {
-    if (user && isOpen) {
-      reset({
-        fullName: user.fullname || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        password: user.password || '',
-        dateofbirth: formatDate(user.dateofbirth) ||"",
-        address: user.address || '',
-        gender: user.gender || '',
-        branchid: user.branchId || '',
-        role: user.role || '',
-        isActive: user.isactive ?? true,
-        photoUrl: user.photoUrl || '',
-      });
-      setPhotoPreview(user.photoUrl || null);
-    }
-  }, [user?.id, isOpen, reset]);
+  if (user && isOpen) {
+    reset({
+      full_name: user.full_name || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      password: '', // يفضل ترك كلمة السر فارغة عند التعديل إلا لو أراد تغييرها
+      date_of_birthday: formatDate(user.date_of_birthday) || "",
+      address: user.address || '',
+      gender: user.gender || '',
+      role: user.role || '',
+      is_active: user.is_active ?? true,
+    });
+    setPhotoPreview(user.photo || null); // تأكد من حالة الحروف photourl أو photoUrl
+  }
+}, [user, isOpen, reset]);
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -59,23 +57,35 @@ const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
   };
 
   const submitHandler = (data) => {
-    // console.log(data)
-    dispatch(updateUser({
-      id: user.id,
-      fullName: data.fullName,
-      email: data.email,
-      phone: data.phone,
-      password: data.password || null,
-      dateOfBirth: formatDate(data.dateofbirth) || null,
-      address: data.address || null,
-      gender: data.gender || null,
-      branchId: data.branchid,
-      role: data.role,
-      isActive: data.isactive === 'on' || data.isactive === true,
-      photoUrl: photoPreview,
-    }));
-    onClose();
-  };
+  const formData = new FormData();
+
+  // تأكد أن الأسماء (Keys) هي نفسها التي يستقبلها الـ Backend
+  formData.append('full_name', data.full_name);
+  formData.append('email', data.email);
+  formData.append('phone', data.phone);
+  formData.append('role', data.role);
+  formData.append('is_active', data.is_active); // سترسل كـ "true" أو "false" نصية
+  formData.append('address', data.address || "");
+  formData.append('gender', data.gender || "");
+  formData.append('date_of_birthday', data.date_of_birthday || "");
+  
+  if (data.password) {
+    formData.append('password', data.password);
+  }
+
+  // هنا المربط: الـ input في الـ JSX اسمه 'photoUrl' 
+  // فـ data.photoUrl ستكون هي الـ FileList
+  if (data.photoUrl && data.photoUrl[0]) {
+    formData.append('photoUrl', data.photoUrl[0]); // نرسل الملف الفعلي
+  } else {
+    // إذا لم يتم اختيار صورة جديدة، نرسل الرابط القديم كـ String
+    formData.append('photoUrl', user.photourl || ""); 
+  }
+
+  // إرسال كـ Object يحتوي على id و data ليتوافق مع الـ Thunk
+  dispatch(updateUser({ id: user.id, data: formData }));
+  onClose();
+};
 
   if (!isOpen) return null;
 
@@ -87,7 +97,7 @@ const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
           <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
             {t('editUser') || 'Edit User'}
           </h2>
-          <button 
+          <button
             onClick={onClose}
             className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
           >
@@ -112,72 +122,79 @@ const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={handlePhotoChange}
                 className="hidden"
+                {...register('photo', {
+                  onChange: (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setPhotoPreview(URL.createObjectURL(file));
+                    }
+                  }
+                })}
               />
             </label>
           </div>
 
           {/* Full Name */}
-          <Input 
-            type="text" 
-            t={t} 
-            name="fullName" 
-            label='fullName' 
-            register={register} 
-            required 
+          <Input
+            type="text"
+            t={t}
+            name="full_name"
+            label='fullName'
+            register={register}
+            required
             errors={errors}
           />
 
           {/* Email */}
-          <Input 
-            type="email" 
-            t={t} 
-            name="email" 
-            label='email' 
-            register={register} 
-            required 
+          <Input
+            type="email"
+            t={t}
+            name="email"
+            label='email'
+            register={register}
+            required
             errors={errors}
           />
 
           {/* Password */}
-          <Input 
-            type="text" 
-            t={t} 
-            name="password" 
-            label='password' 
-            register={register} 
+          <Input
+            type="text"
+            t={t}
+            name="password"
+            label='password'
+            register={register}
             errors={errors}
           />
 
           {/* Date of Birth */}
-          <Input 
-            type="date" 
-            t={t} 
-            name="dateofbirth" 
-            label='dateOfBirth' 
-            register={register} 
+          <Input
+            type="date"
+            t={t}
+            name="date_of_birthday"
+            label='dateOfBirth'
+            register={register}
             errors={errors}
           />
 
           {/* Phone */}
-          <Input 
-            type="tel" 
-            t={t} 
-            name="phone" 
-            label='phone' 
-            register={register} 
-            required 
+          <Input
+            type="tel"
+            t={t}
+            name="phone"
+            label='phone'
+            register={register}
+            required
             errors={errors}
           />
 
           {/* Address */}
-          <Input 
-            type="address" 
-            t={t} 
-            name="address" 
-            label='address' 
-            register={register} 
+          <Input
+            type="address"
+            t={t}
+            name="address"
+            label='address'
+            register={register}
             errors={errors}
           />
 
@@ -197,16 +214,10 @@ const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
             {errors.gender && <span className="text-red-500 text-sm">{t('required')}</span>}
           </div>
 
-          
+
           {/* Gym Branch */}
           <Select 
-            t={t} 
-            register={register} 
-            options={branches} 
-            label='gym_name' 
-            name="gymid" 
-            required={false}
-          />
+            t={t} register={register} options={branches} label='gym_branch' name="branchId" required={true}/>
 
           {/* Role */}
           <div>
@@ -231,11 +242,11 @@ const EditUserModal = ({ isOpen, onClose, user, t,branches }) => {
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              id="isActive"
-              {...register('isActive')}
+              id="is_active"
+              {...register('is_active')}
               className="rounded border-slate-300 dark:border-slate-600 dark:bg-slate-800"
             />
-            <label htmlFor="isActive" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <label htmlFor="is_active" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
               {t('isActive') || 'Active'}
             </label>
           </div>

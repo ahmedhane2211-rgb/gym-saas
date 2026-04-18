@@ -1,5 +1,7 @@
 # Gym SaaS - Entity Relationship Diagram (ERD)
 
+> Important: this ERD represents the intended target data model, not a guaranteed description of the current codebase schema. For the current implementation, read `docs/SYSTEM.md` first.
+
 > **Note:** To view this Mermaid diagram in VS Code:
 >
 > 1. Install **"Markdown Preview Enhanced"** extension

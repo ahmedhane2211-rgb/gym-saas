@@ -1,17 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-
+import Cookies from 'js-cookie'
 
 const initialState = {
     members: [],
     loading: false,
     error: null,
 };
-
     export const getAllMembers = createAsyncThunk("members/getAll", async () => {
         try {
-            const response = await axios.get(import.meta.env.VITE_API_END_POINT + "/members");
+            const token = Cookies.get("token");
+            const response = await axios.get(import.meta.env.VITE_API_END_POINT + "/members",{
+                headers:{
+                    Authorization:"Bearer "+ token
+                }
+            });
             if(response.status !== 200){
                 return toast.error("Failed to fetch members");
             }
@@ -24,7 +28,12 @@ const initialState = {
 
     export const addMember = createAsyncThunk("members/add", async (data) => {
         try {
-            const response = await axios.post(import.meta.env.VITE_API_END_POINT + "/members", data);
+            const token = Cookies.get("token");
+            const response = await axios.post(import.meta.env.VITE_API_END_POINT + "/members", data,{
+                headers:{
+                    Authorization:"Bearer "+ token
+                }
+            });
             if(response.status !== 201){
                 return toast.error("Failed to add member");
             }
@@ -37,7 +46,12 @@ const initialState = {
     
     export const deleteMember = createAsyncThunk("members/delete", async (id,{dispatch}) => {
         try {
-            const response = await axios.delete(import.meta.env.VITE_API_END_POINT + `/members/${id}`);
+            const token = Cookies.get("token");
+            const response = await axios.delete(import.meta.env.VITE_API_END_POINT + `/members/${id}`,{
+                headers:{
+                    Authorization:"Bearer "+ token
+                }
+            });
             if(response.status !== 200){
                 return toast.error("Failed to delete member");
             }
@@ -49,19 +63,30 @@ const initialState = {
         }
     })
 
-    export const updateMember = createAsyncThunk("members/update", async ({id,...data},{dispatch}) => {
-        try {
-            const response = await axios.put(import.meta.env.VITE_API_END_POINT + `/members/${id}`, data);
-            if(response.status !== 200){
-                return toast.error("Failed to update member");
+    export const updateMember = createAsyncThunk("members/update", async ({ id, data }, { dispatch }) => {
+    try {
+        const token = Cookies.get("token");
+        // نرسل الـ data مباشرة لأنها تحتوي على القيم
+        const response = await axios.put(import.meta.env.VITE_API_END_POINT + `/members/${id}`, data, {
+            headers: {
+                Authorization: "Bearer " + token
             }
-            dispatch(getAllMembers());
-            return response.data;   
-        } catch (error) {
-            console.error(error?.response?.data?.message);
-            return toast.error("Failed to update member");
+        });
+        
+        if (response.status !== 200) {
+            toast.error("Failed to update member");
+            return null;
         }
-    })
+        
+        toast.success("Member updated successfully");
+        dispatch(getAllMembers());
+        return response.data.data; // تأكد من إرجاع العضو المحدث من الباكيند
+    } catch (error) {
+        console.error(error?.response?.data?.message);
+        toast.error("Failed to update member");
+        return null;
+    }
+});
 const memberSlice = createSlice({
     name: "member",
     initialState,
@@ -74,7 +99,7 @@ const memberSlice = createSlice({
                 state.error = null;
             })
             .addCase(getAllMembers.fulfilled, (state, action) => {
-                state.members = action.payload;
+                state.members = Array.isArray(action.payload) ? action.payload : [];
                 state.loading = false;
                 state.error = null;
             })

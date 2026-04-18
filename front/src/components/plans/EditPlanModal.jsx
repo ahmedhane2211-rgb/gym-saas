@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { createSubscription } from "../../redux/slices/SubscriptionSlice";
+import { updatePlan } from "../../redux/slices/PlanSlice";
 import { useForm } from "react-hook-form";
 import Input from "../ui/Input";
 
-const AddSubscriptionModal = ({ isOpen, onClose, t,user }) => {
+const EditPlanModal = ({ isOpen, onClose, t, plan }) => {
   const dispatch = useDispatch();
   const {
     register,
@@ -13,7 +13,19 @@ const AddSubscriptionModal = ({ isOpen, onClose, t,user }) => {
     handleSubmit,
     reset,
   } = useForm();
-// console.log(user);
+
+  useEffect(() => {
+    if (plan) {
+      reset({
+        name: plan.name,
+        price: plan.price,
+        duration: plan.duration,
+        description: plan.description,
+        isActive: plan.is_active,
+      });
+    }
+  }, [plan, reset]);
+
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
@@ -27,14 +39,9 @@ const AddSubscriptionModal = ({ isOpen, onClose, t,user }) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [handleClose, isOpen]);
 
-  const handleAdd = (data) => {
-    const dataObj = {
-      ...data,
-      gym_id: user?.gymId,
-    }
-    console.log("Creating subscription:", dataObj);
-    dispatch(createSubscription(dataObj));
-    reset();
+  const handleEdit = (data) => {
+    console.log("Updating subscription:", data);
+    dispatch(updatePlan({ id: plan.id, ...data }));
     handleClose();
   };
 
@@ -48,13 +55,13 @@ const AddSubscriptionModal = ({ isOpen, onClose, t,user }) => {
       }}
       role="dialog"
       aria-modal="true"
-      aria-label={t?.("actions.addPlan") || "Add Plan"}
+      aria-label={t?.("actions.editPlan") || "Edit Plan"}
     >
       <div className="w-full max-w-xl overflow-hidden rounded-3xl border border-card-border bg-card shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] dark:border-dark-card-border dark:bg-dark-card dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.85)]">
         <div className="flex items-start justify-between gap-4 border-b border-card-border p-6 dark:border-dark-card-border">
           <div>
             <h2 className="text-xl font-bold text-text dark:text-dark-text">
-              {t("actions.addPlan") || "Add Subscription Plan"}
+              {t("actions.editPlan") || "Edit Subscription Plan"}
             </h2>
           </div>
           <button
@@ -67,7 +74,7 @@ const AddSubscriptionModal = ({ isOpen, onClose, t,user }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(handleAdd)} className="space-y-5 p-6">
+        <form onSubmit={handleSubmit(handleEdit)} className="space-y-5 p-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
               <Input
@@ -130,7 +137,7 @@ const AddSubscriptionModal = ({ isOpen, onClose, t,user }) => {
               type="submit"
               className="rounded-full bg-emerald-500 px-5 py-2 text-white"
             >
-              {t?.("add") || "Add"}
+              {t?.("save") || "Save"}
             </button>
           </div>
         </form>
@@ -139,4 +146,4 @@ const AddSubscriptionModal = ({ isOpen, onClose, t,user }) => {
   );
 };
 
-export default AddSubscriptionModal;
+export default EditPlanModal;

@@ -18,25 +18,34 @@ const AddUserModal = ({ isOpen, onClose, t,branches}) => {
     }
   };
 
-  const handleAdd = (data) => {
-    const userObj = {
-      fullName: data.fullname,
-      email: data.email,
-      phone: data.phone,
-      role: data.role,
-      isActive: data.isActive === 'on' || data.isActive === true,
-      photoUrl: data.photoUrl || null,
-      gymId: data.gymid,
-      password: data.password,
-      address: data.address || "null",
-      gender: data.gender || "null",
-      dateOfBirth: data.dateofbirth || "null",
-    };
-    dispatch(addUser(userObj));
-    reset();
-    setPhotoPreview(null);
-    onClose();
-  };
+ const handleAdd = (data) => {
+  // 1. إنشاء كائن FormData
+  const formData = new FormData();
+
+  // 2. إضافة الصورة (نأخذ أول ملف من مصفوفة الملفات)
+  if (data.photoUrl && data.photoUrl[0]) {
+    formData.append('photoUrl', data.photoUrl[0]);
+  }
+
+  // 3. إضافة باقي الحقول
+  formData.append('fullName', data.fullname);
+  formData.append('email', data.email);
+  formData.append('phone', data.phone);
+  formData.append('role', data.role);
+  formData.append('password', data.password);
+  formData.append('gymId', data.gymid);
+  formData.append('address', data.address || "");
+  formData.append('gender', data.gender || "");
+  formData.append('dateOfBirth', data.dateofbirth || "");
+  formData.append('isActive', data.isActive);
+
+  // 4. إرسال الـ formData بدلاً من الـ object العادي
+  dispatch(addUser(formData)); 
+
+  reset();
+  setPhotoPreview(null);
+  onClose();
+};
 
   if (!isOpen) return null;
   
@@ -75,6 +84,7 @@ const AddUserModal = ({ isOpen, onClose, t,branches}) => {
                 accept="image/*"
                 onChange={handlePhotoChange}
                 className="hidden"
+                {...register('photoUrl')}
               />
             </label>
           </div>
@@ -146,18 +156,18 @@ const AddUserModal = ({ isOpen, onClose, t,branches}) => {
           label='gender' name="gender" required={true} />
 
           {/* GYM Id */}
-          <Select 
+          {/* <Select 
             t={t} 
             register={register} 
             options={branches} 
             label='gym_name' 
             name="gymid" 
             required={false}
-          />
+          /> */}
           
           {/* Gym Branch */}
-          {/* <Select 
-            t={t} register={register} options={branches} label='gym_branch' name="branchid" required={true}/> */}
+          <Select 
+            t={t} register={register} options={branches} label='gym_branch' name="branchid" required={true}/>
           {/* Role */}
             <Select 
             t={t} 

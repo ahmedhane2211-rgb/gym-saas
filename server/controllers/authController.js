@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import { pool } from "../models/db.js";
 import { generateToken } from "../utils/generateToken.js";
-import { v4 as uuid4 } from "uuid";
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -22,6 +21,12 @@ const login = async (req, res) => {
       });
     }
     const dbUser = user.rows[0];
+    if(dbUser.role !== 'admin'){
+      return res.json({
+        message: "ليس لديك صلاحية الدخول",
+        status: false,
+      });
+    }
     const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
     if (!isPasswordCorrect) {
       return res.json({
@@ -34,7 +39,8 @@ const login = async (req, res) => {
     const token = await generateToken({
       id: safeUser.id,
       role: safeUser.role,
-      gymId: safeUser.gymid,
+      gymId: safeUser.gym_id,
+      branchId: safeUser.branch_id,
     });
 
     return res.status(201).json({
@@ -50,32 +56,42 @@ const login = async (req, res) => {
   }
 };
 const register = async (req, res) => {
-  const now = new Date();
   try {
     await pool.query("BEGIN");
-    const { email, fullname, password, role, phone,address } = req.body;
+    const { email, fullname, password, phone,address,dob,gender } = req.body;
     console.log(req.body);
-    if (!email || !fullname || !password || !phone) {
+    if (!email || !fullname || !password || !phone ) {
       return res.json({
         message:
-          "الرجاء توفير البريد الالكتروني واسم المستخدم وكلمة المرور والهاتف",
+          "الرجاء توفير البريد الالكتروني واسم المستخدم وكلمة المرور والهاتف وتاريخ الميلاد والجنس",
         status: false,
       });
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const gymId = uuid4();
+    // Create Gym To DB
     const createGym = await pool.query(
-      "INSERT INTO gym (id, name, phone, created_at, updated_at) VALUES ($1,$2,$3,$4,$5) RETURNING *",
-      [gymId, "Default Gym", phone, now, now],
+      "INSERT INTO gym (name, phone,is_active) VALUES ($1,$2,$3) RETURNING id",
+      ["Default Gym", phone, true],
     );
+    const gymId = createGym.rows[0].id;
     if (createGym.rows.length === 0 || !createGym.rows) {
       await pool.query("ROLLBACK");
       return res.json({ message: "فشل عملية التسجيل", status: false });
     }
+    // Create Branch To DB
+    const createBranch = await pool.query(
+      "INSERT INTO branches (name, phone,is_active, address,gym_id) VALUES ($1,$2,$3,$4,$5) RETURNING id",
+      ["Default Branch", phone,true, address || 'default',gymId],
+    );
+    const branchId = createBranch.rows[0].id;
+    if (createBranch.rows.length === 0 || !createBranch.rows) {
+      await pool.query("ROLLBACK");
+      return res.json({ message: "فشل عملية التسجيل", status: false });
+    }
     const user = await pool.query(
-      "INSERT INTO users (fullname,email,password,role,gymid,phone,address) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *",
-      [fullname, email, hashedPassword, 'admin', gymId,phone,address|| 'egypt',],
+      "INSERT INTO users (full_name,email,password,role,gym_id,phone,address,branch_id,date_of_birthday,gender) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *",
+      [fullname, email, hashedPassword, 'admin', gymId,phone,address|| 'egypt',branchId,dob || '12-4-2005',gender || 'male'],
     );
     if (user.rows.length === 0) {
         await pool.query("ROLLBACK");
@@ -92,7 +108,6 @@ const register = async (req, res) => {
 };
 const getUser = async (req, res) => {
   const { user } = req;
-  console.log(user);
   try {
     return res
       .status(200)

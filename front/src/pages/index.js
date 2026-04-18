@@ -1,6 +1,6 @@
 import DashboardPage from "./DashboardPage";
 import MembersPage from "./MembersPage";
-import SubscriptionsPage from "./SubscriptionsPage";
+import PlansPage from "./PlansPage";
 import AttendancePage from "./AttendancePage";
 import PaymentsPage from "./PaymentsPage";
 import AlertsPage from "./AlertsPage";
@@ -14,7 +14,7 @@ import BranchesPage from "./BranchesPage";
 export {
   DashboardPage,
   MembersPage,
-  SubscriptionsPage,
+  PlansPage,
   AttendancePage,
   PaymentsPage,
   AlertsPage,

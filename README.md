@@ -1,28 +1,64 @@
-# Gym SaaS Application
+# Gym SaaS
 
-A gym management platform with web frontend and backend. Future expansion planned for mobile apps (gym owners) and desktop app (help desk/internal management).
+لو رجعت للمشروع بعد فترة ومش عارف تبدأ منين، اقرأ الملفات دي بالترتيب:
 
-## Project Structure
+1. `docs/START-HERE.md`
+2. `docs/PRD.md`
+3. `docs/SYSTEM.md`
+4. `docs/TECH-STACK.md`
 
+## المشروع ده بيعمل إيه حالياً؟
+
+تطبيق إدارة جيم مبني كـ `web dashboard` + `REST API`.
+
+- `front/`: واجهة React + Vite
+- `server/`: Backend بـ Express + PostgreSQL
+- `docs/`: توثيق الحالة الحالية وخطة التكملة
+
+## الحالة الحالية بسرعة
+
+- شغال/متوصل جزئياً: `auth`, `branches`, `users`, `members`, `subscription plans`
+- موجود كمسودة فقط: ربط العضو باشتراك فعلي
+- ما زال `mock/static`: `dashboard`, `attendance`, `payments`, `alerts`, `reports`, `trainer`, `coaches`, جزء من `settings`
+
+## التشغيل المحلي
+
+### Backend
+
+```bash
+cd server
+npm install
+npm run dev
 ```
-.
-├── frontend/          # Web application
-├── backend/           # API and server logic
-├── mobile/            # Future: Mobile app for gym owners
-└── desktop/           # Future: Desktop app for help desk/internal use
+
+المشروع يحتاج ملف `.env` داخل `server/` يحتوي على المتغيرات التالية كما هي مستخدمة في الكود الحالي:
+
+```env
+user=
+host=
+database=
+password=
+DB_port=
+JWT_SECRET=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
-## Tech Stack
+### Frontend
 
-_To be determined_
+```bash
+cd front
+npm install
+npm run dev
+```
 
-## Getting Started
+المشروع يحتاج ملف `.env` داخل `front/` يحتوي على:
 
-_Documentation will be added once tech stack is decided._
+```env
+VITE_API_END_POINT=http://localhost:3000/api
+```
 
-## Roadmap
+## ملاحظة مهمة
 
-- [ ] Web frontend
-- [ ] Backend API
-- [ ] Mobile app (gym owners)
-- [ ] Desktop app (internal/help desk)
+قاعدة البيانات الحالية مستنتجة من الكود لأن المشروع لا يحتوي حتى الآن على `migrations` أو ملف schema رسمي. قبل إضافة أي feature جديدة، الأفضل تثبيت عقود البيانات وتوحيد أسماء الحقول.

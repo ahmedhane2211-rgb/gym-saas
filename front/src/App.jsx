@@ -9,7 +9,7 @@ import {
   DashboardPage,
   CoachesPage,
   MembersPage,
-  SubscriptionsPage,
+  PlansPage,
   AttendancePage,
   PaymentsPage,
   AlertsPage,
@@ -127,7 +127,7 @@ const AppContent = () => {
       path: "/coaches",
     },
     {
-      id: "subscriptions",
+      id: "plans",
       label: pageTitle("subscriptions"),
       icon: (
         <Icon className="h-5 w-5">
@@ -137,7 +137,7 @@ const AppContent = () => {
           <rect x="3" y="4" width="18" height="16" rx="3" />
         </Icon>
       ),
-      path: "/subscriptions",
+      path: "/plans",
     },
     {
       id: "attendance",
@@ -257,7 +257,7 @@ const AppContent = () => {
                 <Route path="/trainers" element={<TrainerPage t={t} />} />
                 <Route path="/attendance" element={<AttendancePage pageTitle={pageTitle} t={t}/>} />
                 <Route path="/settings" element={<SettingsPage t={t}/>} />
-                <Route path="/subscriptions" element={<SubscriptionsPage pageTitle ={pageTitle} t={t}/>} />
+                <Route path="/plans" element={<PlansPage pageTitle ={pageTitle} t={t}/>} />
                 <Route path="/alerts" element={<AlertsPage t={t} pageTitle={pageTitle}/>} />
               </Route>
             </Routes>

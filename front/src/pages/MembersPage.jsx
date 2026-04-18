@@ -12,21 +12,23 @@ import { Delete, DeleteIcon, Edit, Eye } from "lucide-react";
 import ShowModal from "../components/ui/ShowModal";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteMember, getAllMembers } from "../redux/slices/MemberSlice";
+import AddSubscriberModal from "../components/plans/AddSubscriberModal";
 import Btn from "../components/ui/Btn";
 import { formatDate } from "../utils/formatDate";
 import { getAllUsers } from "../redux/slices/UserSlice";
-import { getSubscriptions } from "../redux/slices/SubscriptionSlice";
+import { getPlans } from "../redux/slices/PlanSlice";
 
 const MembersPage = () => {
   const {t} = useTranslation();
   const [addModal,setAddModal] = useState(false);
   const [editModal,setEditModal] = useState(false);
   const [showModal,setShowModal] = useState(false);
+  const [openSubscriber, setOpenSubscriber] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   // const [members, setMembers] = useState(membersList);
   const {members} = useSelector((state) => state.members);
   const { users } = useSelector((state) => state.users);
-  const { subscriptions } = useSelector((state) => state.subscriptions);
+  const { plans } = useSelector((state) => state.plans);
   // console.log(members)
   const [filteredMembers, setFilteredMembers] = useState([]);
   const dispatch = useDispatch() 
@@ -38,12 +40,12 @@ const MembersPage = () => {
   useEffect(()=>{
     dispatch(getAllUsers());
     dispatch(getAllMembers());
-    dispatch(getSubscriptions())
+    dispatch(getPlans())
   },[dispatch])
 
 
   useEffect(() => {
-    setFilteredMembers(members);
+    setFilteredMembers(Array.isArray(members) ? members : []);
   }, [members])
   const openEditModal = (member) => {
     setSelectedMember(member);
@@ -64,9 +66,9 @@ const MembersPage = () => {
   if (filterValue === "all") {
     setFilteredMembers(memberList);
   } else if (filterValue === "active") {
-    setFilteredMembers(memberList.filter((member) => member.isactive === true));
+    setFilteredMembers(memberList.filter((member) => member?.user?.isactive === true));
   } else if (filterValue === "expired") {
-    setFilteredMembers(memberList.filter((member) => member.isactive === false));
+    setFilteredMembers(memberList.filter((member) => member?.user?.isactive === false));
   }
 }, [members]);
   
@@ -82,10 +84,12 @@ const MembersPage = () => {
           </select>
           
         </div>
-        <Btn
-          onClick={() => setAddModal(true)}
-          title={t("actions.newMember")}
-        />
+        <div className="flex flex-wrap gap-2">
+          <Btn
+            onClick={() => setAddModal(true)}
+            title={t("actions.newMember")}
+          />
+        </div>
       </div>
 
       <div className="card space-y-4">
@@ -107,13 +111,13 @@ const MembersPage = () => {
                   key={member.id || member.name} 
                   className="cursor-pointer border-t border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 >
-                  <td className="px-4 text-center py-3 font-semibold text-slate-900 dark:text-slate-100">{member.fullname || "name"}</td>
-                  <td className="px-4 text-center py-3 text-slate-600 dark:text-slate-400">{t(member.email)}</td>
+                  <td className="px-4 text-center py-3 font-semibold text-slate-900 dark:text-slate-100">{member?.user?.full_name || "name"}</td>
+                  <td className="px-4 text-center py-3 text-slate-600 dark:text-slate-400">{t(member?.user?.email)}</td>
                   <td className="px-4 text-center py-3">
-                    <Badge tone={member.statusKey === "members.status.expired" ? "rose" : "emerald"}>{t(member.phone)}</Badge>
+                    <Badge tone={member.statusKey === "members.status.expired" ? "rose" : "emerald"}>{t(member?.user?.phone)}</Badge>
                   </td>
                   <td className="px-4 text-center py-3 text-slate-600 dark:text-slate-400">
-                    {member.isactive ? (
+                    {member?.user?.is_active ? (
                       <Badge tone="emerald">{t("active")}</Badge>
                     ) : (
                       <Badge tone="rose">{t("inactive")}</Badge>
@@ -133,14 +137,14 @@ const MembersPage = () => {
 
       <AddMemberModal 
         members={membersList}
-        subscriptions={subscriptions}
+        plans={plans}
         isOpen={addModal} 
         onClose={() => setAddModal(false)}
         t={t}
       />
       <EditMemberModal 
         members={membersList}
-        subscriptions={subscriptions}
+        plans={plans}
         isOpen={editModal} 
         onClose={() => setEditModal(false)}
         member={selectedMember}
@@ -150,17 +154,24 @@ const MembersPage = () => {
       {showModal && (
         <ShowModal onClose={()=>setShowModal(false)} setShowModal={setShowModal} t={t} showModal={showModal} title={"show_details"}>
           <div className="grid grid-cols-2 gap-4">
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("fullName")}: <span>{selectedMember.fullname || selectedMember.name}</span></p>
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("email")}: <span>{selectedMember.email}</span></p>
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("phone")}: <span>{selectedMember.phone}</span></p>
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("gender")}: <span>{t(selectedMember.gender)}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("fullName")}: <span>{selectedMember?.user?.full_name || "--"}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("email")}: <span>{selectedMember?.user?.email || "--"}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("phone")}: <span>{selectedMember?.user?.phone || "--"}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("gender")}: <span>{t(selectedMember?.user?.gender || "--")}</span></p>
             {/* <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("role")}: <span>{selectedMember.role}</span></p> */}
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("dateOfBirth")}: <span>{formatDate(selectedMember?.dateofbirth)}</span></p>
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("isActive")}: <span>{selectedMember.isactive ? t("active") : t("inactive")}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("dateOfBirth")}: <span>{formatDate(selectedMember?.user?.date_of_birthday || "--")}</span></p>
+            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">{t("isActive")}: <span>{selectedMember?.user?.is_active ? t("active") : t("inactive")}</span></p>
           </div>
         </ShowModal>
       )}
 
+      <AddSubscriberModal 
+        isOpen={openSubscriber} 
+        onClose={() => setOpenSubscriber(false)} 
+        t={t} 
+        members={members} 
+        plans={plans} 
+      />
     </div>
   )};
 export default MembersPage;

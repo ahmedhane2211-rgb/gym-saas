@@ -1,15 +1,16 @@
 import express from 'express';
 import { createMember, deleteMember, getAllMembers, getMemberById, updateMember } from '../controllers/memberController.js';
+import { authUser } from '../middlewares/authUser.js';
 
 export const memberRouter = express.Router();
 
 // Define your member routes here
-memberRouter.get('/', getAllMembers);
+memberRouter.get('/', authUser,getAllMembers);
 
-memberRouter.get('/:id', getMemberById);
+memberRouter.get('/:id', authUser,getMemberById);
 
-memberRouter.post('/', createMember);
+memberRouter.post('/', authUser,createMember);
 
-memberRouter.put('/:id', updateMember);
+memberRouter.put('/:id', authUser,updateMember);
 
-memberRouter.delete('/:id', deleteMember);
+memberRouter.delete('/:id', authUser,deleteMember);

@@ -113,7 +113,7 @@ const UsersPage = () => {
                         {user.photoUrl ? (
                           <img
                             src={user.photoUrl}
-                            alt={user.fullName}
+                            alt={user.full_name}
                             className="h-8 w-8 rounded-full object-cover"
                           />
                         ) : (
@@ -122,7 +122,7 @@ const UsersPage = () => {
                           </div>
                         )}
                         <span className="font-semibold text-slate-900 dark:text-slate-100">
-                          {user.fullname}
+                          {user.full_name}
                         </span>
                       </div>
                     </td>
@@ -138,8 +138,8 @@ const UsersPage = () => {
                       </Badge>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <Badge tone={user.isactive ? 'emerald' : 'rose'}>
-                        {user.isactive ? t('active') || 'Active' : t('inactive') || 'Inactive'}
+                      <Badge tone={user.is_active ? 'emerald' : 'rose'}>
+                        {user.is_active ? t('active') || 'Active' : t('inactive') || 'Inactive'}
                       </Badge>
                     </td>
                     <td className="px-4 flex gap-2 justify-center py-3 text-slate-600 dark:text-slate-400">
@@ -168,16 +168,16 @@ const UsersPage = () => {
         <ShowModal isOpen={showModal} title={'pages.users.title'} onClose={() => setShowModal(false)} data={selectedUser} t={t} >
           <div className="grid grid-cols-2 gap-4">
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
-              {t("fullName")}: <span>{selectedUser.fullname}</span>
+              {t("fullName")}: <span>{selectedUser.full_name}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
-              {t("gym_name")}: <span>{selectedUser.gymid}</span>
+              {t("gym_name")}: <span>{selectedUser.gym_id}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
               {t("role")}: <span>{selectedUser.role}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
-              {t("isActive")}: <span>{selectedUser.isactive ? t("active") || "Active" : t("inactive") || "Inactive"}</span>
+              {t("isActive")}: <span>{selectedUser.is_active ? t("active") || "Active" : t("inactive") || "Inactive"}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
               {t("email")}: <span>{selectedUser.email}</span>
@@ -186,19 +186,16 @@ const UsersPage = () => {
               {t("address")}: <span>{selectedUser.address || "-"}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
-              {t("address")}: <span>{formatDate(selectedUser.address) || "-"}</span>
-            </p>
-            <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
               {t("gender")}: <span>{selectedUser.gender || "-"}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
               {t("lastlogin")}: <span>{formatDate(selectedUser.lastlogin) || "-"}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
-              {t("branch_name")}: <span>{selectedUser.branchid}</span>
+              {t("branch_name")}: <span>{selectedUser.branch_id}</span>
             </p>
             <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
-              {t("created_at")}: <span>{formatDate(selectedUser.createdat)}</span>
+              {t("created_at")}: <span>{formatDate(selectedUser.created_at)}</span>
             </p>
               <p className="mt-2 text-sm p-4 bg-emerald-dark rounded-xl text-black dark:text-card">
                 {t("phone")}: <span>{selectedUser.phone || "-"}</span>

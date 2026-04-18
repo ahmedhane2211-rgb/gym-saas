@@ -8,9 +8,9 @@ import { addMember } from '../../redux/slices/MemberSlice';
 import Select from '../ui/Select';
 import { data } from 'autoprefixer';
 
-const AddMemberModal = ({ isOpen, onClose, onSubmit, t,members,subscriptions }) => {
-  
-  const {register,handleSubmit,formState:{errors},reset} = useForm()
+const AddMemberModal = ({ isOpen, onClose, onSubmit, t, members, plans }) => {
+
+  const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const dispatch = useDispatch();
   const [photoPreview, setPhotoPreview] = useState(null);
   const handlePhotoChange = (e) => {
@@ -20,13 +20,13 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t,members,subscriptions }) 
       setPhotoPreview(url);
     }
   };
-  const membersObj = members.map(member => ({
+  const membersObj = (members || []).map(member => ({
     id: member.id,
-    name: member.fullname,
+    name: member.full_name,
   }));
-  const subscriptionObj = subscriptions.map(subscription => ({
-    id: subscription.id,
-    name: subscription.name,
+  const plansObj = (plans || []).map(plan => ({
+    id: plan.id,
+    name: plan.name,
   }));
   const handleAdd = (data) => {
     // console.log(data)
@@ -43,18 +43,18 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t,members,subscriptions }) 
     // formData.append('subscriptionId',data.subscriptionId)
     // formData.append('role',data.role)
     // Convert FormData to plain object
-  const memberObj = {
-    idNumber: data.idNumber,
-    subscriptionId: data.subscriptionid,
-    userId: data.userid,
-    barcode: data.barcode,
-  };
+    const memberObj = {
+      idNumber: data.idNumber,
+      // subscriptionId: data.subscriptionid,
+      userId: data.userid,
+      qrCode: data.qrCode,
+    };
 
-  dispatch(addMember(memberObj));
-  reset();
-  setPhotoPreview(null);
-  onClose();
-;
+    dispatch(addMember(memberObj));
+    reset();
+    setPhotoPreview(null);
+    onClose();
+    ;
     // for (let [key, value] of formData.entries()) {
     //   memberObj[key] = value;
     // }
@@ -68,7 +68,7 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t,members,subscriptions }) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        
+
       <div className="card max-h-[90vh] w-full max-w-lg overflow-y-auto">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between border-b border-slate-200 pb-4 dark:border-slate-700">
@@ -84,18 +84,18 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit, t,members,subscriptions }) 
         </div>
 
         <form onSubmit={handleSubmit(handleAdd)} className="space-y-4">
-          
+
           {/* User */}
-          <Select t={t} name="userid" label='member' register={register} required errors={errors} options={membersObj}/>
+          <Select t={t} name="userid" label='member' register={register} required errors={errors} options={membersObj} />
 
           {/* Subscriptions */}
-          <Select t={t} name="subscriptionid" label='subscription' register={register} required errors={errors} options={subscriptionObj}/>
+          {/* <Select t={t} name="subscriptionid" label='subscription' register={register} required errors={errors} options={subscriptionObj}/> */}
 
           {/* ID Number */}
-          <Input type="number" t={t} name="idNumber" label='idNumber' register={register} required errors={errors}/>
+          <Input type="number" t={t} name="idNumber" label='idNumber' register={register} required errors={errors} />
 
-          {/* Barcode */}
-          <Input t={t} name="barcode" label='barCode' register={register} required errors={errors}/>
+          {/* qrCode */}
+          <Input t={t} name="qrCode" label='qrCode' register={register} required errors={errors} />
 
           {/* Buttons */}
           <div className="flex gap-3 border-t border-slate-200 pt-6 dark:border-slate-700">

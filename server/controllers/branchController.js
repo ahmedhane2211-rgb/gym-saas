@@ -79,7 +79,7 @@ const getBranch = async (req, res) => {
   const { id } = req.params; // تمت إزالة الأقواس من params
   const {user} = req;
   try {
-    const result = await pool.query('SELECT * FROM branches WHERE gym_id=$1 AND id=$2', [user.gymId, id])
+    const result = await pool.query('SELECT * FROM branches WHERE id=$1', [id])
     return res.status(200).json({ data: result.rows[0] || [], status: true });
   } catch (error) {
     return res.status(500).json({ message: error.message, status: false });
@@ -93,8 +93,8 @@ const deleteBranch = async (req, res) => {
   }
   try {
     const result = await pool.query(
-      "DELETE FROM branches WHERE gym_id=$1 AND id=$2 RETURNING *",
-      [user.gymId, id],
+      "DELETE FROM branches WHERE id=$1 RETURNING *",
+      [id],
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "جيم غير موجود", status: false });
@@ -112,8 +112,8 @@ const updateBranch = async (req, res) => {
     const data = { id,  phone, name, isActive, updatedAt };
     const {user} = req;
     const result = await pool.query(
-      `UPDATE branches SET phone=$1, name=$2, is_active=$3, updated_at=$4 WHERE gym_id=$5 AND id=$6 RETURNING *`,
-      [phone, name, isActive, updatedAt, user.gymId, id]
+      `UPDATE branches SET phone=$1, name=$2, is_active=$3, updated_at=$4 WHERE id=$5 RETURNING *`,
+      [phone, name, isActive, updatedAt, id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "فرع غير موجود", status: false });

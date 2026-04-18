@@ -1,6 +1,7 @@
 import { pool } from "../models/db.js"
 import { v4 as uuidv4 } from "uuid"
 
+// الصفحه دي لي صاحب السيستيم نفسه يعني انا 
 const getGyms = async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM gym')

@@ -1,22 +1,20 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Input from '../ui/Input';
 import Btn from '../ui/Btn';
+import { createSubscribe } from '../../redux/slices/SubscribeSlice';
 
-const AddSubscriberModal = ({ isOpen, onClose, t }) => {
-  const { members } = useSelector((state) => state.members);
-  const { subscriptions } = useSelector((state) => state.subscriptions);
+const AddSubscriberModal = ({ isOpen, onClose, t,members,subscriptions }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
-
+  const dispatch = useDispatch();
   const handleClose = () => {
-    onClose?.();
+    onClose();
     reset();
   };
 
   const onSubmit = (data) => {
-    // TODO: dispatch add subscription action
-    // console.log(data);
+    dispatch(createSubscribe(data));
     handleClose();
   };
 
@@ -43,7 +41,7 @@ const AddSubscriberModal = ({ isOpen, onClose, t }) => {
               <select {...register('memberId', { required: true })} className="w-full rounded-lg border border-[var(--color-card-border)] bg-white px-4 py-2 text-[var(--color-text)] dark:bg-[var(--color-dark-card)] dark:text-[var(--color-dark-text)]">
                 <option value="">{t('select_member') || 'اختر العضو'}</option>
                 {members?.map((m) => (
-                  <option key={m.id} value={m.id}>{m.fullName}</option>
+                  <option key={m.id} value={m.id}>{m.user?.fullname || m.fullname}</option>
                 ))}
               </select>
               {errors.memberId && <p className="text-red-500 text-xs mt-1">{t('required') || 'مطلوب'}</p>}
@@ -53,13 +51,13 @@ const AddSubscriberModal = ({ isOpen, onClose, t }) => {
               <label className="mb-2 block text-sm font-semibold text-[var(--color-text)] dark:text-[var(--color-dark-text)]">
                 {t('plan.title') || 'الخطة'} *
               </label>
-              <select {...register('planId', { required: true })} className="w-full rounded-lg border border-[var(--color-card-border)] bg-white px-4 py-2 text-[var(--color-text)] dark:bg-[var(--color-dark-card)] dark:text-[var(--color-dark-text)]">
+              <select {...register('subscriptionId', { required: true })} className="w-full rounded-lg border border-[var(--color-card-border)] bg-white px-4 py-2 text-[var(--color-text)] dark:bg-[var(--color-dark-card)] dark:text-[var(--color-dark-text)]">
                 <option>{t('select_plan') || 'اختر الخطة'}</option>
                 {subscriptions?.map((p) => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
               </select>
-              {errors.planId && <p className="text-red-500 text-xs mt-1">{t('required') || 'مطلوب'}</p>}
+              {errors.subscriptionId && <p className="text-red-500 text-xs mt-1">{t('required') || 'مطلوب'}</p>}
             </div>
             {/* startDate */}
             <div>
@@ -70,11 +68,6 @@ const AddSubscriberModal = ({ isOpen, onClose, t }) => {
             <div>
               <Input t={t} name="endDate" register={register} required type="date" label="end_date" />
               {errors.endDate && <p className="text-red-500 text-xs mt-1">{t('required') || 'مطلوب'}</p>}
-            </div>
-            {/* pricePaid */}
-            <div className="md:col-span-2">
-              <Input t={t} name="pricePaid" register={register} required type="number" label="price_paid" />
-              {errors.pricePaid && <p className="text-red-500 text-xs mt-1">{t('required') || 'مطلوب'}</p>}
             </div>
             {/* status */}
             <div>
@@ -89,10 +82,10 @@ const AddSubscriberModal = ({ isOpen, onClose, t }) => {
               {errors.status && <p className="text-red-500 text-xs mt-1">{t('required') || 'مطلوب'}</p>}
             </div>
             {/* isRenewal */}
-            <div className="flex items-center gap-2 mt-2">
+            {/* <div className="flex items-center gap-2 mt-2">
               <input type="checkbox" {...register('isRenewal')} className="h-5 w-5" />
               <span className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-dark-text-secondary)]">{t('is_renewal') || 'تجديد؟'}</span>
-            </div>
+            </div> */}
           </div>
           <div className="flex justify-end gap-3 pt-4">
             <Btn title={t('add') || 'إضافة'} />

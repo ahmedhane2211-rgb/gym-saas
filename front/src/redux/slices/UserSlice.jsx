@@ -74,27 +74,25 @@ export const addUser = createAsyncThunk("users/add", async (data, {dispatch}) =>
         }
     })
 
-    export const updateUser = createAsyncThunk("users/update", async ({id,...data},{dispatch}) => {
-        try {
-            const response = await axios.put(import.meta.env.VITE_API_END_POINT + `/users/${id}`, data,{
+    export const updateUser = createAsyncThunk("users/update", async ({ id, data }, { dispatch }) => {
+    try {
+        const response = await axios.put(import.meta.env.VITE_API_END_POINT + `/users/${id}`, data, {
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${Cookies.get("token")}`,
             },
         });
-            if(response.status !== 200){
-                toast.error("Failed to update user");
-                return null;
-            }
+
+        if (response.status === 200 || response.status === 201) {
             toast.success("User updated successfully");
             dispatch(getAllUsers());
-            return response.data;   
-        } catch (error) {
-            console.error(error?.response?.data?.message);
-            toast.error("Failed to update user");
-            return null;
+            return response.data;
         }
-    })
+    } catch (error) {
+        console.error(error?.response?.data?.message || error.message);
+        toast.error("Failed to update user");
+        return null;
+    }
+});
 
 
 const userSlice = createSlice({

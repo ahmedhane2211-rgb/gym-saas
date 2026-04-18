@@ -1,10 +1,12 @@
 import { pool } from "../models/db.js";
+import { deleteImageFromCloudinary } from "../utils/deleteImageFromCloudinary.js";
 
 
 const getAllUsers = async(req,res)=>{
     const {user} = req;
+    const branchId = user.branchId;
     try {
-        const result = await pool.query("SELECT * FROM users WHERE gymid = $1", [user.gymId]);
+        const result = await pool.query("SELECT * FROM users WHERE branch_id = $1", [branchId]);
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدمين",status:false})
         }
@@ -14,8 +16,10 @@ const getAllUsers = async(req,res)=>{
     }
 }
 const createUser = async(req,res)=>{
-    const {gymId} = req.user;
-    const {fullName,email,password,phone,address,branchId,role,isActive,gender,dateOfBirth,photoUrl} = req.body;
+    const {gymId,branchId} = req.user;
+    const {fullName,email,password,phone,address,role,isActive,gender,dateOfBirth} = req.body;
+    const photoUrl = req.file ? req.file.path : null;
+
     if(!fullName || !email || !phone || !address || !role || isActive === undefined || !dateOfBirth || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
@@ -24,11 +28,12 @@ const createUser = async(req,res)=>{
         if(existingUser.rows.length > 0){
             return res.status(400).json({message:"المستخدم موجود بالفعل",status:false})
         }
-        const result = await pool.query("INSERT INTO users (fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *",
+        const result = await pool.query("INSERT INTO users (full_name,email,password,phone,address,branch_id,gym_id,role,is_active,gender,date_of_birthday,photo) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *",
         [fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl])
         if(result.rows.length === 0){
             return res.status(400).json({message:"فشل إنشاء المستخدم",status:false})
         }
+
         return res.status(201).json({message:"تم إنشاء المستخدم بنجاح",data:result.rows[0]});
     } catch (error) {
         return res.status(500).json({message:error.message,status:false})
@@ -37,11 +42,12 @@ const createUser = async(req,res)=>{
 const getUser = async(req,res)=>{
     const {id} = req.params;
     const {user} = req;
+    const branchId = user.branchId;
     if(!id){
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
     try {
-        const result = await pool.query("SELECT * FROM users WHERE id = $1 AND gymId = $2",[id, user.gymId]);
+        const result = await pool.query("SELECT * FROM users WHERE id = $1",[id]);
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدم بهذا المعرف",status:false})
         }
@@ -52,18 +58,35 @@ const getUser = async(req,res)=>{
 }
 const updateUser = async(req,res)=>{
     const {id} = req.params;
-    const {gymId} = req.user;
+    const {gymId,branchId} = req.user;
     if(!id){
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
-    const {fullName,email,password,phone,address,branchId,role,isActive,gender,dateOfBirth,photoUrl} = req.body;
-    console.log(req.body)
+    const {fullName,email,password,phone,address,role,isActive,gender,dateOfBirth} = req.body;
+    const photoUrl = req.file ? req.file.path : null;
     if(!fullName || !email || !phone || !address || !role || isActive === undefined || !dateOfBirth || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
     try {
-        const result = await pool.query("UPDATE users SET fullName=$1,email=$2,password=$3,phone=$4,address=$5,branchId=$6,gymId=$7,role=$8,isActive=$9,gender=$10,dateOfBirth=$11,photoUrl=$12 WHERE id = $13 RETURNING *",
-        [fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl,id]);
+        // 1. جلب بيانات المستخدم القديمة
+        const userResult = await pool.query("SELECT photo FROM users WHERE id = $1 ", [id]);
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ message: "المستخدم غير موجود", status: false });
+        }
+        const oldPhotoUrl = userResult.rows[0].photourl;
+
+        // 2. تحديد الصورة الجديدة (إذا لم يرفع صورة، نستخدم القديمة)
+        let finalPhotoUrl = oldPhotoUrl;
+        if (req.file) {
+            finalPhotoUrl = req.file.path; // الرابط الجديد من كلاودناري
+            
+            // 3. حذف الصورة القديمة من كلاودناري لتوفير المساحة
+            if (oldPhotoUrl) {
+                await deleteImageFromCloudinary(oldPhotoUrl);
+            }
+        }
+        const result = await pool.query("UPDATE users SET full_name=$1,email=$2,password=$3,phone=$4,address=$5,branch_id=$6,gym_id=$7,role=$8,is_active=$9,gender=$10,date_of_birthday=$11,photo=$12 WHERE id = $13 RETURNING *",
+        [fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,finalPhotoUrl,id]);
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدم بهذا المعرف",status:false})
         }
@@ -80,9 +103,14 @@ const deleteUser = async(req,res)=>{
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
     try {
-        const result = await pool.query("DELETE FROM users WHERE id = $1 AND gymId = $2 RETURNING *",[id, user.gymId]);
+        const result = await pool.query("DELETE FROM users WHERE id = $1 RETURNING *",[id]);
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدم بهذا المعرف",status:false})
+        }
+        // 2. حذف الصورة من كلاودناري إذا كانت موجودة
+        const photoUrl = result.rows[0].photourl;
+        if (photoUrl) {
+            await deleteImageFromCloudinary(photoUrl);
         }
         res.status(200).json({message:"تم حذف المستخدم بنجاح",status:true});
     } catch (error) {
