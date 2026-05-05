@@ -54,7 +54,7 @@ const Login = () => {
               </div>
               <Input
                 type="email"
-                placeholder="manager@kinetic.com"
+                placeholder="Email"
                 className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-black placeholder:text-gray-700 focus:outline-none focus:border-blue/50 focus:ring-1 focus:ring-blue/50 transition-all"
                 name="email"
                 register={register}
@@ -76,6 +76,7 @@ const Login = () => {
               <Input
                 type={showPassword ? 'text' : 'password'}
                 className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-black placeholder:text-gray-700 focus:outline-none focus:border-blue/50 focus:ring-1 focus:ring-blue/50 transition-all"
+                placeholder={"Password"}
                 name="password"
                 register={register}
                 errors={errors}

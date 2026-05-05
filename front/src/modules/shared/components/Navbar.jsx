@@ -88,8 +88,8 @@ const Navbar = () => {
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-3 ltr:pl-6 rtl:pr-6 ltr:border-l rtl:border-r border-gray-200 dark:border-white/5 cursor-pointer group">
           <div className="text-right hidden sm:block">
-            <p className="text-gray-900 dark:text-white text-xs font-bold">Erik J.</p>
-            <p className="text-gray-500 dark:text-gray-600 text-[10px] uppercase font-black tracking-widest">{data?.data?.role}</p>
+            <p className="text-gray-900 dark:text-white text-xs font-bold">{data?.data?.user?.full_name}</p>
+            <p className="text-gray-500 dark:text-gray-600 text-[10px] uppercase font-black tracking-widest">{data?.data?.user?.role}</p>
           </div>
           <div className="w-10 h-10 rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 group-hover:border-orange/50 transition-colors shadow-sm">
             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Erik" alt="Profile" className="w-full h-full object-cover" />

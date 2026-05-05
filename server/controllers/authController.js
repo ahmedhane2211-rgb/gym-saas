@@ -42,6 +42,7 @@ const login = async (req, res) => {
       role: safeUser.role,
       gymId: safeUser.gym_id,
       branchId: safeUser.branch_id,
+      user: safeUser,
     });
 
     return res.status(201).json({
