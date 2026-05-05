@@ -1,500 +1,274 @@
 {
-  "address": "العنوان",
+  "dashboard": "لوحة القيادة",
+  "users": "المستخدمين",
+  "community": "المجتمع",
+  "members": "الأعضاء",
+  "coaches": "المدربين",
+  "financials": "الماليات",
+  "expenses": "المصاريف",
+  "income": "الدخل",
+  "sales_invoice": "فاتورة مبيعات",
+  "products": "المنتجات",
+  "add_product": "إضافة منتج",
+  "update_product": "تعديل منتج",
+  "product_name": "اسم المنتج",
+  "product_details": "تفاصيل المنتج",
+  "product_image": "صورة المنتج",
+  "no_image": "لا توجد صورة",
+  "color": "اللون",
+  "size": "المقاس",
+  "quantity": "الكمية",
+  "in_stock": "في المخزن",
+  "total_products": "إجمالي المنتجات",
+  "low_stock": "مخزون منخفض",
+  "search_products": "بحث في المنتجات...",
+  "return_invoice": "فاتورة مرتجع",
+  "purchase_price": "سعر الشراء",
+  "inventory":"المخزون",
+  "branches": "الفروع",
+  "add_branch": "إضافة فرع جديد",
+  "update_branch": "تعديل بيانات الفرع",
   "branch_name": "اسم الفرع",
-  "created_at": "انشأ في",
-  "lastlogin": "آخر تسجيل دخول",
-  "gym_branch": "فرع الجيم",
-  "gym_name": "اسم الجيم",
-  "gym_address": "عنوان الجيم",
-  "selectRole": "اختر دور المستخدم",
-  "user": {
-    "addUser": "إضافة مستخدم جديد",
-    "editUser": "تعديل المستخدم"
-  },
-  "all": "جميع",
-  "manager": "مسؤول",
-  "price_paid ": "السعر المدفوع",
-  "payment_method": "طريقة الدفع",
-  "select_member": "اختر عضو",
-  "select_plan": "اختر باقة",
+  "total_branches": "إجمالي الفروع",
+  "active_branches": "الفروع النشطة",
+  "operations": "العمليات",
+  "subscriptions": "الاشتراكات",
+  "subscription_details": "تفاصيل الاشتراك",
+  "active_plan": "الباقة النشطة",
+  "no_plan": "بدون باقة",
+  "plan": "الباقة",
+  "expires_at": "تنتهي في",
+  "no_active_subscription": "لا يوجد اشتراك نشط",
+  "member_subscribed_success": "تم إضافة العضو وتفعيل الاشتراك بنجاح!",
+  "add_subscription": "إضافة اشتراك",
+  "activate_subscription": "تفعيل الاشتراك",
+  "select_plan": "اختر الباقة",
   "start_date": "تاريخ البدء",
   "end_date": "تاريخ الانتهاء",
-  "member": "عضو",
-  "coach": "مدرب",
-  "admin": "مدير",
-  "staff": "موظف",
-  "role": "الدور",
-  "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الباقة؟",
-  "plan_name": " اسم الباقة",
-  "plan_price": " سعر الباقة",
-  "plan_duration": " مدة الباقة",
-  "plan_perks": " مزايا الباقة",
-  "plan_active": " باقة نشطة",
-  "plan_activeHint": "متاحة للاشتراكات الجديدة",
-  "show_details": "عرض التفاصيل",
-  "editMember": "تغيير عضو",
-  "editCoach": "تعديل مدرب",
-  "change_photo": "تغيير الصوره",
-  "upload_photo": "رفع صوره",
-  "cancel": "إلغاء",
-  "save": "حفظ",
-  "back": "رجوع",
-  "update": "تحديث",
-  "delete": "حذف",
-  "add": "إضافة",
-  "edit": "تعديل",
-  "isActive": "متاح",
+  "skip": "تخطي",
+  "subscription_success": "تم تفعيل الاشتراك بنجاح",
+  "plans": "الباقات",
+  "plan_details": "تفاصيل الباقة",
+  "included_features": "المميزات المتضمنة",
+  "features": "المميزات",
+  "add_feature": "إضافة ميزة",
+  "update_feature": "تعديل ميزة",
+  "feature_name": "اسم الميزة",
+  "plan_features": "مميزات الباقة",
+  "select_feature": "اختر ميزة",
+  "attendance": "الحضور",
+  "settings": "الإعدادات",
+  "new_member": "عضو جديد",
+  "total_users": "إجمالي المستخدمين",
+  "active_today": "النشطين اليوم",
+  "manage_users": "إدارة بيانات المستخدمين وحالة العضوية لمجتمع كينيتك.",
+  "search_command": "بحث عن أمر...",
+  "check_in": "تسجيل دخول",
+  "add_new": "إضافة جديد",
+  "filters": "تصفية",
+  "export_csv": "تصدير CSV",
   "active": "نشط",
   "inactive": "غير نشط",
-  "userId": "معرّف المستخدم",
-  "gymId": "معرّف الجيم",
-  "specialty": "التخصص",
-  "bio": "نبذة",
-  "commissionRate": "نسبة العمولة",
-  "fullName": "الاسم الكامل",
-  "email": "البريد الإلكتروني",
-  "phone": "الهاتف",
-  "logo": "الشعار",
-  "description": "الوصف",
-  "gender": "الجنس",
-  "barCode": "الباركود",
-  "dateOfBirth": "تاريخ الميلاد",
-  "number": "الرقم",
-  "action": "الإجراءات",
-  "male": "ذكر",
-  "female": "أنثى",
+  "member_details": "تفاصيل العضو",
+  "coach_details": "تفاصيل المدرب",
+  "status": "الحالة",
+  "role": "الدور",
+  "created_at": "تاريخ الاضافة",
+  "actions": "الإجراءات",
+  "edit": "تعديل",
+  "delete": "حذف",
+  "view": "عرض",
+  "close": "إغلاق",
   "save": "حفظ",
-  "saving": "جارِ الحفظ...",
-  "update": "تحديث",
-  "updating": "جارِ التحديث...",
   "cancel": "إلغاء",
-  "loading": "جارِ التحميل",
-  "noData": "لا توجد بيانات",
-  "preview": "معاينة",
-  "app": {
-    "name": "GymPulse Cloud",
-    "tagline": "جيم, فروع متعددة، منصة SaaS متعددة"
-  },
-  "auth": {
-    "required": "هذا الحقل مطلوب",
-    "invalidEmail": "يرجى إدخال عنوان بريد إلكتروني صحيح",
-    "passwordMinLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
-    "passwordMismatch": "كلمات المرور غير متطابقة",
-    "nameMinLength": "يجب أن يكون الاسم 3 أحرف على الأقل",
-    "or": "أو",
-    "loggingIn": "جارِ تسجيل الدخول...",
-    "registering": "جارِ إنشاء الحساب...",
-    "login": {
-      "title": "أهلا بعودتك",
-      "subtitle": "تسجيل الدخول إلى حساب إدارة الجيم الخاص بك",
-      "button": "تسجيل الدخول",
-      "link": "سجل الدخول هنا"
-    },
-    "register": {
-      "title": "ابدأ الآن",
-      "subtitle": "إنشاء حساب إدارة الجيم الخاص بك",
-      "button": "إنشاء حساب",
-      "link": "إنشاء حساب"
-    },
-    "noAccount": "ليس لديك حساب؟",
-    "haveAccount": "هل لديك حساب بالفعل؟",
-    "password": "كلمة المرور",
-    "confirmPassword": "تأكيد كلمة المرور"
-  },
-  "language": {
-    "switchLanguage": "انجليزي",
-    "quarterlyUnlimited": {
-      "name": "ربع سنوية غير محدودة",
-      "description": "دخول غير محدود لكل مرافق الجيم لمدة ثلاثة أشهر.",
-      "price": "١٢٠٠",
-      "durationDays": "٩٠ يوم",
-      "isActive": "نشطة"
-    }
-  },
-  "switchToArabic": "العربية",
-  "labels": {
-    "navigation": "التنقل",
-    "saasBadge": "SaaS متعددة الجيمات",
-    "multiBranch": "عدد الفروع",
-    "multiUser": "عدد المستخدمين",
-    "gym": "الجيم",
-    "branch": "الفرع",
-    "user": "أنت: أدمين الجيم"
-  },
-  "common": {
-    "searchPlaceholder": "ابحث عن عضو، فاتورة، جلسة..."
-  },
-  "actions": {
-    "addSubscriber": "إضافة مشترك",
-    "addGym": "إضافة فرع",
-    "export": "تصدير سريعة",
-    "newMember": "إضافة عضو جديد",
-    "newCoach": "إضافة مدرب",
-    "startScan": "بدء المسح",
-    "addPlan": "إضافة باقة",
-    "sendAlerts": "إرسال التنبيهات",
-    "updateSettings": "تحديث الإعدادات"
-  },
-  "pages": {
-    "users": {
-      "title": "المستخدمون",
-      "intro": "إدارة موظفي الجيم، الأدوار، والصلاحيات."
-    },
-    "coaches": {
-      "title": "المدربين",
-      "intro": "لوحة خاصة للمدربين وادارة العضويات والجلسات."
-    },
-    "dashboard": {
-      "title": "لوحة التحكم",
-      "intro": "نظرة شاملة لكل الجيمات والفروع."
-    },
-    "members": {
-      "title": "الأعضاء",
-      "intro": "إضافة الأعضاء وتعديل بياناتهم وتحليل سلوكهم."
-    },
-    "subscriptions": {
-      "title": "الاشتراكات",
-      "intro": "أنواع الاشتراكات وربطها بالأعضاء والخصومات."
-    },
-    "attendance": {
-      "title": "الحضور بالباركود",
-      "intro": "تسجيل الحضور بالباركود وتحليل حضور الأعضاء."
-    },
-    "payments": {
-      "title": "المدفوعات والفواتير",
-      "intro": "فواتير، طرق دفع متعددة، وأرشفة المدفوعات."
-    },
-    "alerts": {
-      "title": "التنبيهات",
-      "intro": "تنبيهات الاشتراك والجلسات الخاصة بالعملاء."
-    },
-    "reports": {
-      "title": "التقارير",
-      "intro": "تقارير مالية وتشفيلية قابلة للتصدير."
-    },
-    "settings": {
-      "title": "الإعدادات",
-      "intro": "اللغة، الصلاحيات، وإعدادات الجيم والفروع."
-    },
-    "trainer": {
-      "title": "نظام المدرّبين",
-      "intro": "لوحة خاصّة للمدرّبين وإدارة العضويات والجلسات."
-    },
-    "gyms": {
-      "title": "الفروع",
-      "intro": "إدارة فروع الجيم والبيانات الأساسية والتواصل."
-    }
-  },
-  "tables": {
-    "expiring": "اشتراكات قريباً من الانتهاء",
-    "expiringDescription": "جدول الاشتراكات التي ستنتهي قريبًا.",
-    "checkins": "تسجيل الحضور",
-    "checkinsDescription": "سجل حضور الأعضاء اليوم.",
-    "members": "قائمة الأعضاء",
-    "coaches": "قائمة المدربين",
-    "invoices": "الفواتير",
-    "permissions": "صلاحيات المستخدمين",
-    "sessions": "جلسات التدريب الخاصة"
-  },
-  "time": {
-    "today": "اليوم",
-    "yesterday": "أمس",
-    "days": "{{count}} يوم",
-    "daysAgo": "منذ {{count}} أيام"
-  },
-  "plan": {
-    "title": "باقه",
-    "activeTitle": "الباقة النشطة",
-    "monthlyTitle": "اشتراك شهري للجيمات",
-    "supportsBranches": "يدعم حتى {{count}} فرع",
-    "manage": "إدارة الباقة"
-  },
-  "dashboard": {
-    "stats": {
-      "totalMembers": "إجمالي الأعضاء",
-      "totalMembersChange": "+8% هذا الشهر",
-      "todayAttendance": "حضور اليوم",
-      "todayAttendanceChange": "+14% اليوم",
-      "expiringSoon": "اشتراكات قريباً من الانتهاء",
-      "expiringSoonChange": "خلال 7 أيام",
-      "monthlyRevenue": "إيرادات الشهر",
-      "monthlyRevenueChange": "+6% عن الشهر الماضي",
-      "activeTrainers": "المدرّبين النشطين",
-      "activeTrainersChange": "+3 هذا الأسبوع",
-      "ptClients": "أعضاء التدريب الخاص",
-      "ptClientsChange": "+11 جلسة اليوم"
-    },
-    "branchPerformance": {
-      "title": "أداء الفروع",
-      "description": "مقارنة فورية بين الفروع والجيمات.",
-      "gyms": "عدد الجيمات",
-      "gymsNote": "قابل للتوسع",
-      "branches": "عدد الفروع",
-      "branchesNote": "تشفيل موحد",
-      "users": "المستخدمو الجيم",
-      "usersNote": "مدير + موظفون",
-      "monthlyRevenue": "إيرادات الشهر",
-      "includesAllActiveBranches": "البيانيات تشمل كل الفروع النشطة."
-    },
-    "quickAlerts": {
-      "title": "تنبيهات سريعة",
-      "description": "أهم التنبيهات التي تحتاج إلى اهتمام فوري.",
-      "badge": "تنبيه",
-      "monthlyExpiring": {
-        "title": "انتهاء اشتراكات شهرية",
-        "description": "18 عضو خلال 72 ساعة"
-      },
-      "ptRemaining": {
-        "title": "جلسات تدريب خاصة متبقية",
-        "description": "5 عضو أقل من 3 جلسات"
-      },
-      "branchPeak": {
-        "title": "فرع مُدَّين نصراً",
-        "description": "ازدهار عالي ووقت الذهاب"
-      }
-    }
-  },
-  "members": {
-    "description": "بحث سريعة وإدارة بيانات الأعضاء.",
-    "filters": {
-      "active": "نشطة",
-      "all": "الكل",
-      "expiring": "قريبة من الانتهاء",
-      "expired": "منتهية"
-    },
-    "status": {
-      "active": "نشطة",
-      "expired": "منتهية",
-      "pending": "معلق"
-    },
-    "table": {
-      "member": "العضو",
-      "plan": "الاشتراك",
-      "status": "الحالة",
-      "lastVisit": "آخر زيارة",
-      "member_name": "اسم العضو"
-    }
-  },
-  "coaches": {
-    "description": "إدارة المدربين والتخصصات ونِسب العمولة.",
-    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا المدرب؟",
-    "editTitle": "تعديل مدرب",
-    "filters": {
-      "all": "الكل",
-      "active": "نشط",
-      "inactive": "غير نشط"
-    },
-    "table": {
-      "userId": "معرّف المستخدم",
-      "gymId": "معرّف الجيم",
-      "specialty": "التخصص",
-      "commissionRate": "العمولة",
-      "name": "الاسم",
-      "status": "الحالة"
-    },
-    "fields": {
-      "userId": "معرّف المستخدم",
-      "gymId": "معرّف الجيم",
-      "specialty": "التخصص",
-      "bio": "نبذة",
-      "commissionRate": "نسبة العمولة"
-    },
-    "placeholders": {
-      "specialty": "مثال: قوة، تخسيس",
-      "bio": "نبذة قصيرة عن المدرب..."
-    }
-  },
-  "plans": {
-    "daily": "يومية",
-    "weekly": "أسبوعية",
-    "monthly": "شهرية",
-    "quarterly": "ربع سنوية",
-    "yearly": "سنوية",
-    "special": "عُرض خاص",
-    "dailyDuration": "صباحية يوم واحدة",
-    "weeklyDuration": "7 أيام",
-    "monthlyDuration": "30 يوم",
-    "quarterlyDuration": "90 يوم",
-    "yearlyDuration": "365 يوم",
-    "specialDuration": "6 شهور",
-    "perks": {
-      "fullDayAccess": "دخول مفتوح للليوم",
-      "instantQr": "QR فوري",
-      "autoRenew": "تجديد تلقائي",
-      "classDiscounts": "خصومات للكورسات",
-      "expiryAlerts": "تنبيهات انتهاء الاشتراك",
-      "attendanceTracking": "تتبع الحضور",
-      "discount10": "خصم 10%",
-      "assessmentSession": "هديية جلسة تقييم",
-      "discount20": "خصم 20%",
-      "priorityBooking": "أولوية الحجز",
-      "freePtSession": "حصة PT مجانية",
-      "retailVouchers": "قسائم متجر"
-    }
-  },
-  "subscriptions": {
-    "description": "إضافة أنواع الاشتراكات والأسعار."
-  },
-  "gyms": {
-    "description": "إدارة فروع ومواقع الجيم والبيانات الأساسية.",
-    "addTitle": "إضافة جيم",
-    "editTitle": "تعديل جيم"
-  },
-  "attendance": {
-    "memberNotFound": "عضو غير موجود",
-    "description": "مسح QR/Barcode مع معرفة بيانات العضو وسجل الدخول للأشتراكات النشطة.",
-    "readyToScan": "جاهز للمسح",
-    "scanSource": "كاميرا أو جهاز مسح باركود",
-    "memberInfo": "بيانات العضو",
-    "remainingDays": "{{count}} يوم متبقية",
-    "todayLog": "سجل اليوم",
-    "status": {
-      "checkedIn": "تم الدخول",
-      "checkedOut": "تم الخروج",
-      "blocked": "مرفوض"
-    },
-    "entryRules": {
-      "title": "قواعد الدخول",
-      "description": "يتم تطبيق هذه القواعد عند محاولة الدخول.",
-      "blockExpired": "منع الدخول إذا انتهت الاشتراك",
-      "preventDuplicate": "منع التكرار في نفس اليوم",
-      "autoCheckout": "الخروج التلقائي بعد انتهاء الوقت"
-    }
-  },
-  "payments": {
-    "description": "ÙÙˆØ§ØªÙŠØ±ØŒ Ø·Ø±Ù‚ Ø¯ÙØ¹ Ù…ØªØ¹Ø¯Ø¯Ø©ØŒ ÙˆØ£Ø±Ø´ÙŠÙ Ù…Ø§Ù„ÙŠ Ø¯Ù‚ÙŠÙ‚.",
-    "methods": {
-      "cash": "ÙƒØ§Ø´",
-      "transfer": "ØªØ­ÙˆÙŠÙ„",
-      "visa": "ÙÙŠØ²Ø§"
-    },
-    "summary": {
-      "todayPayments": {
-        "title": "Ù…Ø¯ÙÙˆØ¹Ø§Øª Ø§Ù„ÙŠÙˆÙ…",
-        "note": "+12% Ø¹Ù† Ø§Ù„Ø£Ù…Ø³"
-      },
-      "pendingInvoices": {
-        "title": "ÙÙˆØ§ØªÙŠØ± Ù…Ø¹Ù„Ù‚Ø©",
-        "note": "ØªØ­ØªØ§Ø¬ Ù…ØªØ§Ø¨Ø¹Ø©"
-      },
-      "averageTicket": {
-        "title": "Ù…ØªÙˆØ³Ø· Ø§Ù„Ø³Ù„Ø©",
-        "note": "Ø¢Ø®Ø± 30 ÙŠÙˆÙ…"
-      }
-    },
-    "table": {
-      "id": "Ø§Ù„Ø±Ù‚Ù…",
-      "member": "Ø§Ù„Ø¹Ø¶Ùˆ",
-      "amount": "Ø§Ù„Ù‚ÙŠÙ…Ø©",
-      "method": "Ø§Ù„Ø·Ø±ÙŠÙ‚Ø©"
-    }
-  },
-  "alerts": {
-    "description": "ØªÙ†Ø¨ÙŠÙ‡Ø§Øª Ø§Ù†ØªÙ‡Ø§Ø¡ Ø§Ù„Ø§Ø´ØªØ±Ø§Ùƒ ÙˆØ§Ù„Ø¬Ù„Ø³Ø§Øª.",
-    "ready": "Ø¬Ø§Ù‡Ø² Ù„Ù„Ø¥Ø±Ø³Ø§Ù„",
-    "channels": {
-      "smsNote": "Ù…Ø¹Ø¯Ù„ Ø§Ù„ØªØ³Ù„ÙŠÙ…",
-      "whatsappNote": "Ù…Ø¹Ø¯Ù„ Ø§Ù„ÙØªØ­",
-      "emailNote": "Ù…Ø¹Ø¯Ù„ Ø§Ù„Ø§Ø³ØªØ¬Ø§Ø¨Ø©"
-    }
-  },
-  "reports": {
-    "export": "ØªØµØ¯ÙŠØ± PDF / Excel",
-    "items": {
-      "attendance": {
-        "title": "ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ø­Ø¶ÙˆØ±",
-        "description": "ÙŠÙˆÙ…ÙŠ ÙˆØ´Ù‡Ø±ÙŠ Ù„ÙƒÙ„ ÙØ±Ø¹"
-      },
-      "subscriptions": {
-        "title": "ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ø§Ø´ØªØ±Ø§ÙƒØ§Øª",
-        "description": "Ø§Ù†ØªÙ‡Ø§Ø¡ ÙˆØªØ¬Ø¯ÙŠØ¯Ø§Øª"
-      },
-      "revenue": {
-        "title": "ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª",
-        "description": "Ø­Ø³Ø¨ Ø§Ù„ÙØ±Ø¹ ÙˆØ§Ù„Ù…ÙˆØ¸Ù"
-      },
-      "trainers": {
-        "title": "ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ù…Ø¯Ø±Ø¨ÙŠÙ†",
-        "description": "Ø¬Ù„Ø³Ø§Øª ÙˆØ¹Ù…Ù„Ø§Ø¡ PT"
-      }
-    },
-    "summary": {
-      "title": "Ù…Ù„Ø®Øµ Ø§Ù„Ø£Ø¯Ø§Ø¡",
-      "description": "Ù…Ù„Ø®Øµ Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª ÙˆØ§Ù„Ø§Ø´ØªØ±Ø§ÙƒØ§Øª.",
-      "renewalRate": {
-        "title": "Ù†Ø³Ø¨Ø© Ø§Ù„ØªØ¬Ø¯ÙŠØ¯",
-        "note": "Ø¢Ø®Ø± 30 ÙŠÙˆÙ…"
-      },
-      "avgAttendance": {
-        "title": "Ù…ØªÙˆØ³Ø· Ø§Ù„Ø­Ø¶ÙˆØ±",
-        "note": "ÙŠÙˆÙ…ÙŠ"
-      },
-      "ptSessions": {
-        "title": "Ø¬Ù„Ø³Ø§Øª PT",
-        "note": "Ø´Ù‡Ø±ÙŠ"
-      }
-    }
-  },
-  "settings": {
-    "gymProfile": {
-      "title": "Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø¬ÙŠÙ…",
-      "subtitle": "Ø§Ù„Ù„ÙˆØ¬ÙˆØŒ Ø§Ù„Ø¹Ù†ÙˆØ§Ù†ØŒ Ø§Ù„Ø¹Ù…Ù„Ø©"
-    },
-    "barcode": {
-      "title": "Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ø¨Ø§Ø±ÙƒÙˆØ¯",
-      "subtitle": "ÙØ§ØµÙ„ Ø²Ù…Ù†ÙŠ Ù„Ù„ØªÙƒØ±Ø§Ø±: 30 Ø¯Ù‚ÙŠÙ‚Ø©"
-    },
-    "permissionsDescription": "ØµÙ„Ø§Ø­ÙŠØ§Øª Ø­Ø³Ø¨ Ø§Ù„Ø¯ÙˆØ±."
-  },
-  "permissions": {
-    "table": {
-      "action": "اكشن",
-      "gymAdmin": "مدير الجيم",
-      "staff": "عضو الطاقم",
-      "trainer": "مدرب"
-    },
-    "actions": {
-      "addMember": "إضافة عضو",
-      "viewAllMembers": "عرض جميع الأعضاء",
-      "barcodeAttendance": "الحضور عبر الباركود",
-      "seeOwnClients": "عرض العملاء الخاصين",
-      "logTrainingSession": "تسجيل جلسة تدريبية",
-      "financialReports": "تقارير مالية",
-      "addNotes": "إضافة ملاحظات"
-    }
-  },
-  "trainer": {
-    "summary": {
-      "myClients": {
-        "title": "Ø¹Ù…Ù„Ø§Ø¦ÙŠ",
-        "note": "Ù†Ø´Ø·"
-      },
-      "remainingSessions": {
-        "title": "Ø¬Ù„Ø³Ø§Øª Ù…ØªØ¨Ù‚ÙŠØ©",
-        "note": "Ù‡Ø°Ø§ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹"
-      },
-      "ptPlans": {
-        "title": "Ø§Ø´ØªØ±Ø§ÙƒØ§Øª PT",
-        "note": "Ù‚Ø§Ø¨Ù„Ø© Ù„Ù„ØªØ¬Ø¯ÙŠØ¯"
-      }
-    },
-    "myClients": {
-      "title": "Ø¹Ù…Ù„Ø§Ø¦ÙŠ",
-      "description": "ÙŠØ±Ù‰ Ø§Ù„Ù…Ø¯Ø±Ø¨ Ø¹Ù…Ù„Ø§Ø¡Ù‡ ÙÙ‚Ø·."
-    },
-    "sessions": {
-      "description": ""
-    },
-    "sessionsCount": "{{count}} جلسات",
-    "goals": {
-      "cutting": "ØªÙ†Ø´ÙŠÙ",
-      "bulking": "ØªØ¶Ø®ÙŠÙ…",
-      "fitness": "Ù„ÙŠØ§Ù‚Ø©"
-    },
-    "sessionLog": {
-      "resistanceLogged": "تم تسجيل مقاومة الجلسة",
-      "weightUpdated": "تم تحديث الوزن +2 كجم",
-      "sessionCanceled": "تم إلغاء الجلسة"
-    }
-  }
+  "submit": "تأكيد",
+  "update": "تحديث",
+  "add": "إضافة",
+  "remove": "إزالة",
+  "search": "بحث",
+  "filter": "تصفية",
+  "export": "تصدير",
+  "import": "استيراد",
+  "upload": "رفع",
+  "download": "تحميل",
+  "print": "طباعة",
+  "select": "تحديد",
+  "reset": "إعادة",
+  "refresh": "تحديث",
+  "back": "رجوع",
+  "next": "التالي",
+  "previous": "السابق",
+  "first": "الأول",
+  "last": "الأخير",
+  "home": "الرئيسية",
+  "profile": "الملف الشخصي",
+  "logout": "تسجيل الخروج",
+  "login": "تسجيل الدخول",
+  "register": "تسجيل",
+  "forgot_password": "نسيت كلمة المرور",
+  "reset_password": "إعادة تعيين كلمة المرور",
+  "change_password": "تغيير كلمة المرور",
+  "confirm_password": "تأكيد كلمة المرور",
+  "admin": "مدير",
+  "employee": "موظف",
+  "coach": "مدرب",
+  "member": "عضو",
+  "full_name": "الاسم الكامل",
+  "phone": "رقم الهاتف",
+  "email": "البريد الالكتروني",
+  "password": "كلمة المرور",
+  "gender": "الجنس",
+  "address": "العنوان",
+  "date_of_birthday": "تاريخ الميلاد",
+  "select_gender": "اختر الجنس",
+  "select_role": "اختر الدور",
+  "male": "ذكر",
+  "female": "انثى",
+  "add_user": "إضافة مستخدم",
+  "update_user": "تحديث مستخدم",
+  "add_member": "إضافة عضو",
+  "update_member": "تحديث عضو",
+  "total_members": "إجمالي الأعضاء",
+  "active_members": "الأعضاء النشطين",
+  "manage_members_desc": "إدارة بيانات الأعضاء وحالتهم الصحية والرياضية.",
+  "search_members_placeholder": "اسحب الـ QR أو ابحث بالاسم...",
+  "scan_to_checkin": "امسح الكود لتسجيل الحضور",
+  "select_user": "اختر المستخدم",
+  "select_user_placeholder": "اختر مستخدماً لربطه",
+  "qr_code": "رمز QR Code",
+  "id_number": "رقم الهوية",
+  "total_coaches": "إجمالي المدربين",
+  "active_coaches": "المدربين النشطين",
+  "add_coach": "إضافة مدرب",
+  "update_coach": "تحديث مدرب",
+  "view_coach": "عرض المدرب",
+  "specialty": "التخصص",
+  "salary": "الراتب",
+  "manage_coaches_desc": "إدارة نخبة المدربين وبيانات أدائهم المهني.",
+  "date_from": "من تاريخ",
+  "date_to": "إلى تاريخ",
+  "total_check_ins": "إجمالي الحضور",
+  "active_now": "نشط حالياً",
+  "attendance_desc": "مراقبة حركة الصالة الرياضية وسجلات دخول الأعضاء في الوقت الفعلي.",
+  "apply_filters": "تطبيق",
+  "date": "التاريخ",
+  "total_plans": "إجمالي الباقات",
+  "active_plans": "الباقات النشطة",
+  "add_plan": "إضافة باقة",
+  "update_plan": "تحديث باقة",
+  "plan_name": "اسم الباقة",
+  "duration_days": "المدة (أيام)",
+  "duration": "المدة",
+  "days": "أيام",
+  "description": "الوصف",
+  "price": "السعر",
+  "check_out": "تسجيل خروج",
+  "manage_plans_desc": "تحديد عضويات النادي، دورات الدفع، وفئات الأسعار.",
+  "performance_intelligence": "ذكاء الأداء",
+  "real_time_metrics": "مقاييس النادي في الوقت الفعلي لـ",
+  "live_load": "الحمل المباشر",
+  "peak_hour": "ساعة الذروة",
+  "capacity": "السعة",
+  "avg_time": "متوسط الوقت",
+  "monthly_income": "الدخل الشهري",
+  "attendance_today": "الحضور اليوم",
+  "target_hit": "تم تحقيق الهدف",
+  "attendance_velocity": "سرعة الحضور",
+  "7_days": "7 أيام",
+  "30_days": "30 يوم",
+  "current": "الحالي",
+  "live_terminal": "المتابعة المباشرة",
+  "view_all_logs": "عرض السجلات",
+  "optimization_report_ready": "تقرير التحسين جاهز",
+  "optimization_desc": "يقترح تحليل الذكاء الاصطناعي فتح منطقة أجهزة الطاقة الثانوية لتقليل أوقات الانتظار بنسبة 14% بناءً على الحمل الحالي.",
+  "review_suggestions": "مراجعة الاقتراحات",
+  "invoice_total": "إجمالي الفاتورة",
+  "customer_details": "بيانات العميل",
+  "invoice_items": "أصناف الفاتورة",
+  "product": "المنتج",
+  "tax": "الضريبة",
+  "subtotal": "المجموع الفرعي",
+  "overall_discount": "الخصم الإجمالي",
+  "search_placeholder": "ابحث هنا...",
+  "no_results": "لا توجد نتائج مطابقة",
+  "final_total": "الإجمالي النهائي",
+  "summary": "ملخص الفاتورة",
+  "confirm_invoice": "تأكيد واستخراج الفاتورة",
+  "no_items_yet": "لم يتم إضافة أصناف بعد",
+  "sales_report": "تقرير المبيعات",
+  "customer": "العميل",
+  "invoice_id": "رقم الفاتورة",
+  "invoice_date": "تاريخ الفاتورة",
+  "invoice_info": "بيانات الفاتورة",
+  "sold_qty": "الكمية المباعة",
+  "refunded_qty": "تم ارجاعه",
+  "remaining_qty": "المتبقي",
+  "refund_qty": "كمية المرتجع",
+  "refund_summary": "ملخص المرتجع",
+  "total_refund": "إجمالي المرتجع",
+  "items_refund_total": "إجمالي الأصناف",
+  "discount_deduction": "خصم الفاتورة (تناسبي)",
+  "net_refund": "صافي المرتجع",
+  "refund_page_desc": "إدارة مرتجعات الفواتير الجزئية والكلية وتحديث المخزون.",
+  "select_invoice": "اختر الفاتورة",
+  "choose_invoice": "اختر رقم الفاتورة...",
+  "return_items": "أصناف المرتجع",
+  "refund_reason": "سبب المرتجع",
+  "refund_reason_placeholder": "لماذا يتم إرجاع هذه الأصناف؟",
+  "process_refund": "تأكيد المرتجع",
+  "refund_disclaimer": "ملاحظة: سيتم تحديث كميات المخزون فور تأكيد المرتجع.",
+  "no_invoice_selected": "برجاء اختيار فاتورة أولاً لبدء عملية الارتجاع",
+  "search_invoice_placeholder": "ابحث برقم الفاتورة أو اسم العميل...",
+  "no_results_found": "لا توجد نتائج مطابقة",
+  "total_invoices": "إجمالي الفواتير",
+  "total_sales": "إجمالي المبيعات",
+  "select_customer":"اختر العميل",
+  "choose_user":"اختر المستخدم",
+  "select_product":"اختر المنتج",
+  "discount":"الخصم",
+  "total":"الإجمالي",
+  "remaining_balance":"المبلغ المتبقي",
+  "net_price":"السعر الصافي",
+  "no_data":"لا يوجد بيانات",
+  "sales_return_invoice":"فاتورة مرتجع المبيعات",
+  "partially_refunded":"مرتجع جزئي",
+  "fully_refunded":"مرتجع كلي",
+  "refunded":"تم الارتجاع",
+  "refund_invoice":"فاتورة مرتجع",
+  "invoice_details":"تفاصيل الفاتورة",
+  "cash_day": "يومية الصندوق",
+  "cash_report": "تقرير الصندوق",
+  "cash_report_desc": "تتبع حركات الصندوق اليومية والواردات والمنصرفات لمراقبة الحالة المالية للجيم.",
+  "type": "النوع",
+  "amount": "القيمة",
+  "running_balance": "إجمالي القيمة",
+  "current_balance": "الرصيد الحالي",
+  "total_income": "إجمالي الوارد",
+  "total_expense": "إجمالي المنصرف",
+  "cash_balance": "رصيد الخزينة",
+  "from_date": "من تاريخ",
+  "to_date": "إلى تاريخ",
+  "expense": "منصرف",
+  "sale": "مبيعات",
+  "refund": "مرتجع",
+  "active_subscription": "الاشتراك نشط",
+  "manage_features": "إدارة مميزات الباقة",
+  "feature_used_success": "تم تسجيل استخدام الميزة بنجاح!",
+  "limit_reached": "تم استنفاد الرصيد",
+  "use": "استخدام",
+  "analytics": "التحليلات",
+  "last_30_days": "آخر 30 يوم",
+  "export_report": "تصدير تقرير",
+  "revenue_growth": "نمو الدخل",
+  "yearly_overview": "نظرة عامة سنوية",
+  "membership_plans": "باقات العضوية",
+  "active_distribution": "توزيع المشتركين النشطين",
+  "weekly_stats": "إحصائيات أسبوعية",
+  "recent_check_ins": "تسجيلات الدخول الأخيرة",
+  "live_now": "مباشر الآن",
+  "gender_required": "برجاء اختيار الجنس",
+  "role_required": "برجاء اختيار الدور",
+  "active_subscriptions": "الاشتراكات النشطة",
+  "recent_users": "المستخدمين الجدد",
+  "no_recent_activity": "لا توجد نشاطات حديثة"
 }

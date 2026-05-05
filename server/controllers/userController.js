@@ -1,5 +1,6 @@
 import { pool } from "../models/db.js";
 import { deleteImageFromCloudinary } from "../utils/deleteImageFromCloudinary.js";
+import generateHashedPassword from "../utils/generateHashedPassword.js";
 
 
 const getAllUsers = async(req,res)=>{
@@ -7,20 +8,18 @@ const getAllUsers = async(req,res)=>{
     const branchId = user.branchId;
     try {
         const result = await pool.query("SELECT * FROM users WHERE branch_id = $1", [branchId]);
-        if(result.rows.length === 0){
-            return res.status(404).json({message:"لا يوجد مستخدمين",status:false})
-        }
-        res.status(200).json(result.rows);
+        
+        return res.status(200).json(result.rows);
     } catch (error) {
         res.status(500).json({message:error.message,status:false})
     }
 }
 const createUser = async(req,res)=>{
     const {gymId,branchId} = req.user;
-    const {fullName,email,password,phone,address,role,isActive,gender,dateOfBirth} = req.body;
+    const {full_name,email,password,phone,address,role,is_active,gender,date_of_birthday} = req.body;
     const photoUrl = req.file ? req.file.path : null;
 
-    if(!fullName || !email || !phone || !address || !role || isActive === undefined || !dateOfBirth || !gender){
+    if(!full_name || !email || !phone || !address || !role || is_active === undefined || !date_of_birthday || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
     try {
@@ -28,8 +27,9 @@ const createUser = async(req,res)=>{
         if(existingUser.rows.length > 0){
             return res.status(400).json({message:"المستخدم موجود بالفعل",status:false})
         }
+        const hashedPassword = await generateHashedPassword(password);
         const result = await pool.query("INSERT INTO users (full_name,email,password,phone,address,branch_id,gym_id,role,is_active,gender,date_of_birthday,photo) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *",
-        [fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,photoUrl])
+        [full_name,email,hashedPassword,phone,address,branchId,gymId,role,is_active,gender,date_of_birthday,photoUrl])
         if(result.rows.length === 0){
             return res.status(400).json({message:"فشل إنشاء المستخدم",status:false})
         }
@@ -62,9 +62,9 @@ const updateUser = async(req,res)=>{
     if(!id){
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
-    const {fullName,email,password,phone,address,role,isActive,gender,dateOfBirth} = req.body;
+    const {full_name,email,password,phone,address,role,is_active,gender,date_of_birthday} = req.body;
     const photoUrl = req.file ? req.file.path : null;
-    if(!fullName || !email || !phone || !address || !role || isActive === undefined || !dateOfBirth || !gender){
+    if(!full_name || !email || !phone || !address || !role || is_active === undefined || !date_of_birthday || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
     try {
@@ -85,8 +85,12 @@ const updateUser = async(req,res)=>{
                 await deleteImageFromCloudinary(oldPhotoUrl);
             }
         }
+        let hashedPassword;
+        if(password){
+             hashedPassword = await generateHashedPassword(password);
+        }
         const result = await pool.query("UPDATE users SET full_name=$1,email=$2,password=$3,phone=$4,address=$5,branch_id=$6,gym_id=$7,role=$8,is_active=$9,gender=$10,date_of_birthday=$11,photo=$12 WHERE id = $13 RETURNING *",
-        [fullName,email,password,phone,address,branchId,gymId,role,isActive,gender,dateOfBirth,finalPhotoUrl,id]);
+        [full_name,email,hashedPassword || userResult.rows[0].password,phone,address,branchId,gymId,role,is_active,gender,date_of_birthday,finalPhotoUrl,id]);
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدم بهذا المعرف",status:false})
         }

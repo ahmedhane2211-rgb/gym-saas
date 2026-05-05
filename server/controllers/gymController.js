@@ -23,31 +23,15 @@ const createGym = async (req, res) => {
   if (!name?.trim())
     return res.status(400).json({ message: "الرجاء إدخال الاسم", status: false });
   
-  const id = uuidv4();
-  const tenantId = uuidv4();
   const now = new Date();
 
   try {
     await pool.query("BEGIN");
-    
-    const tenant = await pool.query(
-      `INSERT INTO tenant (id, created_at) VALUES ($1,$2) RETURNING *`,
-      [tenantId, now]
-    );
-    
-    if (!tenant.rows || tenant.rows.length === 0) {
-      await pool.query("ROLLBACK");
-      return res.status(500).json({
-        message: "فشل إنشاء التينانت، تم التراجع عن العملية",
-        status: false,
-      });
-    }
-
     const result = await pool.query(
       `INSERT INTO gym (
-        id, tenant_id, logo, phone, name, is_active, created_at, updated_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
-      [id, tenantId, logo, phone, name, isActive, now, now]
+         logo, phone, name, is_active, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+      [logo, phone, name, isActive, now, now]
     );
     
     if (!result.rows || result.rows.length === 0) {
@@ -63,7 +47,6 @@ const createGym = async (req, res) => {
     res.status(201).json({
       data: {
         gym: result.rows[0],
-        tenant: tenant.rows[0],
       },
       status: true,
       message: "تم إنشاء الجيم بنجاح",

@@ -13,18 +13,17 @@ const getAllBranches = async (req, res) => {
 const createBranch = async (req, res) => {
   const {
     address,
-    gym_id,
     phone,
     name,
     isActive,
   } = req.body;
-  console.log(req.body)
+  const {gymId} = req.user;
   if (!address) {
     return res
       .status(400)
       .json({ message: "الرجاء ملء جميع الحقول (العنوان)", status: false });
   }
-  if (!gym_id) {
+  if (!gymId) {
     return res
       .status(400)
       .json({ message: "الرجاء ملء جميع الحقول (الجيم)", status: false });
@@ -51,7 +50,7 @@ const createBranch = async (req, res) => {
 
   try {
       const isGymExist = await pool.query(
-        `SELECT * FROM gym WHERE id = $1`,[gym_id]
+        `SELECT * FROM gym WHERE id = $1`,[gymId]
       );
       if (isGymExist.rows.length === 0) {
         return res
@@ -62,7 +61,7 @@ const createBranch = async (req, res) => {
         `INSERT INTO branches (
           id,phone,address,gym_id,name,is_active,created_at,updated_at
         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
-        [id, phone,address,gym_id, name, isActive, createdAt, updatedAt],
+        [id, phone,address,gymId, name, isActive, createdAt, updatedAt],
       );
       if (result.rows.length === 0) {
         return res

@@ -10,6 +10,14 @@ import branchRouter from "./routes/branchRoute.js";
 import subscribeRouter from "./routes/subscribeRoute.js";
 import coachRouter from "./routes/coachRoute.js";
 import planRouter from "./routes/plansRoute.js";
+import attendanceRouter from "./routes/attendanceRoute.js";
+import featuresRouter from "./routes/featuresRoute.js";
+import featuresPlanRouter from "./routes/FeaturesPlanRoute.js";
+import productsRouter from "./routes/productsRoute.js";
+import invoiceRouter from "./routes/invoiceRoute.js";
+import refundRouter from "./routes/refundRoute.js";
+import cashReportRouter from "./routes/cashReportRoute.js";
+import dashboardRouter from "./routes/dashboardRoute.js";
 
 
 const app = express();
@@ -26,6 +34,14 @@ app.use("/api/coaches",coachRouter);
 app.use("/api/auth",authRouter);
 app.use("/api/plans",planRouter);
 app.use("/api/subscribe",subscribeRouter);
+app.use("/api/attendance",attendanceRouter);
+app.use("/api/features",featuresRouter);
+app.use("/api/features-plan",featuresPlanRouter);
+app.use("/api/products",productsRouter);
+app.use("/api/invoices",invoiceRouter);
+app.use("/api/refunds",refundRouter);
+app.use("/api/cash-report",cashReportRouter);
+app.use("/api/dashboard",dashboardRouter);
 
 
 // Start the server

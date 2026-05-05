@@ -1,500 +1,274 @@
 {
-  "address": "Address",
-  "branch_name": "Branch name",
-  "created_at": "Created at",
-  "lastlogin": "Last login",
-  "gym_branch": "Gym Branch",
-  "gym_name": "Gym Name",
-  "gym_address": "Gym Address",
-  "selectRole": "Select role",
-  "user": {
-    "addUser": "Add new user",
-    "editUser": "Edit user",
-    "title": "Users"
-  },
-  "all": "All",
-  "manager": "Manager",
-  "price_paid ": "Price paid",
-  "payment_method": "Payment method",
-  "member": "Member",
-  "select_member": "Select member",
-  "select_plan": "Select plan",
-  "start_date": "Start date",
-  "end_date": "End date",
-  "coach": "Coach",
-  "admin": "Admin",
-  "staff": "Staff",
-  "role": "Role",
-  "confirmDelete": "Are you sure you want to delete this plan?",
-  "plan_name": " Plan name",
-  "plan_price": " Plan price",
-  "plan_duration": " Plan duration",
-  "plan_perks": " Plan perks",
-  "plan_active": " Active plan",
-  "plan_activeHint": "Visible for new subscriptions.",
-  "show_details": "Show details",
-  "editMember": "Edit member",
-  "editCoach": "Edit coach",
-  "change_photo": "Change photo",
-  "upload_photo": "Upload photo",
-  "cancel": "Cancel",
-  "save": "Save",
-  "back": "Back",
-  "update": "Update",
-  "delete": "Delete",
-  "add": "Add",
-  "edit": "Edit",
-  "isActive": "Active",
+  
+  "dashboard": "Dashboard",
+  "users": "Users",
+  "community": "Community",
+  "members": "Members",
+  "coaches": "Coaches",
+  "financials": "Financials",
+  "expenses": "Expenses",
+  "income": "Income",
+  "cash_day": "Cash Day",
+  "sales_invoice": "Sales Invoice",
+  "products": "Products",
+  "inventory":"Inventory",
+  "return_invoice": "Return Invoice",
+  "add_product": "Add Product",
+  "purchase_price": "Purchase Price",
+  "update_product": "Update Product",
+  "product_name": "Product Name",
+  "product_details": "Product Details",
+  "product_image": "Product Image",
+  "no_image": "No Image",
+  "color": "Color",
+  "size": "Size",
+  "quantity": "Quantity",
+  "in_stock": "In Stock",
+  "total_products": "Total Products",
+  "low_stock": "Low Stock",
+  "search_products": "Search Products...",
+  "branches": "Branches",
+  "add_branch": "Add New Branch",
+  "update_branch": "Update Branch",
+  "branch_name": "Branch Name",
+  "total_branches": "Total Branches",
+  "active_branches": "Active Branches",
+  "operations": "Operations",
+  "subscription_details": "Subscription Details",
+  "active_plan": "Active Plan",
+  "no_plan": "No Plan",
+  "plan": "Plan",
+  "expires_at": "Expires At",
+  "no_active_subscription": "No active subscription found",
+  "member_subscribed_success": "Member added and subscription activated!",
+  "add_subscription": "Add Subscription",
+  "activate_subscription": "Activate Subscription",
+  "select_plan": "Select Plan",
+  "start_date": "Start Date",
+  "end_date": "End Date",
+  "skip": "Skip",
+  "subscription_success": "Subscription activated successfully",
+  "plans": "Plans",
+  "plan_details": "Plan Details",
+  "included_features": "Included Features",
+  "features": "Features",
+  "add_feature": "Add Feature",
+  "update_feature": "Update Feature",
+  "feature_name": "Feature Name",
+  "plan_features": "Plan Features",
+  "select_feature": "Select Feature",
+  "attendance": "Attendance",
+  "settings": "Settings",
+  "new_member": "New Member",
+  "total_users": "Total Users",
+  "active_today": "Active Today",
+  "manage_users": "Manage users data and membership status for the community.",
+  "search_command": "Search Command...",
+  "check_in": "Check-In",
+  "add_new": "Add New",
+  "filters": "Filters",
+  "export_csv": "Export CSV",
   "active": "Active",
   "inactive": "Inactive",
-  "userId": "User ID",
-  "gymId": "Gym ID",
-  "specialty": "Specialty",
-  "bio": "Bio",
-  "commissionRate": "Commission rate",
-  "fullName": "Full name",
-  "email": "Email",
+  "member_details": "Member Details",
+  "coach_details": "Coach Details",
+  "status": "Status",
+  "role": "Role",
+  "created_at": "Created At",
+  "actions": "Actions",
+  "edit": "Edit",
+  "delete": "Delete",
+  "view": "View",
+  "close": "Close",
+  "save": "Save",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "update": "Update",
+  "add": "Add",
+  "remove": "Remove",
+  "search": "Search",
+  "filter": "Filter",
+  "export": "Export",
+  "import": "Import",
+  "upload": "Upload",
+  "download": "Download",
+  "print": "Print",
+  "select": "Select",
+  "reset": "Reset",
+  "refresh": "Refresh",
+  "back": "Back",
+  "next": "Next",
+  "previous": "Previous",
+  "first": "First",
+  "last": "Last",
+  "home": "Home",
+  "profile": "Profile",
+  "logout": "Logout",
+  "login": "Login",
+  "register": "Register",
+  "forgot_password": "Forgot Password",
+  "reset_password": "Reset Password",
+  "change_password": "Change Password",
+  "confirm_password": "Confirm Password",
+  "admin": "Admin",
+  "employee": "Employee",
+  "coach": "Coach",
+  "member": "Member",
+  "full_name": "Full Name",
   "phone": "Phone",
-  "logo": "Logo",
-  "description": "Description",
+  "email": "Email",
+  "password": "Password",
   "gender": "Gender",
-  "barCode": "Barcode",
-  "dateOfBirth": "Date of birth",
-  "number": "Number",
-  "action": "Actions",
+  "address": "Address",
+  "date_of_birthday": "Date of Birthday",
+  "select_gender": "Select Gender",
+  "select_role": "Select Role",
   "male": "Male",
   "female": "Female",
-  "save": "Save",
-  "saving": "Saving...",
-  "update": "Update",
-  "updating": "Updating...",
-  "cancel": "Cancel",
-  "loading": "Loading",
-  "noData": "No data available",
-  "preview": "Preview",
-  "app": {
-    "name": "GymPulse Cloud",
-    "tagline": "Multi-gym, multi-branch SaaS platform"
-  },
-  "auth": {
-    "required": "This field is required",
-    "invalidEmail": "Please enter a valid email address",
-    "passwordMinLength": "Password must be at least 6 characters",
-    "passwordMismatch": "Passwords do not match",
-    "nameMinLength": "Name must be at least 3 characters",
-    "or": "OR",
-    "loggingIn": "Logging in...",
-    "registering": "Creating account...",
-    "login": {
-      "title": "Welcome Back",
-      "subtitle": "Sign in to your gym management account",
-      "button": "Sign In",
-      "link": "Sign in here"
-    },
-    "register": {
-      "title": "Get Started",
-      "subtitle": "Create your gym management account",
-      "button": "Create Account",
-      "link": "Create account"
-    },
-    "noAccount": "Don't have an account?",
-    "haveAccount": "Already have an account?",
-    "password": "Password",
-    "confirmPassword": "Confirm Password"
-  },
-  "language": {
-    "switchLanguage": "Arabic",
-    "quarterlyUnlimited": {
-      "name": "Quarterly Unlimited",
-      "description": "Unlimited access to all gym facilities for three months.",
-      "price": "1200",
-      "durationDays": "90 days",
-      "isActive": "Active"
-    }
-  },
-  "switchToArabic": "العربيه",
-  "labels": {
-    "navigation": "Navigation",
-    "saasBadge": "Multi-gym SaaS",
-    "multiBranch": "Multi-branch",
-    "multiUser": "Multi-user",
-    "gym": "Gym",
-    "branch": "Branch",
-    "user": "You: Gym admin"
-  },
-  "common": {
-    "searchPlaceholder": "Search members, invoices, sessions..."
-  },
-  "actions": {
-    "addSubscriber": "Add subscriber",
-    "addGym": "Add Branch",
-    "export": "Quick export",
-    "newMember": "New member",
-    "newCoach": "New coach",
-    "startScan": "Start scanning",
-    "addPlan": "Add plan",
-    "sendAlerts": "Send alerts",
-    "updateSettings": "Save settings"
-  },
-  "pages": {
-    "users": {
-      "title": "Users",
-      "intro": "Manage gym staff, roles, and permissions."
-    },
-    "coaches": {
-      "title": "Coaches",
-      "intro": "Trainer-specific dashboard for managing members and sessions."
-    },
-    "dashboard": {
-      "title": "Dashboard",
-      "intro": "Operational overview for every gym and branch today."
-    },
-    "members": {
-      "title": "Members",
-      "intro": "Manage members, search, and auto-generate barcodes."
-    },
-    "subscriptions": {
-      "title": "Subscriptions",
-      "intro": "Plan types, member links, and discounts."
-    },
-    "attendance": {
-      "title": "Barcode Attendance",
-      "intro": "Barcode check-ins and auto-block expired passes."
-    },
-    "payments": {
-      "title": "Payments & Invoices",
-      "intro": "Invoices, multi-method payments, and clean financial logs."
-    },
-    "alerts": {
-      "title": "Alerts",
-      "intro": "Subscription and session alerts across channels."
-    },
-    "reports": {
-      "title": "Reports",
-      "intro": "Exportable financial and operational reporting."
-    },
-    "settings": {
-      "title": "Settings",
-      "intro": "Languages, permissions, and gym configuration."
-    },
-    "trainer": {
-      "title": "Trainer System",
-      "intro": "Trainer dashboard with clients and sessions."
-    },
-    "gyms": {
-      "title": "Branches",
-      "intro": "Manage gym branches, locations, and contact information."
-    }
-  },
-  "tables": {
-    "expiring": "Expiring subscriptions",
-    "expiringDescription": "Renew before expiration.",
-    "checkins": "Latest check-ins",
-    "checkinsDescription": "Today attendance log.",
-    "members": "Members list",
-    "coaches": "Coaches list",
-    "invoices": "Latest invoices",
-    "permissions": "Permissions matrix",
-    "sessions": "Trainer session log"
-  },
-  "time": {
-    "today": "Today",
-    "yesterday": "Yesterday",
-    "days": "{{count}} days",
-    "daysAgo": "{{count}} days ago"
-  },
-  "plan": {
-    "title": "Plan",
-    "activeTitle": "Active plan",
-    "monthlyTitle": "Monthly subscription for gyms",
-    "supportsBranches": "Supports up to {{count}} branches",
-    "manage": "Manage plan"
-  },
-  "dashboard": {
-    "stats": {
-      "totalMembers": "Total members",
-      "totalMembersChange": "+8% this month",
-      "todayAttendance": "Today attendance",
-      "todayAttendanceChange": "+14% today",
-      "expiringSoon": "Expiring soon",
-      "expiringSoonChange": "within 7 days",
-      "monthlyRevenue": "Monthly revenue",
-      "monthlyRevenueChange": "+6% MoM",
-      "activeTrainers": "Active trainers",
-      "activeTrainersChange": "+3 this week",
-      "ptClients": "PT clients",
-      "ptClientsChange": "+11 sessions today"
-    },
-    "branchPerformance": {
-      "title": "Branch performance",
-      "description": "Real-time comparison across gyms and branches.",
-      "gyms": "Gyms",
-      "gymsNote": "Scalable",
-      "branches": "Branches",
-      "branchesNote": "Unified ops",
-      "users": "Users",
-      "usersNote": "Admins + staff",
-      "monthlyRevenue": "Monthly revenue",
-      "includesAllActiveBranches": "Includes all active branches."
-    },
-    "quickAlerts": {
-      "title": "Quick alerts",
-      "description": "Events that need attention.",
-      "badge": "Alert",
-      "monthlyExpiring": {
-        "title": "Monthly plans expiring",
-        "description": "18 members within 72 hours"
-      },
-      "ptRemaining": {
-        "title": "PT sessions remaining",
-        "description": "5 clients below 3 sessions"
-      },
-      "branchPeak": {
-        "title": "Nasr City branch",
-        "description": "High peak usage"
-      }
-    }
-  },
-  "members": {
-    "description": "Quick search and member management.",
-    "filters": {
-      "active": "Active",
-      "all": "All",
-      "expiring": "Expiring",
-      "expired": "Expired"
-    },
-    "status": {
-      "active": "Active",
-      "expired": "Expired",
-      "pending": "Pending"
-    },
-    "table": {
-      "member": "Member",
-      "plan": "Plan",
-      "status": "Status",
-      "lastVisit": "Last visit"
-    }
-  },
-  "coaches": {
-    "description": "Manage coaches, specialties, and commission rates.",
-    "confirmDelete": "Are you sure you want to delete this coach?",
-    "editTitle": "Edit coach",
-    "filters": {
-      "all": "All",
-      "active": "Active",
-      "inactive": "Inactive"
-    },
-    "table": {
-      "userId": "User ID",
-      "gymId": "Gym ID",
-      "specialty": "Specialty",
-      "commissionRate": "Commission",
-      "name": "Name",
-      "status": "Status"
-    },
-    "fields": {
-      "userId": "User ID",
-      "gymId": "Gym ID",
-      "specialty": "Specialty",
-      "bio": "Bio",
-      "commissionRate": "Commission rate"
-    },
-    "placeholders": {
-      "specialty": "e.g. Strength, Weight Loss",
-      "bio": "Short bio about the coach..."
-    }
-  },
-  "plans": {
-    "daily": "Daily",
-    "weekly": "Weekly",
-    "monthly": "Monthly",
-    "quarterly": "Quarterly",
-    "yearly": "Yearly",
-    "special": "Special offer",
-    "dailyDuration": "1-day access",
-    "weeklyDuration": "7 days",
-    "monthlyDuration": "30 days",
-    "quarterlyDuration": "90 days",
-    "yearlyDuration": "365 days",
-    "specialDuration": "6 months",
-    "perks": {
-      "fullDayAccess": "Full-day access",
-      "instantQr": "Instant QR",
-      "autoRenew": "Auto-renew",
-      "classDiscounts": "Class discounts",
-      "expiryAlerts": "Expiry alerts",
-      "attendanceTracking": "Attendance tracking",
-      "discount10": "10% discount",
-      "assessmentSession": "Assessment session",
-      "discount20": "20% discount",
-      "priorityBooking": "Priority booking",
-      "freePtSession": "Free PT session",
-      "retailVouchers": "Retail vouchers"
-    }
-  },
-  "gyms": {
-    "description": "Manage gym branches, locations, and contact information.",
-    "addTitle": "Add Branch",
-    "editTitle": "Edit Branch"
-  },
-  "subscriptions": {
-    "description": "Manage subscription types and pricing."
-  },
-  "attendance": {
-    "memberNotFound": "Member not found",
-    "description": "QR/Barcode scan with auto-blocking.",
-    "readyToScan": "Ready to scan",
-    "scanSource": "Camera or barcode device",
-    "memberInfo": "Member info",
-    "remainingDays": "{{count}} days remaining",
-    "todayLog": "Today log",
-    "status": {
-      "checkedIn": "Checked in",
-      "checkedOut": "Checked out",
-      "blocked": "Blocked"
-    },
-    "entryRules": {
-      "title": "Entry rules",
-      "description": "Applied automatically.",
-      "blockExpired": "Block entry if subscription expired",
-      "preventDuplicate": "Prevent duplicate check-ins",
-      "autoCheckout": "Auto check-out"
-    }
-  },
-  "payments": {
-    "description": "Invoices archive and payments.",
-    "methods": {
-      "cash": "Cash",
-      "transfer": "Transfer",
-      "visa": "Visa"
-    },
-    "summary": {
-      "todayPayments": {
-        "title": "Today payments",
-        "note": "+12% vs yesterday"
-      },
-      "pendingInvoices": {
-        "title": "Pending invoices",
-        "note": "Need follow-up"
-      },
-      "averageTicket": {
-        "title": "Average ticket",
-        "note": "Last 30 days"
-      }
-    },
-    "table": {
-      "id": "ID",
-      "member": "Member",
-      "amount": "Amount",
-      "method": "Method"
-    }
-  },
-  "alerts": {
-    "description": "Subscription and session alerts.",
-    "ready": "Ready",
-    "channels": {
-      "smsNote": "Delivery rate",
-      "whatsappNote": "Open rate",
-      "emailNote": "Response rate"
-    }
-  },
-  "reports": {
-    "export": "Export PDF / Excel",
-    "items": {
-      "attendance": {
-        "title": "Attendance report",
-        "description": "Daily & monthly per branch"
-      },
-      "subscriptions": {
-        "title": "Subscription report",
-        "description": "Expirations & renewals"
-      },
-      "revenue": {
-        "title": "Revenue report",
-        "description": "By branch and staff"
-      },
-      "trainers": {
-        "title": "Trainer report",
-        "description": "PT sessions & clients"
-      }
-    },
-    "summary": {
-      "title": "Performance summary",
-      "description": "Revenue and subscription summary.",
-      "renewalRate": {
-        "title": "Renewal rate",
-        "note": "Last 30 days"
-      },
-      "avgAttendance": {
-        "title": "Avg attendance",
-        "note": "per day"
-      },
-      "ptSessions": {
-        "title": "PT sessions",
-        "note": "monthly"
-      }
-    }
-  },
-  "settings": {
-    "gymProfile": {
-      "title": "Gym profile",
-      "subtitle": "Logo, address, currency"
-    },
-    "barcode": {
-      "title": "Barcode settings",
-      "subtitle": "Duplicate window: 30 mins"
-    },
-    "permissionsDescription": "Role-based permissions."
-  },
-  "permissions": {
-    "table": {
-      "action": "Action",
-      "gymAdmin": "Gym admin",
-      "staff": "Staff",
-      "trainer": "Trainer"
-    },
-    "actions": {
-      "addMember": "Add member",
-      "viewAllMembers": "View all members",
-      "barcodeAttendance": "Barcode attendance",
-      "seeOwnClients": "See own clients",
-      "logTrainingSession": "Log training session",
-      "financialReports": "Financial reports",
-      "addNotes": "Add notes"
-    }
-  },
-  "trainer": {
-    "summary": {
-      "myClients": {
-        "title": "My clients",
-        "note": "active"
-      },
-      "remainingSessions": {
-        "title": "Remaining sessions",
-        "note": "this week"
-      },
-      "ptPlans": {
-        "title": "PT plans",
-        "note": "renewable"
-      }
-    },
-    "myClients": {
-      "title": "My clients",
-      "description": "Trainer sees only assigned clients."
-    },
-    "sessions": {
-      "description": "Log sessions and notes."
-    },
-    "sessionsCount": "{{count}} sessions",
-    "goals": {
-      "cutting": "Cutting",
-      "bulking": "Bulking",
-      "fitness": "Fitness"
-    },
-    "sessionLog": {
-      "resistanceLogged": "Resistance session logged",
-      "weightUpdated": "Weight updated +2kg",
-      "sessionCanceled": "Session canceled"
-    }
-  }
+  "add_user": "Add User",
+  "update_user": "Update User",
+  "add_member": "Add Member",
+  "update_member": "Update Member",
+  "total_members": "Total Members",
+  "active_members": "Active Members",
+  "manage_members_desc": "Manage members data and their performance status.",
+  "search_members_placeholder": "Scan QR or search by name...",
+  "scan_to_checkin": "Scan this code to check-in",
+  "select_user": "Select User",
+  "select_user_placeholder": "Choose a user to link",
+  "qr_code": "QR Code",
+  "id_number": "ID Number",
+  "total_coaches": "Total Coaches",
+  "active_coaches": "Active Coaches",
+  "add_coach": "Add Coach",
+  "update_coach": "Update Coach",
+  "view_coach": "View Coach",
+  "specialty": "Specialty",
+  "salary": "Salary",
+  "manage_coaches_desc": "Manage elite trainers and their professional performance data.",
+  "date_from": "Date From",
+  "date_to": "Date To",
+  "total_check_ins": "Total Check-ins",
+  "active_now": "Active Now",
+  "attendance_desc": "Monitor real-time gym traffic and member entry logs.",
+  "apply_filters": "Apply",
+  "date": "Date",
+  "total_plans": "Total Plans",
+  "active_plans": "Active Plans",
+  "add_plan": "Add Plan",
+  "update_plan": "Update Plan",
+  "plan_name": "Plan Name",
+  "duration_days": "Duration (Days)",
+  "duration": "Duration",
+  "days": "Days",
+  "description": "Description",
+  "price": "Price",
+  "check_out": "Check Out",
+  "manage_plans_desc": "Define gym memberships, billing cycles and pricing tiers.",
+  "performance_intelligence": "Performance Intelligence",
+  "real_time_metrics": "Real-time gym metrics for",
+  "live_load": "Live Load",
+  "peak_hour": "Peak Hour",
+  "capacity": "Capacity",
+  "avg_time": "Avg. Time",
+  "monthly_income": "Monthly Income",
+  "attendance_today": "Attendance Today",
+  "target_hit": "Target Hit",
+  "attendance_velocity": "Attendance Velocity",
+  "7_days": "7 Days",
+  "30_days": "30 Days",
+  "current": "Current",
+  "live_terminal": "Live Terminal",
+  "view_all_logs": "View All Logs",
+  "optimization_report_ready": "Optimization Report Ready",
+  "optimization_desc": "Our AI analysis suggests opening the secondary power rack zone to reduce wait times by 14% based on current load.",
+  "review_suggestions": "Review System Suggestions",
+  "invoice_total": "Invoice Total",
+  "customer_details": "Customer Details",
+  "invoice_items": "Invoice Items",
+  "product": "Product",
+  "tax": "Tax",
+  "subtotal": "Subtotal",
+  "overall_discount": "Overall Discount",
+  "search_placeholder": "Search here...",
+  "no_results": "No results found",
+  "final_total": "Grand Total",
+  "summary": "Invoice Summary",
+  "confirm_invoice": "Confirm & Generate Invoice",
+  "no_items_yet": "No items added yet",
+  "sales_report": "Sales Report",
+  "customer": "Customer",
+  "invoice_id": "Invoice ID",
+  "invoice_date": "Invoice Date",
+  "invoice_info": "Invoice Information",
+  "sold_qty": "Sold Qty",
+  "refunded_qty": "Refunded",
+  "remaining_qty": "Remaining",
+  "refund_qty": "Refund Qty",
+  "refund_summary": "Refund Summary",
+  "total_refund": "Total Refund",
+  "items_refund_total": "Items Subtotal",
+  "discount_deduction": "Overall Discount Deduction",
+  "net_refund": "Net Refund",
+  "refund_page_desc": "Manage partial and full invoice returns and update inventory stock.",
+  "select_invoice": "Select Invoice",
+  "choose_invoice": "Choose invoice number...",
+  "return_items": "Return Items",
+  "refund_reason": "Refund Reason",
+  "refund_reason_placeholder": "Why are these items being returned?",
+  "process_refund": "Process Refund",
+  "refund_disclaimer": "Note: Inventory stock levels will be updated immediately upon confirmation.",
+  "no_invoice_selected": "Please select an invoice first to start the return process",
+  "search_invoice_placeholder": "Search by invoice # or customer...",
+  "no_results_found": "No matching invoices found",
+  "total_invoices": "Total Invoices",
+  "total_sales": "Total Sales",
+  "select_customer":"Select Customer",
+  "choose_user":"Choose User",
+  "select_product":"Select Product",
+  "discount":"Discount",
+  "total":"Total",
+  "remaining_balance":"Remaining Balance",
+  "net_price":"Net Price",
+  "no_data":"No Data",
+  "sales_return_invoice":"Sales Return Invoice",
+  "partially_refunded":"Partially Refunded",
+  "fully_refunded":"Fully Refunded",
+  "refunded":"Refunded",
+  "refund_invoice":"Refund Invoice",
+  "invoice_details":"Invoice Details",
+  "cash_report": "Cash Report",
+  "cash_report_desc": "Track daily cash flow, income, and expenses to monitor your gym's financial health.",
+  "type": "Type",
+  "amount": "Value",
+  "running_balance": "Total Value",
+  "current_balance": "Current Balance",
+  "total_income": "Total Income",
+  "total_expense": "Total Expense",
+  "cash_balance": "Cash Balance",
+  "from_date": "From Date",
+  "to_date": "To Date",
+  "active_subscription": "Active Subscription",
+  "expense": "Expense",
+  "sale": "Sale",
+  "refund": "Refund",
+  "manage_features": "Manage Plan Features",
+  "feature_used_success": "Feature usage recorded successfully!",
+  "limit_reached": "Limit Reached",
+  "use": "Use",
+  "analytics": "Analytics",
+  "last_30_days": "Last 30 Days",
+  "export_report": "Export Report",
+  "revenue_growth": "Revenue Growth",
+  "yearly_overview": "Yearly Overview",
+  "membership_plans": "Membership Plans",
+  "active_distribution": "Active Distribution",
+  "weekly_stats": "Weekly Stats",
+  "recent_check_ins": "Recent Check-ins",
+  "live_now": "Live Now",
+  "gender_required": "Please select a gender",
+  "role_required": "Please select a role",
+  "active_subscriptions": "Active Subscriptions",
+  "recent_users": "Recent Users",
+  "no_recent_activity": "No recent activity"
 }

@@ -1,11 +1,12 @@
 import bcrypt from "bcryptjs";
 import { pool } from "../models/db.js";
 import { generateToken } from "../utils/generateToken.js";
+import generateHashedPassword from "../utils/generateHashedPassword.js";
 
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.json({
+    return res.status(400).json({
       message: "الرجاء توفير البريد الالكتروني وكلمة المرور",
       status: false,
     });
@@ -15,21 +16,21 @@ const login = async (req, res) => {
       email,
     ]);
     if (user.rows.length === 0) {
-      return res.json({
+      return res.status(400).json({
         message: "البريد الالكتروني او كلمه المرور غير صحيحه",
         status: false,
       });
     }
     const dbUser = user.rows[0];
-    if(dbUser.role !== 'admin'){
-      return res.json({
+    if(dbUser.role !== 'admin' && dbUser.role !== 'reception'){
+      return res.status(401).json({
         message: "ليس لديك صلاحية الدخول",
         status: false,
       });
     }
     const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
     if (!isPasswordCorrect) {
-      return res.json({
+      return res.status(400).json({
         message: "البريد الالكتروني او كلمه المرور غير صحيحه",
         status: false,
       });
@@ -62,14 +63,13 @@ const register = async (req, res) => {
     const { email, fullname, password, phone,address,dob,gender } = req.body;
     console.log(req.body);
     if (!email || !fullname || !password || !phone ) {
-      return res.json({
+      return res.status(400).json({
         message:
           "الرجاء توفير البريد الالكتروني واسم المستخدم وكلمة المرور والهاتف وتاريخ الميلاد والجنس",
         status: false,
       });
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await generateHashedPassword(password);
     // Create Gym To DB
     const createGym = await pool.query(
       "INSERT INTO gym (name, phone,is_active) VALUES ($1,$2,$3) RETURNING id",

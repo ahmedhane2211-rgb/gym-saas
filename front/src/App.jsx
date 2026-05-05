@@ -1,276 +1,56 @@
-/* eslint-disable no-unused-vars */
-import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import {  Routes, Route, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ThemeProvider, useTheme } from "./context/theme";
-import { Icon } from "./components/ui/Icon.jsx";
-import Cookies from "js-cookie";
-import {
-  DashboardPage,
-  CoachesPage,
-  MembersPage,
-  PlansPage,
-  AttendancePage,
-  PaymentsPage,
-  AlertsPage,
-  ReportsPage,
-  SettingsPage,
-  TrainerPage,
-  UsersPage,
-  BranchesPage,
-} from "./pages";
-import Navbar from "./components/Navbar.jsx";
-import Sidebar from "./components/Sidebar.jsx";
-import Login from "./pages/auth/Login.jsx";
-import Register from "./pages/auth/Register.jsx";
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "./redux/slices/AuthSlice.jsx";
-import { ProtectedRoute } from "./providers/ProtectedRoute.jsx";
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './modules/auth/pages/Login';
+import Register from './modules/auth/pages/Register';
+import Users from './modules/users/pages/Users';
+import AuthProvider from './providers/AuthProvider';
+import Dashboard from './modules/dashboard/pages/Dashboard';
+import MainLayout from './modules/shared/components/MainLayout';
+import { LanguageProvider } from './modules/shared/context/LanguageContext';
+import Member from './modules/members/pages/Member';
+import Coach from './modules/coaches/pages/Coach';
+import Attendance from './modules/attendance/pages/Attendance';
+import Plan from './modules/plans/pages/Plan';
+import Features from './modules/plans/pages/Features';
+import Branch from './modules/branches/pages/Branch';
+import Product from './modules/inventory/pages/Product';
+import SalesInvoice from './modules/inventory/pages/SalesInvoice';
+import SalesReport from './modules/inventory/pages/SalesReport';
+import RefundPage from './modules/inventory/pages/RefundPage';
+import CashReport from './modules/financial/pages/CashReport';
 
-const AppContent = () => {
-  const { t, i18n } = useTranslation();
-  const { theme, toggleTheme, lang, changeLang } = useTheme();
-  const token = Cookies.get("token");
-  const { user } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const locate = useLocation();
-  const isRTL = lang === "ar";
-  const isAuthPage = locate.pathname === "/login" || locate.pathname === "/register" ;
+function App() {
 
-  useEffect(() => {
-    document.documentElement.dir = isRTL ? "rtl" : "ltr";
-    if (i18n.language !== lang) i18n.changeLanguage(lang);
-  }, [isRTL, lang, i18n]);
-
-  useEffect(() => {
-    // لو مش مسجل دخول ومش في صفحة Login
-    const authPages = ["/login", "/register"];
-    if (!token && !authPages.includes(locate.pathname)) {
-      navigate("/login");
-    }
-  }, [token, locate.pathname, navigate]);
-
-  useEffect(() => {
-    if (token) {
-      dispatch(getUser());
-    }
-  }, [token]);
-  // Auth pages layout
-  if (isAuthPage) {
-    return (
-      <div dir={isRTL ? "rtl" : "ltr"}>
-        <Routes>
-          <Route path="/login" element={<Login t={t} />} />
-          <Route path="/register" element={<Register t={t} />} />
-        </Routes>
-      </div>
-    );
-  }
-
-  // Main app layout
-  const pageTitle = (id) => t(`pages.${id}.title`);
-  const pageIntro = (id) => t(`pages.${id}.intro`);
-  const languageSwitchLabel = lang === "ar" ? t("language.switchLanguage") : t("language.switchLanguage");
-
-  const navItems = [
-    {
-      id: "dashboard",
-      label: pageTitle("dashboard"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M3 12h7V3H3v9Z" />
-          <path d="M14 21h7V10h-7v11Z" />
-          <path d="M14 3h7v4h-7z" />
-          <path d="M3 17h7v4H3z" />
-        </Icon>
-      ),
-      path: "/",
-    },
-    {
-      id: "users",
-      label: pageTitle("users"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M16 11a4 4 0 1 0-8 0" />
-          <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-          <path d="M20 8V5" />
-          <path d="M22 6h-4" />
-        </Icon>
-      ),
-      path: "/users",
-    },
-    {
-      id: "members",
-      label: pageTitle("members"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M16 11a4 4 0 1 0-8 0" />
-          <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-          <path d="M20 8V5" />
-          <path d="M22 6h-4" />
-        </Icon>
-      ),
-      path: "/members",
-    },
-    {
-      id: "coaches",
-      label: pageTitle("coaches"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M16 11a4 4 0 1 0-8 0" />
-          <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-          <path d="M20 8V5" />
-          <path d="M22 6h-4" />
-        </Icon>
-      ),
-      path: "/coaches",
-    },
-    {
-      id: "plans",
-      label: pageTitle("subscriptions"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M6 8h12" />
-          <path d="M6 12h12" />
-          <path d="M6 16h7" />
-          <rect x="3" y="4" width="18" height="16" rx="3" />
-        </Icon>
-      ),
-      path: "/plans",
-    },
-    {
-      id: "attendance",
-      label: pageTitle("attendance"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <rect x="3" y="4" width="18" height="16" rx="3" />
-          <path d="M7 9h10" />
-          <path d="M7 13h6" />
-          <path d="M7 17h4" />
-        </Icon>
-      ),
-      path: "/attendance",
-    },
-    {
-      id: "payments",
-      label: pageTitle("payments"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <rect x="3" y="5" width="18" height="14" rx="3" />
-          <path d="M3 10h18" />
-          <path d="M7 15h4" />
-        </Icon>
-      ),
-      path: "/payments",
-    },
-    {
-      id: "alerts",
-      label: pageTitle("alerts"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M12 3a6 6 0 0 0-6 6v4l-2 2h16l-2-2V9a6 6 0 0 0-6-6Z" />
-          <path d="M9.5 19a2.5 2.5 0 0 0 5 0" />
-        </Icon>
-      ),
-      path: "/alerts",
-    },
-    {
-      id: "reports",
-      label: pageTitle("reports"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M4 19V5" />
-          <path d="M10 19V9" />
-          <path d="M16 19V13" />
-          <path d="M22 19V3" />
-        </Icon>
-      ),
-      path: "/reports",
-    },
-    {
-      id: "settings",
-      label: pageTitle("settings"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-          <path d="M19.4 15a7.7 7.7 0 0 0 .1-6l2-1.2-2-3.6-2.2 1a7.4 7.4 0 0 0-5.2-2.2L9.2 2 7 5.4l2 1.2a7.7 7.7 0 0 0 0 6L7 14l2.2 3.6 2-1.2a7.4 7.4 0 0 0 5.2 2.2l1.9 2.2 2.2-3.6-2.1-1.2Z" />
-        </Icon>
-      ),
-      path: "/settings",
-    },
-    {
-      id: "trainer",
-      label: pageTitle("trainer"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M8 6a4 4 0 1 0 8 0" />
-          <path d="M2 21c0-4 4-7 10-7" />
-          <path d="M16 19l2 2 4-4" />
-        </Icon>
-      ),
-      path: "/trainers",
-    },
-    {
-      id: "gyms",
-      label: pageTitle("gyms"),
-      icon: (
-        <Icon className="h-5 w-5">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <path d="M9 22V12h6v10" />
-        </Icon>
-      ),
-      path: "/gyms",
-    },
-  ];
-
-  // Get current route for active nav
-  const location = typeof window !== "undefined" ? window.location : { pathname: "/" };
-  const activeId = navItems.find((item) => item.path === location.pathname)?.id || "dashboard";
-
-  if (!token) return null; // حماية عشان المكونات متظهرش ثانية قبل الـ redirect
   return (
-      <div className="relative min-h-screen overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
-        <div className="pointer-events-none absolute inset-0">
-          <div style={{background: 'var(--color-emerald-bg, #d1fae5)', opacity: 0.4}} className="absolute -left-20 -top-24 h-72 w-72 rounded-full blur-3xl" />
-          <div style={{background: 'var(--color-amber-bg, #fef3c7)', opacity: 0.3}} className="absolute right-10 top-24 h-80 w-80 rounded-full blur-3xl" />
-          <div style={{background: 'var(--color-sky-bg, #e0f2fe)', opacity: 0.4}} className="absolute bottom-10 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full blur-3xl" />
-        </div>
-
-        <div
-          className={`relative mx-auto flex max-w-[1400px] flex-col gap-6 px-4 py-6 lg:gap-8 ${
-            isRTL ? "lg:flex-row-reverse" : "lg:flex-row"
-          }`}
-          >
-          <Sidebar navItems={navItems} activeId={activeId} t={t}/>
-          <main className="flex-1 space-y-6 pb-12">
-            <Navbar t={t} changeLang={changeLang} theme={theme} languageSwitchLabel={languageSwitchLabel} toggleTheme={toggleTheme} lang={lang}/>
-            <Routes>
-              <Route element={<ProtectedRoute />}>
-                <Route path="/gyms" element={<BranchesPage t={t} pageTitle={pageTitle}/>} />
-                <Route path="/" element={<DashboardPage t={t} />} />
-                <Route path="/coaches" element={<CoachesPage t={t} />} />
-                <Route path="/members" element={<MembersPage t={t} />} />
-                <Route path="/users" element={<UsersPage t={t} />} />
-                <Route path="/payments" element={<PaymentsPage t={t}/>} />
-                <Route path="/reports" element={<ReportsPage t={t} />} />
-                <Route path="/trainers" element={<TrainerPage t={t} />} />
-                <Route path="/attendance" element={<AttendancePage pageTitle={pageTitle} t={t}/>} />
-                <Route path="/settings" element={<SettingsPage t={t}/>} />
-                <Route path="/plans" element={<PlansPage pageTitle ={pageTitle} t={t}/>} />
-                <Route path="/alerts" element={<AlertsPage t={t} pageTitle={pageTitle}/>} />
-              </Route>
-            </Routes>
-          </main>
-        </div>
-      </div>
+    <LanguageProvider>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route element={<AuthProvider />}>
+          <Route element={<MainLayout />}>
+            <Route path="/users" element={<Users />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/members" element={<Member />} />
+            <Route path="/coaches" element={<Coach />} />
+            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/plans" element={<Plan />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/branches" element={<Branch />} />
+            <Route path="/products" element={<Product />} />
+            <Route path="/sales-invoice" element={<SalesInvoice />} />
+            <Route path="/sales-report" element={<SalesReport />} />
+            <Route path="/sales-return-invoice" element={<RefundPage />} />
+            <Route path="/expenses" element={<Plan />} />
+            <Route path="/income" element={<Plan />} />
+            <Route path="/cash-day" element={<CashReport />} />
+            <Route path="/settings" element={<Plan />} />
+            <Route path="/help" element={<Plan />} />
+          </Route>
+        </Route>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </LanguageProvider>
   );
-};
-
-const App = () => (
-  <ThemeProvider>
-    <AppContent />
-  </ThemeProvider>
-);
+}
 
 export default App;

@@ -10,7 +10,28 @@ const getPlans = async (req, res) => {
 
   try {
     const result = await pool.query(
-      "SELECT * FROM plans WHERE branch_id = $1",
+      `SELECT 
+    p.id,
+    p.name,
+    p.price,
+    p.duration,
+    p.is_active,
+    p.description,
+    COALESCE(
+      json_agg(
+        json_build_object(
+          'id', f.id,
+          'name', f.name,
+          'value', fp.value
+        )
+      ) FILTER (WHERE f.id IS NOT NULL),
+      '[]'
+    ) AS features
+   FROM plans p
+   LEFT JOIN features_plan fp ON p.id = fp.plans_id
+   LEFT JOIN features f ON fp.features_id = f.id
+   WHERE p.branch_id = $1
+   GROUP BY p.id`,
       [branchId]
     );
 
@@ -68,7 +89,7 @@ const createPlan = async (req, res) => {
       ( duration, name, price, is_active, description, gym_id,branch_id) 
       VALUES ($1,$2,$3,$4,$5,$6,$7) 
       RETURNING *`,
-      [ duration, name, price, isActive, description, gym_id,branch_id]
+      [duration, name, price, isActive, description, gym_id, branch_id]
     );
 
     return res.status(201).json({

@@ -59,9 +59,6 @@ const getAllCoaches = async (req, res) => {
             ) as user from coaches join users on coaches.user_id = users.id where role = 'coach' and users.branch_id = $1`,
             [user.branchId]
         );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: "لا يوجد مدربين", status: false });
-        }
         return res.status(200).json({ data: result.rows || [], status: true });
     } catch (error) {
         return res.status(500).json({ message: error.message, status: false });

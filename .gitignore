@@ -2,3 +2,4 @@
 *.sql
 backup/
 node_modules
+images

@@ -6,13 +6,11 @@ export const createMember = async (req, res) => {
   const branchId = user.branchId;
   const {
     userId,
-    qrCode,
     idNumber,
   } = req.body;
   if (
 
     !userId ||
-    !qrCode ||
     !idNumber
   ) {
     return res
@@ -36,10 +34,9 @@ export const createMember = async (req, res) => {
     }
     const result = await pool.query(
       `INSERT INTO members (
-      qr_code, id_number, user_id,created_at,updated_at,branch_id
-      ) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+      id_number, user_id,created_at,updated_at,branch_id
+      ) VALUES ($1,$2,$3,$4,$5) RETURNING *`,
       [
-        qrCode,
         idNumber,
         userId,
         createdAt,
@@ -67,27 +64,64 @@ export const getAllMembers = async (req, res) => {
   const branchId = user.branchId
   try {
     const result = await pool.query(
-      `SELECT members.*,
-  json_build_object(
-        'id', users.id,
-        'full_name', users.full_name,
-        'email', users.email,
-        'phone', users.phone,
-        'role', users.role,
-        'created_at', users.created_at,
-        'is_active', users.is_active,
-        'gender', users.gender
-      ) AS user
-   FROM members
-   JOIN users ON members.user_id = users.id
-   WHERE members.branch_id = $1`,
-      [branchId]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "لا يوجد أعضاء", status: false });
-    }
+  `SELECT 
+    m.*,
 
-    res.status(200).json({ data: result.rows || [], status: true });
+    json_build_object(
+      'id', u.id,
+      'full_name', u.full_name,
+      'email', u.email,
+      'phone', u.phone,
+      'role', u.role,
+      'created_at', u.created_at,
+      'is_active', u.is_active,
+      'gender', u.gender
+    ) AS user,
+
+    json_build_object(
+      'id', s.id,
+      'start_date', s.start_date,
+      'end_date', s.end_date,
+      'status', s.status,
+
+      'features',
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', sf.id,
+            'featuresplan_id', sf.featuresplan_id,
+            'used', sf.used,
+            'total', sf.total,
+
+            'feature',
+            json_build_object(
+              'id', f.id,
+              'name', f.name
+            )
+          )
+        ) FILTER (WHERE sf.id IS NOT NULL),
+        '[]'
+      )
+    ) AS subscription
+
+  FROM members m
+  JOIN users u ON m.user_id = u.id
+  LEFT JOIN subscription s ON s.member_id = m.id
+
+  LEFT JOIN subscription_features sf 
+    ON sf.subscription_id = s.id
+
+  LEFT JOIN features_plan fp 
+    ON sf.featuresplan_id = fp.id
+
+  LEFT JOIN features f 
+    ON fp.features_id = f.id
+
+  WHERE m.branch_id = $1
+  GROUP BY m.id, u.id, s.id`,
+  [branchId]
+);
+    return res.status(200).json({ data: result.rows || [], status: true });
   } catch (error) {
     res.status(500).json({ message: error.message, status: false });
   }
@@ -117,7 +151,7 @@ export const getMemberById = async (req, res) => {
 // تحديث بيانات عضو
 export const updateMember = async (req, res) => {
   const { id } = req.params;
-  const { gymId } = req.user;
+  const { branchId } = req.user;
   if (!id) {
     return res
       .status(400)
@@ -125,13 +159,10 @@ export const updateMember = async (req, res) => {
   }
   const {
     userId,
-    branchId,
-    qrCode,
     idNumber,
   } = req.body;
   if (
     !userId ||
-    !qrCode ||
     !idNumber
   ) {
     return res
@@ -139,17 +170,16 @@ export const updateMember = async (req, res) => {
       .json({ message: "الرجاء ملء جميع الحقول", status: false });
   }
   try {
-    const existingMember = await pool.query("SELECT * FROM members WHERE userId = $1 AND id != $2", [userId, id]);
+    const existingMember = await pool.query("SELECT * FROM members WHERE user_id = $1 AND id != $2", [userId, id]);
     if (existingMember.rows.length > 0) {
       return res.status(400).json({ message: "المستخدم موجود بالفعل", status: false });
     }
     const result = await pool.query(
-      `UPDATE members SET userId=$1, qr_code=$2, id_number=$3,branch_id=$4 WHERE id=$5 RETURNING *`,
+      `UPDATE members SET user_id=$1, id_number=$2,branch_id=$3 WHERE id=$4 RETURNING *`,
       [
         userId,
-        qrCode,
         idNumber,
-        branchId || null,
+        branchId,
         id,
       ],
     );
@@ -165,17 +195,20 @@ export const updateMember = async (req, res) => {
 // حذف عضو
 export const deleteMember = async (req, res) => {
   const { id } = req.params;
-  const { gymId } = req.user;
+  const { branchId } = req.user;
   if (!id) {
     return res.status(400).json({ message: "الرجاء توفير معرف العضو", status: false });
   }
   try {
     const result = await pool.query(
-      "DELETE FROM members WHERE id = $1 RETURNING *",
-      [id],
+      "DELETE FROM members WHERE id = $1 AND branch_id=$2 RETURNING *",
+      [id, branchId],
     );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "عضو غير موجود", status: false });
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        message: "Not found or not authorized",
+        status: false
+      });
     }
     res.status(200).json({ message: "تم حذف العضو بنجاح", status: true });
   } catch (error) {

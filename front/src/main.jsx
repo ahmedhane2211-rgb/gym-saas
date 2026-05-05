@@ -4,13 +4,13 @@ import '../i18n.js'
 import App from './App.jsx'
 import './App.css'
 import { Provider } from 'react-redux'
-import { store } from './redux/store.js'
+import { store } from './modules/app/store.js'
 import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast';
 createRoot(document.getElementById('root')).render(
 
   <Provider store={store}>
-      <Toaster />
+      <Toaster position='bottom-center'/>
       <BrowserRouter>
         <App />
       </BrowserRouter>
