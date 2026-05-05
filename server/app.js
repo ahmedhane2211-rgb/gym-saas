@@ -22,7 +22,12 @@ import dashboardRouter from "./routes/dashboardRoute.js";
 
 const app = express();
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://gym-system-saas.netlify.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true
+}));
+app.options('*', cors());
 app.use(express.json());
 
 // routes
