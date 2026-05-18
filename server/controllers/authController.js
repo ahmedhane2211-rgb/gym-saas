@@ -15,14 +15,15 @@ const login = async (req, res) => {
     const user = await pool.query("SELECT * FROM users WHERE email = $1 ", [
       email,
     ]);
-    if (user.rows.length === 0) {
+    console.log(user)
+    if (user.rowCount === 0) {
       return res.status(400).json({
         message: "البريد الالكتروني او كلمه المرور غير صحيحه",
         status: false,
       });
     }
     const dbUser = user.rows[0];
-    if(dbUser.role !== 'admin' && dbUser.role !== 'reception'){
+    if(dbUser.role !== 'admin' && dbUser.role !== 'reception' && dbUser.role !== 'owner'){
       return res.status(401).json({
         message: "ليس لديك صلاحية الدخول",
         status: false,
@@ -110,13 +111,18 @@ const register = async (req, res) => {
 };
 const getUser = async (req, res) => {
   const { user } = req;
+  const gymId = user.gymId;
   try {
+    const subscription = await pool.query("SELECT * FROM gym_subscriptions WHERE gym_id = $1 ORDER BY id DESC LIMIT 1", [gymId]);
     return res
       .status(200)
       .json({
         message: "تم الحصول على المستخدم بنجاح",
         status: true,
-        data: user,
+        data: {
+          ...user,
+          subscription: subscription.rows[0] || null
+        },
       });
   } catch (error) {
     if (error) {

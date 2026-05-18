@@ -5,6 +5,6 @@ import authorize from "../middlewares/authorize.js";
 
 const dashboardRouter = express.Router();
 
-dashboardRouter.get("/", authUser,authorize(["admin"]), getDashboardStats);
+dashboardRouter.get("/", authorize(["admin"]), getDashboardStats);
 
 export default dashboardRouter;

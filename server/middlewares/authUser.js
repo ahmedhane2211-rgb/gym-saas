@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+import { pool } from "../models/db.js";
 
 export const authUser = async(req,res,next)=>{
     try {
@@ -8,6 +9,7 @@ export const authUser = async(req,res,next)=>{
         }
         const token = authorization.split(" ")[1];
         const decoded = jwt.verify(token,process.env.JWT_SECRET);
+        
         req.user = decoded;
         next();
     } catch (error) {

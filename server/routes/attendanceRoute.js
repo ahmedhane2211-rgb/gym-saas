@@ -4,8 +4,8 @@ import { checkMemberIn, getAllAttendanceToday } from "../controllers/attendnaceC
 import authorize from "../middlewares/authorize.js";
 const attendanceRouter = express.Router()
 
-attendanceRouter.get("/",authUser,authorize(["admin","reception"]),getAllAttendanceToday)
-attendanceRouter.get("/:id",authUser,authorize(["admin","reception"]),checkMemberIn)
+attendanceRouter.get("/", authorize(["admin", "reception"]), getAllAttendanceToday)
+attendanceRouter.get("/:id", authorize(["admin", "reception"]), checkMemberIn)
 
 
 export default attendanceRouter

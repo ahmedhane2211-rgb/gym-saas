@@ -6,10 +6,10 @@ import { authUser } from "../middlewares/authUser.js"
 
 const gymRouter = express.Router()
 
-gymRouter.get("/", authUser, getGyms)
-gymRouter.get("/:id", authUser, getGym)
-gymRouter.post("/", authUser, upload.single("logo"), createGym)
-gymRouter.delete("/:id", authUser, deleteGym)
-gymRouter.put("/:id", authUser, upload.single("logo"), updateGym)
+gymRouter.get("/", getGyms)
+gymRouter.get("/:id", getGym)
+gymRouter.post("/", upload.single("logo"), createGym)
+gymRouter.delete("/:id", deleteGym)
+gymRouter.put("/:id", upload.single("logo"), updateGym)
 
 export default gymRouter

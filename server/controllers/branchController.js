@@ -4,7 +4,10 @@ import { v4 as uuidv4 } from "uuid"
 const getAllBranches = async (req, res) => {
   const { user } = req;
   try {
-    const result = await pool.query('SELECT * FROM branches WHERE gym_id=$1', [user.gymId])
+    const result = await pool.query(
+      'SELECT * FROM branches WHERE gym_id=$1 AND id != $2', 
+      [user.gymId, user.branchId]
+    );
     return res.status(200).json({ data: result.rows || [], status: true });
   } catch (error) {
     return res.status(500).json({ message: error.message, status: false });

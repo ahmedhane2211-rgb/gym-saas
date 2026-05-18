@@ -5,8 +5,8 @@ import authorize from "../middlewares/authorize.js";
 
 const featuresRouter = express.Router()
 
-featuresRouter.get("/", authUser, authorize(["admin","reception"]), getAllFeatures)
-featuresRouter.post("/", authUser, authorize(["admin"]), createFeatures)
-featuresRouter.delete("/:id", authUser, authorize(["admin"]), deleteFeatures)
+featuresRouter.get("/", authorize(["admin", "reception"]), getAllFeatures)
+featuresRouter.post("/", authorize(["admin"]), createFeatures)
+featuresRouter.delete("/:id", authorize(["admin"]), deleteFeatures)
 
 export default featuresRouter

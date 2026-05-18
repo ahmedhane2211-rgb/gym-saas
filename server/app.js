@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
-import {pool} from "./models/db.js";
+import { pool } from "./models/db.js";
 import { memberRouter } from "./routes/membersRoute.js";
 import userRouter from "./routes/userRoute.js";
 import gymRouter from "./routes/gymRoute.js";
@@ -18,34 +18,46 @@ import invoiceRouter from "./routes/invoiceRoute.js";
 import refundRouter from "./routes/refundRoute.js";
 import cashReportRouter from "./routes/cashReportRoute.js";
 import dashboardRouter from "./routes/dashboardRoute.js";
+import tenantRouter from "./routes/tenantRoute.js";
+import settingsRouter from "./routes/settingsRoute.js";
+import { authUser } from "./middlewares/authUser.js";
+import checkSubscription from "./middlewares/checkSubscription.js";
 
 
 const app = express();
 // Middleware
 app.use(cors({
-  origin: "https://gym-system-saas.netlify.app",
+  origin: [
+    'https://gym-saas-front.vercel.app'
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
 app.use(express.json());
 
 // routes
-app.use("/api/gym",gymRouter);
-app.use("/api/branches",branchRouter);
-app.use("/api/members",memberRouter);
-app.use("/api/users",userRouter);
-app.use("/api/coaches",coachRouter);
-app.use("/api/auth",authRouter);
-app.use("/api/plans",planRouter);
-app.use("/api/subscribe",subscribeRouter);
-app.use("/api/attendance",attendanceRouter);
-app.use("/api/features",featuresRouter);
-app.use("/api/features-plan",featuresPlanRouter);
-app.use("/api/products",productsRouter);
-app.use("/api/invoices",invoiceRouter);
-app.use("/api/refunds",refundRouter);
-app.use("/api/cash-report",cashReportRouter);
-app.use("/api/dashboard",dashboardRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/tenants", tenantRouter);
+
+// Middlewares to protect all other dashboard routes
+app.use("/api", authUser, checkSubscription);
+
+app.use("/api/gym", gymRouter);
+app.use("/api/branches", branchRouter);
+app.use("/api/members", memberRouter);
+app.use("/api/users", userRouter);
+app.use("/api/coaches", coachRouter);
+app.use("/api/plans", planRouter);
+app.use("/api/subscribe", subscribeRouter);
+app.use("/api/attendance", attendanceRouter);
+app.use("/api/features", featuresRouter);
+app.use("/api/features-plan", featuresPlanRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/invoices", invoiceRouter);
+app.use("/api/refunds", refundRouter);
+app.use("/api/cash-report", cashReportRouter);
+app.use("/api/dashboard", dashboardRouter);
+app.use("/api/settings", settingsRouter);
 
 
 // Start the server

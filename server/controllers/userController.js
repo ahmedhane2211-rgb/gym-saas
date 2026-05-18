@@ -7,7 +7,7 @@ const getAllUsers = async(req,res)=>{
     const {user} = req;
     const branchId = user.branchId;
     try {
-        const result = await pool.query("SELECT * FROM users WHERE branch_id = $1", [branchId]);
+        const result = await pool.query("SELECT * FROM users WHERE branch_id = $1 AND role != 'owner' AND role != 'admin' ", [branchId]);
         
         return res.status(200).json(result.rows);
     } catch (error) {
