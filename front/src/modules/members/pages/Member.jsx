@@ -1,4 +1,4 @@
-import React, { useContext, useState, cloneElement, useRef, useEffect } from 'react';
+import React, { useContext, useState, cloneElement, useRef } from 'react';
 import {
   useGetMembersQuery,
   useAddMemberMutation,
@@ -9,8 +9,6 @@ import { useAddAttendanceMutation } from '../../attendance/services/AttendanceSl
 import { useAddSubscribeMutation, useUpdateSubscribeMutation } from '../services/SubscribeSlice';
 import {
   Activity,
-  Search,
-  Filter,
   Plus,
   Dumbbell
 } from 'lucide-react';
@@ -21,11 +19,22 @@ import MemberModal from '../components/MemberModal';
 import MemberViewModal from '../components/MemberViewModal';
 import CheckInModal from '../../attendance/components/CheckInModal';
 import DataTable from '../../shared/components/DataTable';
+import SearchFilter from '../../shared/components/SearchFilter';
+import useFilter from '../../shared/hooks/useFilter';
+
 
 const Member = () => {
+
   const { t } = useContext(LanguageContext);
   const searchInputRef = useRef(null);
-  const { data: response, error, isLoading } = useGetMembersQuery();
+
+  React.useEffect(() => {
+    if (searchInputRef.current) {
+        searchInputRef.current.focus();
+    }
+  }, []);
+
+  const { data: response, isLoading } = useGetMembersQuery();
   const members = Array.isArray(response) ? response : (response?.data || response?.members || []);
   const [addMember, { isLoading: isAdding }] = useAddMemberMutation();
   const [updateMember, { isLoading: isUpdating }] = useUpdateMemberMutation();
@@ -43,11 +52,6 @@ const Member = () => {
   const [checkingInMember, setCheckingInMember] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    if (searchInputRef.current) {
-        searchInputRef.current.focus();
-    }
-  }, []);
   const handleOpenAdd = () => {
     setEditingMember(null);
     setIsModalOpen(true);
@@ -142,13 +146,17 @@ const Member = () => {
     }
   };
   const handleSearchKeyDown = async (e) => {
-    if (e.key === 'Enter' && searchTerm.trim()) {
-        const search = searchTerm.trim().toLowerCase();
+    const val = e.target.value;
+    if (e.key === 'Enter' && val.trim()) {
+        const search = val.trim().toLowerCase();
         const targetMember = members.find(m => {
             const idStr = `MB-${m.id?.toString().padStart(3, '0')}`.toLowerCase();
             const idPlain = m.id?.toString();
-            return idStr === search || idPlain === search;
+            const qrCode = m.qr_code?.toString().toLowerCase();
+            const idNumber = m.id_number?.toString().toLowerCase();
+            return idStr === search || idPlain === search || qrCode === search || idNumber === search;
         });
+
 
         if (targetMember) {
             try {
@@ -157,21 +165,30 @@ const Member = () => {
                     icon: '🚀',
                     duration: 4000
                 });
-                setSearchTerm('');
+                
+                // Clear the search input after successful check-in
+                if (searchInputRef.current) {
+                    searchInputRef.current.clear();
+                }
             } catch (err) {
                 toast.error(err.data?.message || 'Check-in failed');
+            }
+        } else {
+            // Optionally clear if not found to allow re-scan
+            if (searchInputRef.current) {
+                searchInputRef.current.clear();
             }
         }
     }
   };
 
-  const filteredMembers = (members || []).filter(m => {
-    const search = searchTerm.toLowerCase();
-    const idStr = `MB-${m?.id?.toString().padStart(3, '0')}`.toLowerCase();
-    const idPlain = m?.id?.toString() || '';
-    const name = (m?.user?.full_name || '').toLowerCase();
-    return name.includes(search) || idStr.includes(search) || idPlain.includes(search);
-  });
+
+  const filteredMembers = useFilter(members, searchTerm, [
+    'user.full_name',
+    'qr_code',
+  ]);
+
+
 
   const handleDelete = async (id) => {
     if (window.confirm(t('confirm_delete') || 'Are you sure you want to delete?')) {
@@ -254,10 +271,6 @@ const Member = () => {
     { label: t('active_members') || 'Active Members', value: members?.filter(m => m.user?.is_active).length || 0, icon: <Activity className="text-blue" />, color: 'blue' },
   ];
 
-  if (error) {
-    toast.error(t('fetch_error') || 'Failed to fetch members');
-  }
-
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       {/* Header & Stats */}
@@ -284,24 +297,15 @@ const Member = () => {
 
       {/* Actions */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative group w-full md:w-96">
-          <Search className="absolute inset-y-0 ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <input
+        <SearchFilter 
             ref={searchInputRef}
-            type="text"
-            placeholder={t('search_members_placeholder') || 'Scan QR or search by name...'}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onSearch={setSearchTerm}
             onKeyDown={handleSearchKeyDown}
-            className="w-full bg-gray-50 dark:bg-gray-dark/30 border border-gray-200 dark:border-white/5 rounded-xl py-4 ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 text-gray-900 dark:text-white text-xs focus:outline-none focus:border-orange/20 transition-all placeholder:text-gray-400 font-medium font-main"
-          />
-        </div>
+            placeholder={t('search_members_placeholder') || 'Scan QR or search by name...'}
+            autoFocus
+        />
 
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <button className="flex items-center gap-2 px-6 py-4 bg-gray-50 dark:bg-gray-dark/50 border border-gray-200 dark:border-white/5 rounded-xl text-gray-500 dark:text-gray-light font-black text-[12px] uppercase tracking-widest hover:text-orange dark:hover:text-white transition-all">
-            <Filter size={16} />
-            <span>{t('filters')}</span>
-          </button>
           <button
             onClick={handleOpenAdd}
             className="btn-orange flex items-center gap-2 h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)]"
@@ -312,6 +316,7 @@ const Member = () => {
         </div>
       </div>
 
+
       {/* DataTable */}
       <DataTable 
           columns={columns}
@@ -321,6 +326,7 @@ const Member = () => {
           onEdit={handleOpenEdit}
           onDelete={handleDelete}
           onView={handleOpenView}
+          title={t('members')}
       />
 
       {/* Member Modal */}

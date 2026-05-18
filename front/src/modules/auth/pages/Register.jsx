@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Mail, Lock, User, Calendar, Phone, MapPin, Eye, EyeOff, Check, ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import athleteImg from '../../../assets/auth-athlete.png';
@@ -8,14 +8,15 @@ import { useForm } from 'react-hook-form';
 import { useRegisterMutation } from '../services/AuthSlice';
 import toast from 'react-hot-toast';
 import Select from '../../shared/components/Select';
+import { LanguageContext } from '../../shared/context/LanguageContext';
 
 const Register = () => {
     const [role, setRole] = useState('athlete');
     const [showPassword, setShowPassword] = useState(false);
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors },watch,setValue } = useForm();
     const navigate = useNavigate();
     const [registerUser, { data, isLoading, error }] = useRegisterMutation();
-
+    const {t} = useContext(LanguageContext)
     const onSubmit = async (data) => {
         try {
             const res = await registerUser(data).unwrap();
@@ -97,7 +98,7 @@ const Register = () => {
 
                         {/* Full Name */}
                         <div className="md:col-span-2 space-y-2">
-                            <Input label={'Full Name'} type="text" placeholder="ERIK JOHANSSON" register={register} name="fullname" errors={errors} />
+                            <Input label={t('full_name')} type="text" placeholder="ERIK JOHANSSON" register={register} name="fullname" errors={errors} />
                         </div>
 
                         {/* Gender */}
@@ -105,9 +106,12 @@ const Register = () => {
                             <Select 
                             label="gender"
                             name="gender"
+                            watch={watch}
+                            setValue={setValue}
+                            placeholder="gender"
                             options={[
-                                { value: 'male', label: 'MALE' },
-                                { value: 'female', label: 'FEMALE' }
+                                { value: 'male', label: t('male') },
+                                { value: 'female', label: t('female') }
                             ]}
                             register={register}
                             errors={errors}
@@ -116,31 +120,31 @@ const Register = () => {
 
                         {/* Date of Birth */}
                         <div className="space-y-2">
-                            <Input label={'Date of Birth'} type="date" placeholder="Date of Birth" register={register} name="dob" errors={errors} />
+                            <Input label={t('date_of_birthday')} type="date" placeholder="Date of Birth" register={register} name="dob" errors={errors} />
                         </div>
 
                         {/* Phone */}
                         <div className="space-y-2">
-                            <Input label={'Phone'} type="tel" placeholder="+1 (000) 000-0000" register={register} name="phone" errors={errors} />
+                            <Input label={t('phone')} type="tel" placeholder="+1 (000) 000-0000" register={register} name="phone" errors={errors} />
                         </div>
 
                         {/* Email */}
                         <div className="space-y-2">
-                            <Input label={'Email Address'} type="email" placeholder="ERIK@LAB.COM" register={register} name="email" errors={errors} />
+                            <Input label={t('email')} type="email" placeholder="ERIK@LAB.COM" register={register} name="email" errors={errors} />
                         </div>
 
                         {/* Physical Address */}
                         <div className="md:col-span-2 space-y-2">
-                            <Input label={'Physical Address'} type="text" placeholder="STREET, CITY, ZIP" register={register} name="address" errors={errors} />
+                            <Input label={t('address')} type="text" placeholder="STREET, CITY, ZIP" register={register} name="address" errors={errors} />
                         </div>
 
                         {/* Password */}
                         <div className="md:col-span-2 space-y-2">
-                            <Input label={'Secure Password'} type={showPassword ? 'text' : 'password'} placeholder="password" register={register} name="password" errors={errors} />
+                            <Input label={t('password')} type={showPassword ? 'text' : 'password'} placeholder="password" register={register} name="password" errors={errors} />
 
 
                         </div>
-                        <Button title="Initialize Membership" className="w-full bg-orange hover:bg-orange/90 text-black font-black py-5 rounded-lg tracking-[0.2em] uppercase text-sm shadow-[0_0_30px_rgba(255,95,31,0.2)] transition-all active:scale-[0.99]" />
+                        <Button title={t('register')} className="w-full bg-orange hover:bg-orange/90 text-black font-black py-5 rounded-lg tracking-[0.2em] uppercase text-sm shadow-[0_0_30px_rgba(255,95,31,0.2)] transition-all active:scale-[0.99]" />
                     </form>
                 </div>
             </div>

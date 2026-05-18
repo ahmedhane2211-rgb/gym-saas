@@ -15,6 +15,8 @@ import toast from 'react-hot-toast';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import formattedDate from '../../shared/utils/formattedDate';
 import Input from '../../shared/components/Input';
+import { exportToCSV } from '../../shared/utils/exportUtils';
+import DataTable from '../../shared/components/DataTable';
 
 const Attendance = () => {
     const { t } = useContext(LanguageContext);
@@ -22,18 +24,108 @@ const Attendance = () => {
     // Date Filters State (Default to current month)
     const today = new Date().toISOString().split('T')[0];
     const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
-    
     const [filters, setFilters] = useState({
         from: firstDayOfMonth,
         to: today
     });
-
+    
     const { data: response, error, isLoading } = useGetAttendanceQuery({ 
         from: filters.from, 
         to: filters.to 
     });
     
     const attendanceRecords = Array.isArray(response) ? response : (response?.data || response?.attendance || []);
+
+    const columns = [
+  {
+    header: t('member'),
+    accessor: 'member',
+    render: (record) => (
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 rounded-lg border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
+          <img
+            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${record.member?.user?.full_name || record.user?.full_name}`}
+            alt=""
+            className="w-full h-full object-cover grayscale opacity-80"
+          />
+        </div>
+
+        <div>
+          <p className="text-gray-900 dark:text-white font-black text-xs uppercase tracking-tight italic">
+            {record.member?.user?.full_name || record.user?.full_name}
+          </p>
+
+          <p className="text-gray-500 dark:text-gray-600 text-[9px] font-bold uppercase tracking-widest">
+            MB-2026-{record.member_id?.toString().padStart(3, '0')}
+          </p>
+        </div>
+      </div>
+    )
+  },
+
+  {
+    header: t('date') || 'Date',
+    accessor: 'date',
+    render: (record) => (
+      <div className="flex items-center gap-2 text-gray-900 dark:text-white text-[11px] font-black uppercase tracking-widest">
+        <Calendar size={14} className="text-orange" />
+        {formattedDate(record.check_in)}
+      </div>
+    )
+  },
+
+  {
+    header: t('check_in'),
+    accessor: 'check_in',
+    render: (record) => (
+      <div className="flex items-center gap-2 text-blue text-[11px] font-black uppercase tracking-widest border border-blue/20 bg-blue/5 px-3 py-1 rounded-lg w-fit">
+        <Clock size={14} />
+        {new Date(record.check_in).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        })}
+      </div>
+    )
+  }
+];
+    const handleExport = () => {
+        if (!attendanceRecords || attendanceRecords.length === 0) {
+            toast.error(t('no_data_to_export') || 'No data to export');
+            return;
+        }
+
+        const exportColumns = [
+            {
+                header: 'member',
+                key: 'member_name',
+                render: (record) => record.member?.user?.full_name || record.user?.full_name || 'N/A'
+            },
+            {
+                header: 'member_id',
+                key: 'member_id',
+                render: (record) => `MB-2026-${record.member_id?.toString().padStart(3, '0')}`
+            },
+            {
+                header: 'date',
+                key: 'date',
+                render: (record) => formattedDate(record.check_in)
+            },
+            {
+                header: 'check_in',
+                key: 'check_in',
+                render: (record) => new Date(record.check_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            },
+        ];
+
+        exportToCSV(
+            attendanceRecords,
+            exportColumns,
+            `attendance_${filters.from}_to_${filters.to}`,
+            t
+        );
+        toast.success(t('exported_successfully') || 'Exported successfully!');
+    };
+   
 
     if (error) {
         toast.error(t('fetch_error') || 'Failed to fetch attendance');
@@ -92,100 +184,18 @@ const Attendance = () => {
                         />
                     </div>
                 </div>
-
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button className="flex items-center gap-2 px-6 py-4 bg-gray-50 dark:bg-gray-dark/50 border border-gray-200 dark:border-white/5 rounded-xl text-gray-500 dark:text-gray-light font-black text-[12px] uppercase tracking-widest hover:text-orange dark:hover:text-white transition-all">
-                        <Download size={16} />
-                        <span>{t('export')}</span>
-                    </button>
-                    <button className="btn-blue flex items-center gap-2 h-14 px-8 shadow-[0_0_30px_rgba(0,127,255,0.1)]">
-                        <Filter size={18} />
-                        <span>{t('apply_filters') || 'Apply'}</span>
-                    </button>
-                </div>
             </div>
 
             {/* Table */}
-            <div className="glass-card overflow-hidden">
-                <table className="w-full text-left rtl:text-right border-collapse">
-                    <thead>
-                        <tr className="border-b border-gray-200 dark:border-white/5 bg-gray-100/50 dark:bg-white/[0.02]">
-                            <th className="px-8 py-6 text-[16px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.2em]">{t('member')}</th>
-                            <th className="px-8 py-6 text-[16px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.2em]">{t('date') || 'Date'}</th>
-                            <th className="px-8 py-6 text-[16px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.2em]">{t('check_in')}</th>
-                            <th className="px-8 py-6 text-[16px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.2em]">{t('check_out') || 'Check-Out'}</th>
-                            <th className="px-8 py-6 text-[16px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.2em]">{t('duration') || 'Duration'}</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-white/5">
-                        {isLoading ? (
-                            [...Array(5)].map((_, i) => (
-                                <tr key={i} className="animate-pulse">
-                                    <td colSpan={5} className="px-8 py-8"><div className="h-4 bg-gray-200 dark:bg-white/5 rounded w-full"></div></td>
-                                </tr>
-                            ))
-                        ) : (
-                            attendanceRecords?.map((record) => (
-                                <tr key={record.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors group">
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-lg border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
-                                                <img
-                                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${record.member?.user?.full_name || record.user?.full_name}`}
-                                                    alt=""
-                                                    className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
-                                                />
-                                            </div>
-                                            <div>
-                                                <p className="text-gray-900 dark:text-white font-black text-xs uppercase tracking-tight italic">{record.member?.user?.full_name || record.user?.full_name}</p>
-                                                <p className="text-gray-500 dark:text-gray-600 text-[9px] font-bold uppercase tracking-widest">MB-2026-{record.member_id?.toString().padStart(3, '0')}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-2 text-gray-900 dark:text-white text-[11px] font-black uppercase tracking-widest">
-                                            <Calendar size={14} className="text-orange" />
-                                            {formattedDate(record.check_in)}
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-2 text-blue text-[11px] font-black uppercase tracking-widest border border-blue/20 bg-blue/5 px-3 py-1 rounded-lg w-fit">
-                                            <Clock size={14} />
-                                            {new Date(record.check_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        {record.check_out ? (
-                                            <div className="flex items-center gap-2 text-rose-500 text-[11px] font-black uppercase tracking-widest border border-rose-500/20 bg-rose-500/5 px-3 py-1 rounded-lg w-fit">
-                                                <Clock size={14} />
-                                                {new Date(record.check_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </div>
-                                        ) : (
-                                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest animate-pulse">In Progress...</span>
-                                        )}
-                                    </td>
-                                    <td className="px-8 py-6 text-[11px] font-black text-gray-900 dark:text-white uppercase tracking-widest">
-                                        {record.duration || '--'}
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+            <div className="glass-card p-6 overflow-hidden">
+                <DataTable
+                columns={columns}
+                data={attendanceRecords}
+                isLoading={isLoading}
+                actions={false}
+                title={t('attendance')}
+                />
 
-                {/* Pagination */}
-                <div className="px-8 py-6 border-t border-gray-200 dark:border-white/5 flex items-center justify-between bg-gray-50 dark:bg-white/[0.01]">
-                    <p className="text-gray-500 dark:text-gray-600 text-[10px] font-black uppercase tracking-widest">
-                        Showing 1-{attendanceRecords?.length || 0} of {attendanceRecords?.length || 0} Records
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <button className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors ltr:rotate-0 rtl:rotate-180"><ChevronLeft size={18} /></button>
-                        <div className="flex gap-1">
-                            <button className="w-8 h-8 rounded-lg bg-orange text-black font-black text-[10px] flex items-center justify-center">1</button>
-                        </div>
-                        <button className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors ltr:rotate-0 rtl:rotate-180"><ChevronRight size={18} /></button>
-                    </div>
-                </div>
             </div>
         </div>
     );

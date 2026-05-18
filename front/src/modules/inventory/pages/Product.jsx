@@ -1,11 +1,14 @@
 import React, { useContext, useState, cloneElement } from 'react';
 import { useGetProductsQuery, useAddProductMutation, useUpdateProductMutation, useDeleteProductMutation } from '../services/ProductSlice';
-import { ShoppingBag, Plus, Activity, Package, DollarSign, Search, Filter } from 'lucide-react';
+import { ShoppingBag, Plus, Activity, Package } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import ProductModal from '../components/ProductModal';
 import ProductViewModal from '../components/ProductViewModal';
 import DataTable from '../../shared/components/DataTable';
+import SearchFilter from '../../shared/components/SearchFilter';
+import useFilter from '../../shared/hooks/useFilter';
+
 
 const Product = () => {
     const { t } = useContext(LanguageContext);
@@ -20,8 +23,13 @@ const Product = () => {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [viewingProduct, setViewingProduct] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredProducts = useFilter(products, searchTerm, ['name', 'color', 'size']);
+
 
     const handleSubmit = async (data) => {
+
         const formData = new FormData();
         
         // Append all form fields to FormData
@@ -138,14 +146,7 @@ const Product = () => {
             </div>
 
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="relative group w-full md:w-96">
-                    <Search className="absolute inset-y-0 ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input
-                        type="text"
-                        placeholder={t('search_products') || 'Search items...'}
-                        className="w-full bg-gray-50 dark:bg-gray-dark/30 border border-gray-200 dark:border-white/5 rounded-xl py-4 ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 text-gray-900 dark:text-white text-xs focus:outline-none focus:border-blue/20 transition-all font-medium"
-                    />
-                </div>
+                <SearchFilter onSearch={setSearchTerm} placeholder={t('search_products')} />
                 <button onClick={() => { setEditingProduct(null); setIsModalOpen(true); }} className="btn-orange flex items-center gap-2 h-14 px-8 shadow-lg font-main">
                     <Plus size={18} />
                     <span>{t('add_new')}</span>
@@ -154,11 +155,12 @@ const Product = () => {
 
             <DataTable
                 columns={columns}
-                data={products}
+                data={filteredProducts}
                 isLoading={isLoading}
                 onEdit={(item) => { setEditingProduct(item); setIsModalOpen(true); }}
                 onDelete={handleDelete}
                 onView={(item) => { setViewingProduct(item); setIsViewModalOpen(true); }}
+                title={t('products')}
             />
 
             <ProductModal

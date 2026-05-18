@@ -18,6 +18,13 @@ import SalesInvoice from './modules/inventory/pages/SalesInvoice';
 import SalesReport from './modules/inventory/pages/SalesReport';
 import RefundPage from './modules/inventory/pages/RefundPage';
 import CashReport from './modules/financial/pages/CashReport';
+import OwnerLayout from './modules/owner/components/OwnerLayout';
+import OwnerDashboard from './modules/owner/pages/OwnerDashboard';
+import Subscriptions from './modules/owner/pages/Subscriptions';
+import Settings from './modules/settings/pages/Settings';
+
+
+import SubscriptionExpired from './modules/shared/pages/SubscriptionExpired';
 
 function App() {
 
@@ -26,6 +33,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/expired" element={<SubscriptionExpired />} />
         <Route element={<AuthProvider />}>
           <Route element={<MainLayout />}>
             <Route path="/users" element={<Users />} />
@@ -43,8 +51,14 @@ function App() {
             <Route path="/expenses" element={<Plan />} />
             <Route path="/income" element={<Plan />} />
             <Route path="/cash-day" element={<CashReport />} />
-            <Route path="/settings" element={<Plan />} />
+            <Route path="/settings" element={<Settings />} />
+
             <Route path="/help" element={<Plan />} />
+          </Route>
+
+          <Route element={<OwnerLayout />}>
+            <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+            <Route path="/owner/subscriptions" element={<Subscriptions />} />
           </Route>
         </Route>
         <Route path="/" element={<Navigate to="/login" replace />} />

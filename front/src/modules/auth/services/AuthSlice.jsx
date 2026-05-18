@@ -21,6 +21,7 @@ export const authApi = createApi({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['user']
     }),
     login: build.mutation({
       query: (data) => ({
@@ -28,7 +29,9 @@ export const authApi = createApi({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['user']
     }),
+
     getProfile: build.query({
       query: () => ({
         url: `user`,

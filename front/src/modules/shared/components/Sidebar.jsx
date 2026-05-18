@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
@@ -30,10 +30,17 @@ import {
 } from 'lucide-react';
 import { LanguageContext } from '../context/LanguageContext';
 import deleteToken from '../utils/deleteToken';
+import { useGetSettingsQuery } from '../../settings/services/SettingsSlice';
+
 
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const { t } = useContext(LanguageContext);
+  const { data: settingsData } = useGetSettingsQuery();
+  const companyName = settingsData?.data?.company_name || 'GYM';
+  const companyLogo = settingsData?.data?.logo;
+  const navigate = useNavigate();
   const [activeModule, setActiveModule] = useState('people');
+
   const toggleModule = (module) => {
     if (isCollapsed) {
       setIsCollapsed(false);
@@ -73,15 +80,19 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     </button>
   );
 
+  const handleLogout = () => {
+    deleteToken();
+  };
   return (
-    <aside className={`${isCollapsed ? 'w-20' : 'w-72'} h-screen bg-white dark:bg-black border-r border-gray-200 dark:border-white/5 flex flex-col fixed ltr:left-0 rtl:right-0 top-0 z-50 overflow-hidden shadow-2xl transition-all duration-300`}>
+    <aside className={`${isCollapsed ? 'w-20' : 'w-72'} h-screen bg-white dark:bg-dark border-r border-gray-200 dark:border-white/5 flex flex-col fixed ltr:left-0 rtl:right-0 top-0 z-50 overflow-hidden shadow-2xl transition-all duration-300`}>
       {/* Logo & Toggle */}
       <div className={`p-8 pb-10 flex items-center ${isCollapsed ? 'justify-center px-4' : 'justify-between'} transition-all duration-300`}>
         {!isCollapsed && (
           <div className="flex flex-col items-start animate-in fade-in duration-500">
             <h1 className="text-gray-900 dark:text-white font-black tracking-widest text-2xl italic uppercase leading-none">
-              gym <span className="text-orange block">Mansourah.</span>
+              {companyName.split(' ')[0]} <span className="text-orange block">{companyName.split(' ').slice(1).join(' ')}</span>
             </h1>
+
           </div>
         )}
         <button
@@ -140,17 +151,22 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             </div>
           )}
         </div>
+        {/* <NavItem to="/settings" icon={<Settings />} name={t('settings')} /> */}
       </nav>
 
       {/* Footer Area */}
       <div className="p-6 space-y-6">
-        <div className={`pt-4 border-t border-gray-200 dark:border-white/5 ${isCollapsed ? 'px-0 flex justify-center' : ''}`}>
-          <button onClick={() => deleteToken()} className="flex items-center gap-3 cursor-pointer text-red-600 hover:text-red-900 dark:hover:text-red-500 text-[12px] font-bold uppercase tracking-widest transition-colors py-2">
+        <div className={`pt-4 border-t border-gray-200 dark:border-white/5 ${isCollapsed ? 'px-0 flex items-center  flex-col' : 'items-start'}`}>
+          <button onClick={handleLogout} className="flex items-center gap-3 cursor-pointer text-red-600 hover:text-red-900 dark:hover:text-red-500 text-[12px] font-bold uppercase tracking-widest transition-colors py-2">
             <LogOut /> {!isCollapsed && t("logout")}
+          </button>
+          <button onClick={() => {navigate("/settings")}} className="flex items-center gap-3 cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white text-[12px] font-bold uppercase tracking-widest transition-colors py-2">
+            <Settings size={18} />
+            {!isCollapsed && <span>{t("settings")}</span>}
           </button>
           <NavLink to="#" className="flex items-center gap-3 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white text-[12px] font-bold uppercase tracking-widest transition-colors py-2">
             <HelpCircle size={18} />
-            {!isCollapsed && <span>Help Center</span>}
+            {!isCollapsed && <span>{t("help_center")}</span>}
           </NavLink>
         </div>
       </div>

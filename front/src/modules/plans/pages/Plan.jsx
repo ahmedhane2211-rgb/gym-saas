@@ -7,8 +7,12 @@ import { LanguageContext } from '../../shared/context/LanguageContext';
 import PlanModal from '../components/PlanModal';
 import PlanViewModal from '../components/PlanViewModal';
 import DataTable from '../../shared/components/DataTable';
+import SearchFilter from '../../shared/components/SearchFilter';
+import useFilter from '../../shared/hooks/useFilter';
+
 
 const Plan = () => {
+
     const { t } = useContext(LanguageContext);
     const { data: response, isLoading } = useGetPlansQuery();
     const plans = Array.isArray(response) ? response : (response?.data || []);
@@ -23,6 +27,10 @@ const Plan = () => {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [editingPlan, setEditingPlan] = useState(null);
     const [viewingPlan, setViewingPlan] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredPlans = useFilter(plans, searchTerm, ['name', 'price']);
+
 
     const handleSubmit = async (data) => {
         const { features, ...planData } = data;
@@ -127,7 +135,7 @@ const Plan = () => {
              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div className="space-y-2">
                     <h1 className="text-5xl font-black text-gray-900 dark:text-white tracking-widest italic uppercase">{t('plans')}</h1>
-                    <p className="text-gray-600 dark:text-gray-500 text-xs font-bold uppercase tracking-widest max-w-md लीडिंग-रिलैكسड">
+                    <p className="text-gray-600 dark:text-gray-500 text-xs font-bold uppercase tracking-widest max-w-md लीडिंग-रिलैक्सड">
                         {t('manage_plans_desc')}
                     </p>
                 </div>
@@ -137,13 +145,18 @@ const Plan = () => {
                 </button>
             </div>
 
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+                <SearchFilter onSearch={setSearchTerm} placeholder={t('search_plans') || 'Search plans...'} />
+            </div>
+
             <DataTable 
                 columns={columns}
-                data={plans}
+                data={filteredPlans}
                 isLoading={isLoading}
                 onEdit={(item) => { setEditingPlan(item); setIsModalOpen(true); }}
                 onDelete={handleDelete}
                 onView={(item) => { setViewingPlan(item); setIsViewModalOpen(true); }}
+                title={t('plans')}
             />
 
             <PlanModal 

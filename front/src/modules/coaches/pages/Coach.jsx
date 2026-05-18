@@ -20,6 +20,9 @@ import formattedDate from '../../shared/utils/formattedDate';
 import CoachModal from '../components/CoachModal';
 import CoachViewModal from '../components/CoachViewModal';
 import DataTable from '../../shared/components/DataTable';
+import SearchFilter from '../../shared/components/SearchFilter';
+import useFilter from '../../shared/hooks/useFilter';
+
 
 const Coach = () => {
     const { t } = useContext(LanguageContext);
@@ -33,6 +36,10 @@ const Coach = () => {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [editingCoach, setEditingCoach] = useState(null);
     const [viewingCoach, setViewingCoach] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredCoaches = useFilter(coaches, searchTerm, ['user.full_name', 'specialty', 'speciality']);
+
 
     const handleOpenAdd = () => {
         setEditingCoach(null);
@@ -171,20 +178,10 @@ const Coach = () => {
 
             {/* Actions */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="relative group w-full md:w-96">
-                    <Search className="absolute inset-y-0 ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input
-                        type="text"
-                        placeholder={t('search_coaches') || 'Search coaches...'}
-                        className="w-full bg-gray-50 dark:bg-gray-dark/30 border border-gray-200 dark:border-white/5 rounded-xl py-4 ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 text-gray-900 dark:text-white text-xs focus:outline-none focus:border-orange/20 transition-all placeholder:text-gray-400 font-medium font-main"
-                    />
-                </div>
+                <SearchFilter onSearch={setSearchTerm} placeholder={t('search_coaches') || 'Search coaches...'} />
+
 
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button className="flex items-center gap-2 px-6 py-4 bg-gray-50 dark:bg-gray-dark/50 border border-gray-200 dark:border-white/5 rounded-xl text-gray-500 dark:text-gray-light font-black text-[12px] uppercase tracking-widest hover:text-orange dark:hover:text-white transition-all">
-                        <Filter size={16} />
-                        <span>{t('filters')}</span>
-                    </button>
                     <button
                         onClick={handleOpenAdd}
                         className="btn-orange flex items-center gap-2 h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)]"
@@ -198,7 +195,8 @@ const Coach = () => {
             {/* DataTable */}
             <DataTable 
                 columns={columns}
-                data={coaches}
+                data={filteredCoaches}
+
                 isLoading={isLoading}
                 onEdit={handleOpenEdit}
                 onDelete={handleDelete}

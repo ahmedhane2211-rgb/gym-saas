@@ -135,7 +135,7 @@ const Branch = () => {
                 <div className="space-y-2">
                     <h1 className="text-5xl font-black text-gray-900 dark:text-white tracking-widest italic uppercase">{t('branches')}</h1>
                     <p className="text-gray-600 dark:text-gray-500 text-xs font-bold uppercase tracking-widest max-w-md leading-relaxed">
-                        Manage your gym branches, locations, and contact information.
+                        {t('manage_branches_desc')}
                     </p>
                 </div>
 
@@ -164,10 +164,6 @@ const Branch = () => {
                 </div>
 
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button className="flex items-center gap-2 px-6 py-4 bg-gray-50 dark:bg-gray-dark/50 border border-gray-200 dark:border-white/5 rounded-xl text-gray-500 dark:text-gray-light font-black text-[12px] uppercase tracking-widest hover:text-orange dark:hover:text-white transition-all font-main">
-                        <Filter size={16} />
-                        <span>{t('filters')}</span>
-                    </button>
                     <button
                         onClick={handleOpenAdd}
                         className="btn-orange flex items-center gap-2 h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)] font-main"

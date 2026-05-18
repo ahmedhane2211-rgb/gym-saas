@@ -19,9 +19,14 @@ const Login = () => {
             const res = await login(data).unwrap();
             toast.success(res.message);
             Cookies.set("token", res.token);
-            navigate("/dashboard");
+            
+            if (res.data?.role === 'owner') {
+                navigate("/owner/dashboard");
+            } else {
+                navigate("/dashboard");
+            }
         } catch (error) {
-            toast.error(error.data.message);
+            toast.error(error.data?.message || "Login failed");
         }
     }
     

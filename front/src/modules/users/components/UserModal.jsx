@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { X, Shield, User, Info, Calendar, Phone, Mail, MapPin } from 'lucide-react';
+import { X, Shield, User, Info, Calendar, Phone, Mail, MapPin, Image as ImageIcon, Upload, Trash2 } from 'lucide-react';
 import Input from '../../shared/components/Input';
 import Button from '../../shared/components/Button';
 import CheckBox from '../../shared/components/CheckBox';
@@ -8,8 +8,25 @@ import { LanguageContext } from '../../shared/context/LanguageContext';
 import Select from '../../shared/components/Select';
 
 const UserModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title }) => {
-  const { register, handleSubmit,watch,setValue, reset, formState: { errors } } = useForm();
-  const { t } = useContext(LanguageContext)
+  const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm();
+  const { t } = useContext(LanguageContext);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const selectedImage = watch('photo');
+
+  useEffect(() => {
+    if (selectedImage && selectedImage.length > 0) {
+      const file = selectedImage[0];
+      if (file instanceof File) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }, [selectedImage]);
+
   useEffect(() => {
     if (initialData) {
       // Format date to YYYY-MM-DD for the HTML5 date input
@@ -18,6 +35,7 @@ const UserModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
         date_of_birthday: initialData.date_of_birthday ? new Date(initialData.date_of_birthday).toISOString().split('T')[0] : ''
       };
       reset(formattedData);
+      setImagePreview(initialData.photo || null);
     } else {
       reset({
         full_name: '',
@@ -28,8 +46,10 @@ const UserModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
         role: '',
         is_active: true,
         gender: '',
-        date_of_birthday: ''
+        date_of_birthday: '',
+        photo: null
       });
+      setImagePreview(null);
     }
   }, [initialData, reset, isOpen]);
 
@@ -54,6 +74,49 @@ const UserModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
 
         {/* Form Body */}
         <form onSubmit={handleSubmit(onSubmit)} className="p-8 pt-4 h-[80vh] overflow-y-auto space-y-8">
+          
+          {/* Image Upload */}
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 tracking-[0.2em] uppercase self-start">
+              {t('photo') || 'Profile Photo'}
+            </label>
+            <div className="relative group">
+              <div className="w-32 h-32 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden flex items-center justify-center bg-gray-50 dark:bg-black transition-all group-hover:border-orange/50">
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="flex flex-col items-center text-gray-400 dark:text-gray-600">
+                    <ImageIcon size={32} strokeWidth={1} />
+                    <span className="text-[8px] font-black uppercase mt-2">{t('no_image') || 'No Image'}</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <label className="cursor-pointer p-2 bg-orange rounded-lg text-black hover:bg-orange/90 transition-colors">
+                    <Upload size={16} />
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="image/*"
+                      {...register('photo')}
+                    />
+                  </label>
+                  {imagePreview && (
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setImagePreview(null);
+                        setValue('photo', null);
+                      }}
+                      className="p-2 bg-red-500 rounded-lg text-white hover:bg-red-600 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Full Name */}
             <Input

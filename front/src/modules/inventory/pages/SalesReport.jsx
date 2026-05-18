@@ -6,6 +6,7 @@ import DataTable from '../../shared/components/DataTable';
 import InvoiceViewModal from '../components/InvoiceViewModal';
 import formattedDate from '../../shared/utils/formattedDate';
 import formatNum from '../../shared/utils/formatNum';
+import SearchFilter from '../../shared/components/SearchFilter';
 
 const SalesReport = () => {
     const { t } = useContext(LanguageContext);
@@ -14,6 +15,15 @@ const SalesReport = () => {
 
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [viewingInvoice, setViewingInvoice] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredInvoices = invoices.filter(inv => {
+        const search = searchTerm.toLowerCase();
+        return (
+            (inv.invoice_number || inv.id).toString().toLowerCase().includes(search) ||
+            (inv.user_name || '').toLowerCase().includes(search)
+        );
+    });
 
     const columns = [
         {
@@ -102,13 +112,18 @@ const SalesReport = () => {
                 </div>
             </div>
 
-            {/* Table */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+                <SearchFilter onSearch={setSearchTerm} placeholder={t('search_invoices') || 'Search invoices...'} />
+            </div>
+
             <DataTable 
                 columns={columns}
-                data={invoices}
+                data={filteredInvoices}
                 isLoading={isLoading}
                 onView={(inv) => { setViewingInvoice(inv); setIsViewModalOpen(true); }}
+                title={t('sales_report')}
             />
+
 
             <InvoiceViewModal 
                 isOpen={isViewModalOpen}

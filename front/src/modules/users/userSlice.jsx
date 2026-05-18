@@ -29,10 +29,10 @@ export const usersApi = createApi({
       invalidatesTags: ['User'],
     }),
     updateUser: build.mutation({
-      query: ({ id, ...data }) => ({
+      query: ({ id, body }) => ({
         url: `users/${id}`,
         method: 'PUT',
-        body: data,
+        body: body,
       }),
       invalidatesTags: ['User'],
     }),

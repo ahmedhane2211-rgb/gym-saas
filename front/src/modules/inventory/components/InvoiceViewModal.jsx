@@ -9,7 +9,7 @@ const InvoiceViewModal = ({ isOpen, onClose, invoice }) => {
     const printRef = useRef();
 
     if (!isOpen || !invoice) return null;
-    
+
     const refundTotal = invoice.refund_total || (invoice.items?.reduce((acc, item) => acc + ((item.refunded_quantity || 0) * item.price), 0) || 0);
 
     const handlePrint = () => {
@@ -48,7 +48,7 @@ const InvoiceViewModal = ({ isOpen, onClose, invoice }) => {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="relative w-full max-w-2xl bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/5 rounded-[32px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-                
+
                 {/* Header */}
                 <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -61,13 +61,13 @@ const InvoiceViewModal = ({ isOpen, onClose, invoice }) => {
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <button 
+                        <button
                             onClick={handlePrint}
                             className="p-3 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-xl hover:bg-blue hover:text-black transition-all"
                         >
                             <Printer size={20} />
                         </button>
-                        <button 
+                        <button
                             onClick={onClose}
                             className="p-3 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-xl hover:text-red-500 transition-all"
                         >
@@ -140,29 +140,29 @@ const InvoiceViewModal = ({ isOpen, onClose, invoice }) => {
                                 <span className="font-bold uppercase tracking-widest">{t('subtotal')}</span>
                                 <span className="font-black italic">{invoice.total} EGP</span>
                             </div>
-                             <div className="flex justify-between text-xs text-orange">
+                            <div className="flex justify-between text-xs text-orange">
                                 <span className="font-bold uppercase tracking-widest">{t('discount')}</span>
                                 <span className="font-black italic">- {invoice.discount} EGP</span>
-                             </div>
-                             {refundTotal > 0 && (
+                            </div>
+                            {refundTotal > 0 && (
                                 <div className="flex justify-between text-xs text-red-500 font-bold border-t border-dashed border-gray-200 dark:border-white/5 pt-2">
                                     <span className="uppercase tracking-widest">{t('total_refund')}</span>
                                     <span className="italic">- {refundTotal} EGP</span>
                                 </div>
-                             )}
-                             <div className="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-white/5">
+                            )}
+                            <div className="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-white/5">
                                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue italic">{t('remaining_balance') || t('final_total')}</span>
                                 <span className="text-2xl font-black text-gray-900 dark:text-white italic">
                                     {invoice.final_total - refundTotal} EGP
                                 </span>
-                             </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Footer Actions */}
                 <div className="p-8 border-t border-gray-100 dark:border-white/5 pt-0">
-                    <button 
+                    <button
                         onClick={onClose}
                         className="w-full py-5 bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:text-red-500 transition-all mt-8"
                     >

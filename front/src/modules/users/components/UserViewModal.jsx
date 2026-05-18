@@ -29,8 +29,8 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="w-24 h-24 rounded-3xl border-4 border-white dark:border-gray-dark shadow-xl overflow-hidden bg-gray-100 dark:bg-gray-dark -mt-4">
               <img
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.full_name}`}
-                alt=""
+                src={user.photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.full_name}`}
+                alt="avatar"
                 className="w-full h-full object-cover"
               />
             </div>

@@ -39,7 +39,7 @@ const Select = ({ label, options, register, name, errors, placeholder, setValue,
     return (
         <div className={`space-y-2 relative ${isOpen ? 'z-[120]' : 'z-10'}`} ref={dropdownRef}>
             {label && (
-                <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 tracking-[0.2em] uppercase px-1">
+                <label className="text-[10px] font-bold text-gray-400 dark:text-gray-light/50 tracking-[0.2em] uppercase px-1">
                     {t(label)}
                 </label>
             )}
@@ -50,9 +50,9 @@ const Select = ({ label, options, register, name, errors, placeholder, setValue,
             {/* Display Button */}
             <div 
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-blue/30 ${isOpen ? 'border-blue/50 ring-2 ring-blue/5' : ''}`}
+                className={`w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-blue/30 ${isOpen ? 'border-blue/50 ring-2 ring-blue/5' : ''}`}
             >
-                <span className={`text-xs font-bold ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-600'}`}>
+                <span className={`text-xs font-bold ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-light/40'}`}>
                     {selectedOption ? selectedOption.label : (t(placeholder) || t('select_option') || 'Select...')}
                 </span>
                 <ChevronDown size={16} className={`text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
@@ -60,9 +60,9 @@ const Select = ({ label, options, register, name, errors, placeholder, setValue,
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute z-[110] left-0 right-0 top-full mt-2 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top">
+                <div className="absolute z-[110] left-0 right-0 top-full mt-2 bg-white dark:bg-gray-dark border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top">
                     {/* Search Area */}
-                    <div className="p-3 border-b border-gray-100 dark:border-white/5 sticky top-0 bg-white dark:bg-[#1A1A1A] z-10">
+                    <div className="p-3 border-b border-gray-100 dark:border-white/5 sticky top-0 bg-white dark:bg-gray-dark z-10">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                             <input 

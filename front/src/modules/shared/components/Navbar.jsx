@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Search, Globe, Moon, Sun, Bell, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGetProfileQuery } from '../../auth/services/AuthSlice';
+import { useGetSettingsQuery } from '../../settings/services/SettingsSlice';
+
 
 const Navbar = () => {
   const { i18n, t } = useTranslation();
   const [isDark, setIsDark] = useState(document.documentElement.classList.contains('dark'));
   const { data } = useGetProfileQuery();
+  const { data: settingsData } = useGetSettingsQuery();
+  const companyLogo = settingsData?.data?.logo;
+
   // Handle Theme Toggle
   const toggleTheme = () => {
     const newTheme = !isDark;
@@ -92,7 +97,8 @@ const Navbar = () => {
             <p className="text-gray-500 dark:text-gray-600 text-[10px] uppercase font-black tracking-widest">{data?.data?.user?.role}</p>
           </div>
           <div className="w-10 h-10 rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 group-hover:border-orange/50 transition-colors shadow-sm">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Erik" alt="Profile" className="w-full h-full object-cover" />
+            <img src={companyLogo || "https://api.dicebear.com/7.x/avataaars/svg?seed=Erik"} alt="Profile" className="w-full h-full object-cover" />
+
           </div>
           <ChevronDown size={14} className="text-gray-400 group-hover:text-orange transition-colors" />
         </div>

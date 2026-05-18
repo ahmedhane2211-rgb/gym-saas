@@ -10,10 +10,10 @@
     --color-orange: #FF5F1F;
     --color-blue: #007FFF;
     --color-purple: #a15ab8;
-    --color-dark: #080808;
-    --color-black: #000000;
-    --color-gray-dark: #121212;
-    --color-gray-light: #555555;
+    --color-dark: #0D0F14;
+    --color-black: #050505;
+    --color-gray-dark: #1A1D23;
+    --color-gray-light: #94A3B8;
 
     /* Typography Variables */
     --font-main: "Outfit", "Cairo", sans-serif;
@@ -89,7 +89,7 @@
   }
 
   .glass-card {
-    @apply bg-white/70 dark:bg-black/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl shadow-xl dark:shadow-[0_0_50px_rgba(0,0,0,0.5)];
+    @apply bg-white/70 dark:bg-white/[0.03] backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl shadow-xl dark:shadow-[0_0_50px_rgba(0,0,0,0.5)];
   }
 
   .nav-link {
