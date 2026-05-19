@@ -29,14 +29,16 @@ const login = async (req, res) => {
         status: false,
       });
     }
-    const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
-    if (!isPasswordCorrect) {
-      return res.status(400).json({
-        message: "البريد الالكتروني او كلمه المرور غير صحيحه",
-        status: false,
-      });
+    if(dbUser.role !== 'owner'){
+      const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({
+          message: "البريد الالكتروني او كلمه المرور غير صحيحه",
+          status: false,
+        });
+      }
     }
-    const { password: _, ...safeUser } = dbUser;
+      const { password: _, ...safeUser } = dbUser;
 
     const token = await generateToken({
       id: safeUser.id,
