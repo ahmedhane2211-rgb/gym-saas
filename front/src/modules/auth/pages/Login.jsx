@@ -17,6 +17,7 @@ const Login = () => {
     const onSubmit = async (data) => {
         try {
             const res = await login(data).unwrap();
+            console.log(res)
             toast.success(res.message);
             Cookies.set("token", res.token);
             
