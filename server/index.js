@@ -28,9 +28,12 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: [
-    'https://gym-saas-front.vercel.app','*'
+    'https://gym-saas-front.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:5174',
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
 app.use(express.json());
