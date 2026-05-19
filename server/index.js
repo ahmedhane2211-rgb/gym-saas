@@ -28,7 +28,7 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: [
-    'https://gym-saas-front.vercel.app'
+    'https://gym-saas-front.vercel.app','*'
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
