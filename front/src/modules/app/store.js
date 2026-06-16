@@ -15,12 +15,21 @@ import { cashApi } from '../financial/services/CashSlice'
 import { ownerApi } from '../owner/services/OwnerSlice'
 import { dashboardApi } from '../dashboard/services/DashboardSlice'
 import { settingsApi } from '../settings/services/SettingsSlice'
-
+import { freezeApi } from '../freeze/services/FreezeSlice'
+import { pauseApi } from '../freeze/services/PauseSlice'
 
 import { isRejectedWithValue } from '@reduxjs/toolkit'
+import toast from 'react-hot-toast'
 
 const rtkQueryErrorLogger = (api) => (next) => (action) => {
   if (isRejectedWithValue(action)) {
+    if (action.payload?.status === 500) {
+      if (action.payload.data && typeof action.payload.data === 'object') {
+        action.payload.data.message = 'خطأ في السيرفر';
+      } else {
+        action.payload.data = { message: 'خطأ في السيرفر' };
+      }
+    }
     if (action.payload.data?.subscriptionExpired) {
       // Get the state to check if the user is an owner
       const state = api.getState();
@@ -55,7 +64,8 @@ export const store = configureStore({
     [dashboardApi.reducerPath]: dashboardApi.reducer,
     [ownerApi.reducerPath]: ownerApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
-
+    [freezeApi.reducerPath]: freezeApi.reducer,
+    [pauseApi.reducerPath]: pauseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
@@ -74,8 +84,9 @@ export const store = configureStore({
       cashApi.middleware,
       dashboardApi.middleware,
       ownerApi.middleware,
-      settingsApi.middleware
-
+      settingsApi.middleware,
+      freezeApi.middleware,
+      pauseApi.middleware,
     ]),
 })
 

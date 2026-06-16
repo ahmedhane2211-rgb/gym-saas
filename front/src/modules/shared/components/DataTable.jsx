@@ -1,5 +1,5 @@
-import React, { useContext, useRef } from 'react';
-import { Edit2, Trash2, Eye, LogIn, Printer, Download } from 'lucide-react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
+import { Edit2, Trash2, Eye, LogIn, Printer, Download, MoreVertical, Snowflake } from 'lucide-react';
 import { LanguageContext } from '../context/LanguageContext';
 import { exportToCSV } from '../utils/exportUtils';
 
@@ -11,11 +11,23 @@ const DataTable = ({
   onDelete, 
   onView,
   onCheckIn,
+  onFreeze,
   actions = true,
   title = 'Table'
 }) => {
   const { t } = useContext(LanguageContext);
   const tableRef = useRef(null);
+  const [activeDropdownRow, setActiveDropdownRow] = useState(null);
+
+  useEffect(() => {
+    const handleOutsideClick = () => {
+      setActiveDropdownRow(null);
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
   const handlePrint = () => {
     const printContent = tableRef.current.innerHTML;
@@ -147,6 +159,35 @@ const DataTable = ({
                               <Trash2 size={16} />
                             </button>
                           )}
+                          {onFreeze && (
+                            <div className="relative">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveDropdownRow(activeDropdownRow === item.id ? null : item.id);
+                                }}
+                                className="p-2 text-gray-400 hover:text-orange transition-colors"
+                                title={t('options')}
+                              >
+                                <MoreVertical size={16} />
+                              </button>
+                              {activeDropdownRow === item.id && (
+                                <div className="absolute ltr:right-0 rtl:left-0 mt-2 z-[90] w-48 bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/5 rounded-xl shadow-xl py-2 animate-in fade-in slide-in-from-top-1 duration-150">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      onFreeze(item);
+                                      setActiveDropdownRow(null);
+                                    }}
+                                    className="w-full text-left rtl:text-right px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 flex items-center gap-2"
+                                  >
+                                    <Snowflake size={14} className="text-orange" />
+                                    <span>{t('freeze_subscription') || 'تجميد الاشتراك'}</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </td>
                     )}
@@ -167,6 +208,5 @@ const DataTable = ({
     </div>
   );
 };
-
 
 export default DataTable;

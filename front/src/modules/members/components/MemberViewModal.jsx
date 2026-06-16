@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { X, User, QrCode, CreditCard, Calendar, Activity, Shield, BadgeCheck, Clock, Sparkles } from 'lucide-react';
+import { X, User, QrCode, CreditCard, Calendar, Activity, Shield, BadgeCheck, Clock, Sparkles, Snowflake } from 'lucide-react';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import formattedDate from '../../shared/utils/formattedDate';
 import DetailItem from '../../shared/components/DetailItem';
@@ -14,7 +14,7 @@ const MemberViewModal = ({ isOpen, onClose, member }) => {
   const handleUseFeature = async (featureId) => {
     try {
         await useFeature({
-            subscription_id: member.subscription?.id,
+            subscription_id: member?.subscription?.id,
             feature_id: featureId
         }).unwrap();
         toast.success(t('feature_used_success') || 'Feature usage recorded!');
@@ -25,7 +25,7 @@ const MemberViewModal = ({ isOpen, onClose, member }) => {
 
   if (!isOpen || !member) return null;
 
-  const memberQrValue = `MB-${member.qr_code}`;
+  const memberQrValue = `MB-${member?.qr_code}`;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
@@ -47,13 +47,13 @@ const MemberViewModal = ({ isOpen, onClose, member }) => {
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="w-24 h-24 rounded-3xl border-4 border-white dark:border-gray-dark shadow-xl overflow-hidden bg-gray-100 dark:bg-gray-dark -mt-4">
               <img
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member.user?.full_name}`}
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member?.user?.full_name}`}
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white italic uppercase tracking-widest">{member.user?.full_name}</h3>
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white italic uppercase tracking-widest">{member?.user?.full_name}</h3>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-widest font-black bg-blue/10 text-blue border border-blue/20 mt-2">
                     ID: {memberQrValue}
                 </span>
@@ -90,10 +90,10 @@ const MemberViewModal = ({ isOpen, onClose, member }) => {
                     <Sparkles size={16} className="text-blue" />
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('active_subscription') || 'Active Subscription'}</span>
                 </div>
-            {member.subscription ? (
+            {member?.subscription ? (
                 <div className="grid grid-cols-1 gap-1 text-right">
                     <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{t('expires_at') || 'Expires At'}</p>
-                    <p className="text-xs font-black text-blue uppercase tracking-tight">{formattedDate(member.subscription.end_date)}</p>
+                    <p className="text-xs font-black text-blue uppercase tracking-tight">{formattedDate(member?.subscription.end_date)}</p>
                 </div>
             ) : (
                 <p className="text-xs font-bold text-gray-400 text-center uppercase tracking-widest py-2 italic">{t('no_active_subscription') || 'No active subscription found'}</p>
@@ -101,11 +101,11 @@ const MemberViewModal = ({ isOpen, onClose, member }) => {
             </div>
 
             {/* Subscription Features List */}
-            {member.subscription?.features?.length > 0 && (
+            {member?.subscription?.features?.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-blue/10 space-y-3">
                     <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">{t('manage_features') || 'Manage Plan Features'}</p>
                     <div className="space-y-2">
-                        {member.subscription.features.map((feat) => (
+                        {member?.subscription.features.map((feat) => (
                             <div key={feat.id} className="flex items-center justify-between p-3 bg-white dark:bg-white/5 rounded-2xl border border-blue/5">
                                 <div className="flex flex-col">
                                     <span className="text-[11px] font-bold text-gray-700 dark:text-gray-200">{feat.feature?.name || 'Feature'}</span>
@@ -134,23 +134,53 @@ const MemberViewModal = ({ isOpen, onClose, member }) => {
 
           </div>
 
+          {/* Subscription Pause Highlight */}
+          {member?.subscription_pause?.status === "active" && (
+            <div className="p-6 bg-orange/5 border border-orange/10 rounded-3xl space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Snowflake size={16} className="text-orange" />
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('paused_subscription') || 'الاشتراك المجمد'}</span>
+                </div>
+                <div className="text-right">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] uppercase tracking-widest font-black bg-orange/10 text-orange border border-orange/20">
+                    {t('frozen') || 'مجمد'}
+                  </span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <DetailItem icon={<Calendar size={14} className="text-orange"/>} label={t('from_date') || 'من تاريخ'} value={formattedDate(member?.subscription_pause?.from_date)} />
+                <DetailItem icon={<Calendar size={14} className="text-orange"/>} label={t('to_date') || 'إلى تاريخ'} value={formattedDate(member?.subscription_pause?.to_date)} />
+              </div>
+              <div className="flex justify-between items-center pt-2 text-[10px] font-bold text-gray-500">
+                <span>{t('freeze_days') || 'أيام التجميد'}: {member?.subscription_pause?.days} {t('days')}</span>
+                <span>{t('max_uses') || 'الحد الأقصى'}: {member?.subscription_pause?.max_uses}</span>
+              </div>
+            </div>
+          )}
+
           {/* Details Grid */}
           <div className="grid grid-cols-1 gap-6">
             <div className="grid grid-cols-2 gap-4">
-                <DetailItem icon={<CreditCard size={16}/>} label={t('id_number')} value={member.id_number || 'N/A'} />
-                <DetailItem icon={<Shield size={16}/>} label={t('gender')} value={t(member.user?.gender) || 'N/A'} />
+                <DetailItem icon={<CreditCard size={16}/>} label={t('id_number')} value={member?.id_number || 'N/A'} />
+                <DetailItem icon={<Shield size={16}/>} label={t('gender')} value={t(member?.user?.gender) || 'N/A'} />
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
                     icon={<Activity size={16}/>} 
                     label={t('status')} 
                     value={
-                        <span className={member.user?.is_active ? 'text-blue' : 'text-gray-500'}>
-                            {member.user?.is_active ? t('active') : t('inactive')}
+                        <span className={` ${member?.user?.is_active && member?.subscription_pause?.status !== 'active'
+                ? 'text-blue'
+                : member?.user?.is_active && member?.subscription_pause?.status === 'active'
+                ? 'text-orange'
+                : 'text-gray-500'
+                }`}>
+                             {member?.user?.is_active && member?.subscription_pause?.status === 'active' ? t('frozen') : member?.user?.is_active ? t('active') : t('inactive')}
                         </span>
                     } 
                 />
-                <DetailItem icon={<Calendar size={16}/>} label={t('created_at')} value={formattedDate(member.created_at)} />
+                <DetailItem icon={<Calendar size={16}/>} label={t('created_at')} value={formattedDate(member?.created_at)} />
             </div>
           </div>
 

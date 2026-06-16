@@ -22,6 +22,9 @@ import tenantRouter from "./routes/tenantRoute.js";
 import settingsRouter from "./routes/settingsRoute.js";
 import { authUser } from "./middlewares/authUser.js";
 import checkSubscription from "./middlewares/checkSubscription.js";
+import subscriptionFreezeRouter from "./routes/subscriptionFreezeRouter.js";
+import subscriptionPauseRouter from "./routes/subscriptionPauseRouter.js";
+import { expireOldPauses } from "./utils/checkSubscriptionPause.js";
 
 
 const app = express();
@@ -37,7 +40,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-
+ expireOldPauses();
 // routes
 app.use("/api/auth", authRouter);
 app.use("/api/tenants", tenantRouter);
@@ -55,6 +58,8 @@ app.use("/api/subscribe", subscribeRouter);
 app.use("/api/attendance", attendanceRouter);
 app.use("/api/features", featuresRouter);
 app.use("/api/features-plan", featuresPlanRouter);
+app.use("/api/subscription-freeze", subscriptionFreezeRouter);
+app.use("/api/subscription-pause", subscriptionPauseRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/invoices", invoiceRouter);
 app.use("/api/refunds", refundRouter);

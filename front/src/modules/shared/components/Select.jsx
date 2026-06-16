@@ -2,7 +2,7 @@ import React, { useContext, useState, useRef, useEffect } from 'react';
 import { LanguageContext } from '../context/LanguageContext';
 import { ChevronDown, Search, Check } from 'lucide-react';
 
-const Select = ({ label, options, register, name, errors, placeholder, setValue, watch }) => {
+const Select = ({ label, options = [], register, name, errors, placeholder, setValue, watch }) => {
     const { t } = useContext(LanguageContext);
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');

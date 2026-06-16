@@ -80,6 +80,23 @@ const checkMemberIn = async (req, res) => {
             });
         }
 
+        const pause = await client.query(
+            `SELECT id 
+             FROM subscription_pause 
+             WHERE subscription_id = $1 
+               AND status = 'active' 
+             LIMIT 1`,
+            [subscription.rows[0].id]
+        );
+
+        if (pause.rowCount > 0) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({
+                message: "الاشتراك مجمد حالياً، لا يمكن تسجيل الدخول",
+                status: false
+            });
+        }
+
         // insert attendance
         const result = await client.query(
             `INSERT INTO attendance (member_id, check_in, branch_id)

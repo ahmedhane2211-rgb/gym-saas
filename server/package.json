@@ -2,9 +2,9 @@
   "name": "server",
   "version": "1.0.0",
   "type": "module",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
+    "node-cron": "^4.2.1",
     "nodemon": "^3.1.14",
     "pg": "^8.18.0",
     "uuid": "^13.0.0"

@@ -7,6 +7,8 @@ import {
 } from '../services/MemberSlice';
 import { useAddAttendanceMutation } from '../../attendance/services/AttendanceSlice';
 import { useAddSubscribeMutation, useUpdateSubscribeMutation } from '../services/SubscribeSlice';
+import { useAddPauseMutation } from '../../freeze/services/PauseSlice';
+import PauseSubscriptionModal from '../../freeze/components/PauseSubscriptionModal';
 import {
   Activity,
   Plus,
@@ -42,14 +44,17 @@ const Member = () => {
   const [addAttendance, { isLoading: isCheckingIn }] = useAddAttendanceMutation();
   const [addSubscribe, { isLoading: isSubscribing }] = useAddSubscribeMutation();
   const [updateSubscribe] = useUpdateSubscribeMutation();
+  const [addPause, { isLoading: isPausing }] = useAddPauseMutation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
+  const [isPauseModalOpen, setIsPauseModalOpen] = useState(false);
 
   const [editingMember, setEditingMember] = useState(null);
   const [viewingMember, setViewingMember] = useState(null);
   const [checkingInMember, setCheckingInMember] = useState(null);
+  const [pausingMember, setPausingMember] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleOpenAdd = () => {
@@ -72,6 +77,11 @@ const Member = () => {
     setIsCheckInModalOpen(true);
   };
 
+  const handleOpenPause = (member) => {
+    setPausingMember(member);
+    setIsPauseModalOpen(true);
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingMember(null);
@@ -85,6 +95,11 @@ const Member = () => {
   const handleCloseCheckInModal = () => {
     setIsCheckInModalOpen(false);
     setCheckingInMember(null);
+  };
+
+  const handleClosePauseModal = () => {
+    setIsPauseModalOpen(false);
+    setPausingMember(null);
   };
 
   const handleSubmitMember = async (data) => {
@@ -143,6 +158,16 @@ const Member = () => {
         handleCloseCheckInModal();
     } catch (err) {
         toast.error(err.data?.message || 'Check-in failed');
+    }
+  };
+  
+  const handlePauseSubmit = async (data) => {
+    try {
+      await addPause(data).unwrap();
+      toast.success(t('freeze_success') || 'Subscription frozen successfully');
+      handleClosePauseModal();
+    } catch (err) {
+      toast.error(err.data?.message || t('operation_failed') || 'Operation failed');
     }
   };
   const handleSearchKeyDown = async (e) => {
@@ -223,12 +248,14 @@ const Member = () => {
     {
         header: 'status',
         render: (member) => (
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-widest font-black border ${member?.user?.is_active
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-widest font-black border ${member?.user?.is_active && member?.subscription_pause?.status !== 'active'
                 ? 'bg-blue/10 border-blue/20 text-blue'
+                : member?.user?.is_active && member?.subscription_pause?.status === 'active'
+                ? 'bg-orange/10 border-orange/20 text-orange'
                 : 'bg-gray-500/10 border-gray-500/20 text-gray-500'
                 }`}>
-                <div className={`w-1 h-1 rounded-full ${member?.user?.is_active ? 'bg-blue animate-pulse' : 'bg-gray-500'}`} />
-                {member?.user?.is_active ? t('active') : t('inactive')}
+                <div className={`w-1 h-1 rounded-full ${member?.user?.is_active && member?.subscription_pause?.status === 'active' ? 'bg-orange animate-pulse' : member?.user?.is_active ? 'bg-blue animate-pulse' : 'bg-gray-500'}`} />
+                {member?.user?.is_active && member?.subscription_pause?.status === 'active' ? t('frozen') : member?.user?.is_active ? t('active') : t('inactive')}
             </span>
         )
     },
@@ -326,6 +353,7 @@ const Member = () => {
           onEdit={handleOpenEdit}
           onDelete={handleDelete}
           onView={handleOpenView}
+          onFreeze={handleOpenPause}
           title={t('members')}
       />
 
@@ -353,6 +381,15 @@ const Member = () => {
             member={checkingInMember}
             onSubmit={handleCheckInSubmit}
             isLoading={isCheckingIn}
+       />
+
+       {/* Pause Subscription Modal */}
+       <PauseSubscriptionModal
+            isOpen={isPauseModalOpen}
+            onClose={handleClosePauseModal}
+            member={pausingMember}
+            onSubmit={handlePauseSubmit}
+            isLoading={isPausing}
        />
     </div>
   );

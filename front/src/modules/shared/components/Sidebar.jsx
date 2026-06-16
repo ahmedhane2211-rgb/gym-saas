@@ -124,6 +124,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
               <NavItem to="/plans" icon={<ScrollText />} name={t('plans')} subItem />
               <NavItem to="/features" icon={<Sparkles />} name={t('features')} subItem />
+              <NavItem to="/freeze" icon={<ScrollText />} name={t('freezes') || 'التجميدات'} subItem />
               <NavItem to="/attendance" icon={<ClipboardCheck />} name={t('attendance')} subItem />
               <NavItem to="/branches" icon={<MapPin />} name={t('branches')} subItem />
             </div>

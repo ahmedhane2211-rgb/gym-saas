@@ -13,7 +13,7 @@ export const memberApi = createApi({
             return headers;
           },
     }),
-    tagTypes: ['Members'],
+    tagTypes: ['Members','Freeze','Pause','Subscribe'],
     endpoints: (build) => ({
         getMembers: build.query({
             query: () => ({

@@ -13,6 +13,7 @@ import Attendance from './modules/attendance/pages/Attendance';
 import Plan from './modules/plans/pages/Plan';
 import Features from './modules/plans/pages/Features';
 import Branch from './modules/branches/pages/Branch';
+import Freeze from './modules/freeze/pages/Freeze';
 import Product from './modules/inventory/pages/Product';
 import SalesInvoice from './modules/inventory/pages/SalesInvoice';
 import SalesReport from './modules/inventory/pages/SalesReport';
@@ -44,6 +45,7 @@ function App() {
             <Route path="/plans" element={<Plan />} />
             <Route path="/features" element={<Features />} />
             <Route path="/branches" element={<Branch />} />
+            <Route path="/freeze" element={<Freeze />} />
             <Route path="/products" element={<Product />} />
             <Route path="/sales-invoice" element={<SalesInvoice />} />
             <Route path="/sales-report" element={<SalesReport />} />

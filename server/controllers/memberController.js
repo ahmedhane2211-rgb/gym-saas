@@ -83,6 +83,7 @@ export const getAllMembers = async (req, res) => {
       'start_date', s.start_date,
       'end_date', s.end_date,
       'status', s.status,
+      'plan_id', s.plans_id,
 
       'features',
       COALESCE(
@@ -102,7 +103,23 @@ export const getAllMembers = async (req, res) => {
         ) FILTER (WHERE sf.id IS NOT NULL),
         '[]'
       )
-    ) AS subscription
+    ) AS subscription,
+
+    (
+      SELECT json_build_object(
+        'id', sp.id,
+        'from_date', sp.from_date,
+        'to_date', sp.to_date,
+        'days', fp.days,
+        'status', sp.status,
+        'max_uses', fp.max_uses
+      )
+      FROM subscription_pause sp
+      JOIN freeze_plan fp ON fp.id = sp.freeze_id
+      WHERE sp.subscription_id = s.id
+      ORDER BY sp.from_date DESC
+      LIMIT 1
+    ) AS subscription_pause
 
   FROM members m
   JOIN users u ON m.user_id = u.id
