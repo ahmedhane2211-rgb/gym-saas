@@ -56,7 +56,7 @@ const Attendance = () => {
           </p>
 
           <p className="text-gray-500 dark:text-gray-600 text-[9px] font-bold uppercase tracking-widest">
-            MB-2026-{record.member_id?.toString().padStart(3, '0')}
+            MB-{record.member_id?.toString().padStart(3, '0')}
           </p>
         </div>
       </div>

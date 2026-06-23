@@ -6,8 +6,8 @@ const DetailItem = ({ icon, label, value }) => (
       {icon}
     </div>
     <div className="space-y-0.5">
-      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{label}</p>
-      <div className="text-[14px] font-bold text-gray-900 dark:text-gray-200">
+      <p style={{ fontSize: 'var(--font-size-base)' }} className="font-black text-gray-400 uppercase tracking-widest">{label}</p>
+      <div style={{ fontSize: 'var(--font-size-sm)' }} className="font-medium text-gray-900 dark:text-gray-200">
         {value}
       </div>
     </div>

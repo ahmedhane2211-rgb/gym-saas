@@ -20,6 +20,7 @@ import formattedDate from '../../shared/utils/formattedDate';
 import BranchModal from '../components/BranchModal';
 import BranchViewModal from '../components/BranchViewModal';
 import DataTable from '../../shared/components/DataTable';
+import Button from '../../shared/components/Button';
 
 const Branch = () => {
     const { t } = useContext(LanguageContext);
@@ -163,15 +164,12 @@ const Branch = () => {
                     />
                 </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button
-                        onClick={handleOpenAdd}
-                        className="btn-orange flex items-center gap-2 h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)] font-main"
-                    >
-                        <Plus size={18} />
-                        <span>{t('add_new')}</span>
-                    </button>
-                </div>
+                <Button
+                    onClick={handleOpenAdd}
+                    className="btn-orange h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)] !w-auto"
+                    title={t('add_new')}
+                    icon={<Plus size={18} />}
+                />
             </div>
 
             {/* DataTable */}

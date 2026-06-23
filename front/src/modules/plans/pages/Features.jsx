@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import DataTable from '../../shared/components/DataTable';
 import FeatureModal from '../components/FeatureModal';
+import Button from '../../shared/components/Button';
 
 const Features = () => {
     const { t } = useContext(LanguageContext);
@@ -64,10 +65,12 @@ const Features = () => {
                     <h1 className="text-5xl font-black text-gray-900 dark:text-white tracking-widest italic uppercase">{t('features') || 'Features'}</h1>
                     <p className="text-gray-600 dark:text-gray-500 text-xs font-bold uppercase tracking-widest max-w-md">{t('manage_features_desc') || 'Define distinct features that can be added to your subscription plans.'}</p>
                 </div>
-                <button onClick={() => { setEditingFeature(null); setIsModalOpen(true); }} className="btn-orange flex items-center gap-2 h-14 px-8 shadow-lg font-main">
-                    <Plus size={18} />
-                    <span>{t('add_new')}</span>
-                </button>
+                <Button
+                    onClick={() => { setEditingFeature(null); setIsModalOpen(true); }}
+                    className="btn-orange h-14 px-8 shadow-lg !w-auto"
+                    title={t('add_new')}
+                    icon={<Plus size={18} />}
+                />
             </div>
 
             <DataTable 

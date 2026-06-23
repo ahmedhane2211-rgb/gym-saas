@@ -283,6 +283,7 @@ const deleteSubscribe = async (req, res) => {
 // 🔥 GET
 const getSubscribes = async (req, res) => {
   try {
+
     const result = await pool.query(
       "SELECT * FROM subscription WHERE branch_id = $1",
       [req.user.branchId]

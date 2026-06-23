@@ -1,8 +1,9 @@
 import React, { useContext, useRef } from 'react';
-import { X, Printer, Receipt, User, Calendar, Hash, Tag, DollarSign, ShoppingBag } from 'lucide-react';
+import { Printer, Receipt, User, Calendar, Hash, ShoppingBag } from 'lucide-react';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import DetailItem from '../../shared/components/DetailItem';
 import formattedDate from '../../shared/utils/formattedDate';
+import AppModal from '../../shared/components/AppModal';
 
 const InvoiceViewModal = ({ isOpen, onClose, invoice }) => {
     const { t } = useContext(LanguageContext);
@@ -46,11 +47,14 @@ const InvoiceViewModal = ({ isOpen, onClose, invoice }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="relative w-full max-w-2xl bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/5 rounded-[32px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-
-                {/* Header */}
-                <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+        <AppModal
+            isOpen={isOpen}
+            onClose={onClose}
+            maxWidth="max-w-2xl"
+            showCloseFooter
+            closeText={t('close')}
+            headerContent={
+                <>
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-blue/10 rounded-2xl text-blue">
                             <Receipt size={24} />
@@ -67,17 +71,13 @@ const InvoiceViewModal = ({ isOpen, onClose, invoice }) => {
                         >
                             <Printer size={20} />
                         </button>
-                        <button
-                            onClick={onClose}
-                            className="p-3 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-xl hover:text-red-500 transition-all"
-                        >
-                            <X size={20} />
-                        </button>
                     </div>
-                </div>
+                </>
+            }
+        >
 
                 {/* Printable Content */}
-                <div ref={printRef} className="overflow-y-auto p-8 space-y-10 custom-scrollbar">
+                <div ref={printRef} className="space-y-10">
                     {/* Top Info */}
                     <div className="grid grid-cols-2 gap-8">
                         <DetailItem icon={<User size={16} />} label={t('customer')} value={invoice?.user_name || 'N/A'} />
@@ -159,18 +159,7 @@ const InvoiceViewModal = ({ isOpen, onClose, invoice }) => {
                         </div>
                     </div>
                 </div>
-
-                {/* Footer Actions */}
-                <div className="p-8 border-t border-gray-100 dark:border-white/5 pt-0">
-                    <button
-                        onClick={onClose}
-                        className="w-full py-5 bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:text-red-500 transition-all mt-8"
-                    >
-                        {t('close')}
-                    </button>
-                </div>
-            </div>
-        </div>
+        </AppModal>
     );
 };
 

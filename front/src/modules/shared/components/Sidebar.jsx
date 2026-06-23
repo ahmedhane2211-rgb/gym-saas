@@ -26,7 +26,9 @@ import {
   MapPin,
   LogOut,
   Sparkles,
-  TrendingUp
+  TrendingUp,
+  BriefcaseBusiness,
+  Calendar
 } from 'lucide-react';
 import { LanguageContext } from '../context/LanguageContext';
 import deleteToken from '../utils/deleteToken';
@@ -53,8 +55,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const NavItem = ({ to, icon, name, subItem = false }) => (
     <NavLink
       to={to}
+      style={{ fontSize: 'var(--font-size-sm)' }}
       className={({ isActive }) =>
-        `nav-link ${isActive ? 'active' : ''} ${subItem ? 'ltr:pl-14 rtl:pr-14 py-2.5 opacity-80 hover:opacity-100 text-[13px]' : 'text-[14px]'} ${isCollapsed && !subItem ? 'justify-center px-0' : ''}`
+        `nav-link ${isActive ? 'active' : ''} ${subItem ? 'ltr:pl-14 rtl:pr-14 py-2.5 opacity-80 hover:opacity-100 text-size-base' : 'text-[14px]'} ${isCollapsed && !subItem ? 'justify-center px-0' : ''}`
       }
     >
       <div className={`${isCollapsed && !subItem ? 'scale-110' : ''} transition-transform`}>
@@ -74,7 +77,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         <div className={`p-2 rounded-xl border border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] group-hover:bg-orange/10 group-hover:border-orange/20 transition-all ${isOpen && !isCollapsed ? 'text-orange border-orange/20 bg-orange/10 scale-110' : ''}`}>
           {React.cloneElement(icon, { size: 20 })}
         </div>
-        {!isCollapsed && <span className="text-[12px] font-black uppercase tracking-[0.2em]">{name}</span>}
+        {!isCollapsed && <span style={{ fontSize: 'var(--font-size-base)' }} className="font-black uppercase tracking-[0.2em]">{name}</span>}
       </div>
       {!isCollapsed && (isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />)}
     </button>
@@ -130,6 +133,18 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             </div>
           )}
         </div>
+        <div>
+          <ModuleHeader id="hr" name={t('hr')} icon={<BriefcaseBusiness />} isOpen={activeModule === 'hr'} />
+          {activeModule === 'hr' && !isCollapsed && (
+            <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
+              <NavItem to="/employees" icon={<UserCheck />} name={t('employees')} subItem />
+              <NavItem to="/leaves" icon={<Calendar />} name={t('leaves') || 'الاجازات'} subItem />
+              <NavItem to="/leaves-permissions" icon={<FileText />} name={t('leaves_permissions')} subItem />
+
+
+            </div>
+          )}
+        </div>
 
         <div>
           <ModuleHeader id="inventory" name={t('inventory')} icon={<Banknote />} isOpen={activeModule === 'inventory'} />
@@ -142,12 +157,14 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             </div>
           )}
         </div>
+        
         <div>
           <ModuleHeader id="financials" name={t('financials')} icon={<Banknote />} isOpen={activeModule === 'financials'} />
           {activeModule === 'financials' && !isCollapsed && (
             <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
-              {/* <NavItem to="/expenses" icon={<ArrowUpCircle />} name={t('expenses')} subItem />
-              <NavItem to="/income" icon={<ArrowDownCircle />} name={t('income')} subItem /> */}
+              <NavItem to="/expenses" icon={<ArrowUpCircle />} name={t('expenses')} subItem />
+              <NavItem to="/vouchers" icon={<ArrowUpCircle />} name={t('vouchers')} subItem />
+              {/* <NavItem to="/income" icon={<ArrowDownCircle />} name={t('income')} subItem /> */}
               <NavItem to="/cash-day" icon={<Wallet />} name={t('cash_day')} subItem />
             </div>
           )}

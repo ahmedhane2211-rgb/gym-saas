@@ -9,6 +9,7 @@ import { useAddAttendanceMutation } from '../../attendance/services/AttendanceSl
 import { useAddSubscribeMutation, useUpdateSubscribeMutation } from '../services/SubscribeSlice';
 import { useAddPauseMutation } from '../../freeze/services/PauseSlice';
 import PauseSubscriptionModal from '../../freeze/components/PauseSubscriptionModal';
+import RenewSubscriptionModal from '../components/RenewSubscriptionModal';
 import {
   Activity,
   Plus,
@@ -23,6 +24,7 @@ import CheckInModal from '../../attendance/components/CheckInModal';
 import DataTable from '../../shared/components/DataTable';
 import SearchFilter from '../../shared/components/SearchFilter';
 import useFilter from '../../shared/hooks/useFilter';
+import Button from '../../shared/components/Button';
 
 
 const Member = () => {
@@ -50,11 +52,13 @@ const Member = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
   const [isPauseModalOpen, setIsPauseModalOpen] = useState(false);
+  const [isRenewModalOpen, setIsRenewModalOpen] = useState(false);
 
   const [editingMember, setEditingMember] = useState(null);
   const [viewingMember, setViewingMember] = useState(null);
   const [checkingInMember, setCheckingInMember] = useState(null);
   const [pausingMember, setPausingMember] = useState(null);
+  const [renewingMember, setRenewingMember] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleOpenAdd = () => {
@@ -100,6 +104,16 @@ const Member = () => {
   const handleClosePauseModal = () => {
     setIsPauseModalOpen(false);
     setPausingMember(null);
+  };
+
+  const handleOpenRenew = (member) => {
+    setRenewingMember(member);
+    setIsRenewModalOpen(true);
+  };
+
+  const handleCloseRenewModal = () => {
+    setIsRenewModalOpen(false);
+    setRenewingMember(null);
   };
 
   const handleSubmitMember = async (data) => {
@@ -166,6 +180,22 @@ const Member = () => {
       await addPause(data).unwrap();
       toast.success(t('freeze_success') || 'Subscription frozen successfully');
       handleClosePauseModal();
+    } catch (err) {
+      toast.error(err.data?.message || t('operation_failed') || 'Operation failed');
+    }
+  };
+
+  const handleRenewSubmit = async (data) => {
+    try {
+      const { plansId, startDate, endDate } = data;
+      await addSubscribe({
+        memberId: renewingMember.id,
+        plansId,
+        startDate,
+        endDate
+      }).unwrap();
+      toast.success(t('renew_success') || 'Subscription renewed successfully');
+      handleCloseRenewModal();
     } catch (err) {
       toast.error(err.data?.message || t('operation_failed') || 'Operation failed');
     }
@@ -248,14 +278,14 @@ const Member = () => {
     {
         header: 'status',
         render: (member) => (
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-widest font-black border ${member?.user?.is_active && member?.subscription_pause?.status !== 'active'
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-widest font-black border ${member?.subscription?.status === 'active'
                 ? 'bg-blue/10 border-blue/20 text-blue'
-                : member?.user?.is_active && member?.subscription_pause?.status === 'active'
+                : member?.subscription?.status === 'freezed'
                 ? 'bg-orange/10 border-orange/20 text-orange'
                 : 'bg-gray-500/10 border-gray-500/20 text-gray-500'
                 }`}>
-                <div className={`w-1 h-1 rounded-full ${member?.user?.is_active && member?.subscription_pause?.status === 'active' ? 'bg-orange animate-pulse' : member?.user?.is_active ? 'bg-blue animate-pulse' : 'bg-gray-500'}`} />
-                {member?.user?.is_active && member?.subscription_pause?.status === 'active' ? t('frozen') : member?.user?.is_active ? t('active') : t('inactive')}
+                <div className={`w-1 h-1 rounded-full ${member?.subscription?.status === 'freezed' ? 'bg-orange animate-pulse' : member?.subscription?.status === 'active' ? 'bg-blue animate-pulse' : 'bg-gray-500'}`} />
+                {member?.subscription?.status === 'freezed' ? t('frozen') : member?.subscription?.status === 'active' ? t('active') : t('inactive')}
             </span>
         )
     },
@@ -295,7 +325,7 @@ const Member = () => {
 
   const stats = [
     { label: t('total_members') || 'Total Members', value: members?.length || 0, icon: <Dumbbell className="text-orange" />, color: 'orange' },
-    { label: t('active_members') || 'Active Members', value: members?.filter(m => m.user?.is_active).length || 0, icon: <Activity className="text-blue" />, color: 'blue' },
+    { label: t('active_members') || 'Active Members', value: members?.filter(m => m.subscription?.status === 'active').length || 0, icon: <Activity className="text-blue" />, color: 'blue' },
   ];
 
   return (
@@ -333,13 +363,12 @@ const Member = () => {
         />
 
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <button
+          <Button
             onClick={handleOpenAdd}
-            className="btn-orange flex items-center gap-2 h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)]"
-          >
-            <Plus size={18} />
-            <span>{t('add_new')}</span>
-          </button>
+            className="btn-orange h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)] !w-auto"
+            title={t('add_new')}
+            icon={<Plus size={18} />}
+          />
         </div>
       </div>
 
@@ -354,6 +383,7 @@ const Member = () => {
           onDelete={handleDelete}
           onView={handleOpenView}
           onFreeze={handleOpenPause}
+          onRenew={handleOpenRenew}
           title={t('members')}
       />
 
@@ -390,6 +420,15 @@ const Member = () => {
             member={pausingMember}
             onSubmit={handlePauseSubmit}
             isLoading={isPausing}
+       />
+
+       {/* Renew Subscription Modal */}
+       <RenewSubscriptionModal
+            isOpen={isRenewModalOpen}
+            onClose={handleCloseRenewModal}
+            member={renewingMember}
+            onSubmit={handleRenewSubmit}
+            isLoading={isSubscribing}
        />
     </div>
   );

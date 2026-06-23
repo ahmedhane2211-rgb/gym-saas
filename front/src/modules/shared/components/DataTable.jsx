@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { Edit2, Trash2, Eye, LogIn, Printer, Download, MoreVertical, Snowflake } from 'lucide-react';
+import { Edit2, Trash2, Eye, LogIn, Printer, Download, MoreVertical, Snowflake, RefreshCw } from 'lucide-react';
 import { LanguageContext } from '../context/LanguageContext';
 import { exportToCSV } from '../utils/exportUtils';
 
@@ -12,8 +12,10 @@ const DataTable = ({
   onView,
   onCheckIn,
   onFreeze,
+  onRenew,
   actions = true,
-  title = 'Table'
+  title = 'Table',
+  exportColumns
 }) => {
   const { t } = useContext(LanguageContext);
   const tableRef = useRef(null);
@@ -59,7 +61,7 @@ const DataTable = ({
   };
 
   const handleExport = () => {
-    exportToCSV(data, columns, title.toLowerCase().replace(/\s+/g, '_'), t);
+    exportToCSV(data, exportColumns || columns, title.toLowerCase().replace(/\s+/g, '_'), t);
   };
 
   return (
@@ -88,15 +90,15 @@ const DataTable = ({
             <thead>
               <tr className="border-b border-gray-200 dark:border-white/5 bg-gray-100/50 dark:bg-white/[0.02]">
                 {columns.map((col, idx) => (
-                  <th 
+                  <th style={{ fontSize: 'var(--font-size-sm)' }} 
                     key={idx} 
-                    className={`px-8 py-6 text-[14px] font-black text-gray-500 dark:text-gray-light/60 uppercase tracking-[0.2em] ${col.align === 'right' ? 'text-right' : ''}`}
+                    className={`px-8 py-6 font-black text-gray-500 dark:text-gray-light/60 uppercase tracking-[0.2em] ${col.align === 'right' ? 'text-right' : ''}`}
                   >
                     {t(col.header)}
                   </th>
                 ))}
                 {actions && (
-                  <th className="px-8 text-center py-6 text-[14px] font-black text-gray-500 dark:text-gray-light/60 uppercase tracking-[0.2em] no-print">
+                  <th style={{ fontSize: 'var(--font-size-sm)' }} className="px-8 text-center py-6 font-black text-gray-500 dark:text-gray-light/60 uppercase tracking-[0.2em] no-print">
                     {t('actions')}
                   </th>
                 )}
@@ -173,6 +175,19 @@ const DataTable = ({
                               </button>
                               {activeDropdownRow === item.id && (
                                 <div className="absolute ltr:right-0 rtl:left-0 mt-2 z-[90] w-48 bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/5 rounded-xl shadow-xl py-2 animate-in fade-in slide-in-from-top-1 duration-150">
+                                  {onRenew && (
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onRenew(item);
+                                        setActiveDropdownRow(null);
+                                      }}
+                                      className="w-full text-left rtl:text-right px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 flex items-center gap-2"
+                                    >
+                                      <RefreshCw size={14} className="text-blue" />
+                                      <span>{t('renew_subscription') || 'تجديد الاشتراك'}</span>
+                                    </button>
+                                  )}
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();

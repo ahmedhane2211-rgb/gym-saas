@@ -63,6 +63,42 @@ export const getAllMembers = async (req, res) => {
   const { user } = req;
   const branchId = user.branchId
   try {
+    await pool.query(
+  `UPDATE subscription
+   SET status = 'inactive'
+      WHERE branch_id = $1
+      AND status = 'active'
+      AND end_date < CURRENT_DATE`,
+      [req.user.branchId]
+    );
+
+    await pool.query(
+  `UPDATE subscription s
+   SET status = 'freezed'
+   WHERE s.branch_id = $1
+     AND s.status = 'active'
+     AND EXISTS (
+       SELECT 1 FROM subscription_pause sp
+       WHERE sp.subscription_id = s.id
+         AND sp.status = 'active'
+     )`,
+      [req.user.branchId]
+    );
+
+    await pool.query(
+  `UPDATE subscription s
+   SET status = 'active'
+   WHERE s.branch_id = $1
+     AND s.status = 'freezed'
+     AND NOT EXISTS (
+       SELECT 1 FROM subscription_pause sp
+       WHERE sp.subscription_id = s.id
+         AND sp.status = 'active'
+     )
+     AND s.end_date >= CURRENT_DATE`,
+      [req.user.branchId]
+    );
+
     const result = await pool.query(
   `SELECT 
     m.*,
@@ -82,7 +118,13 @@ export const getAllMembers = async (req, res) => {
       'id', s.id,
       'start_date', s.start_date,
       'end_date', s.end_date,
-      'status', s.status,
+      'status', CASE
+        WHEN EXISTS (
+          SELECT 1 FROM subscription_pause sp2
+          WHERE sp2.subscription_id = s.id AND sp2.status = 'active'
+        ) THEN 'freezed'
+        ELSE s.status
+      END,
       'plan_id', s.plans_id,
 
       'features',
@@ -123,7 +165,12 @@ export const getAllMembers = async (req, res) => {
 
   FROM members m
   JOIN users u ON m.user_id = u.id
-  LEFT JOIN subscription s ON s.member_id = m.id
+ LEFT JOIN LATERAL (
+    SELECT * FROM subscription
+    WHERE member_id = m.id
+    ORDER BY start_date DESC
+    LIMIT 1
+  ) s ON true
 
   LEFT JOIN subscription_features sf 
     ON sf.subscription_id = s.id
@@ -135,7 +182,7 @@ export const getAllMembers = async (req, res) => {
     ON fp.features_id = f.id
 
   WHERE m.branch_id = $1
-  GROUP BY m.id, u.id, s.id`,
+  GROUP BY m.id, u.id, s.id, s.start_date, s.end_date,s.status, s.plans_id`,
   [branchId]
 );
     return res.status(200).json({ data: result.rows || [], status: true });

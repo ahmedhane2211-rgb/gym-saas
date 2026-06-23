@@ -17,9 +17,16 @@ import { dashboardApi } from '../dashboard/services/DashboardSlice'
 import { settingsApi } from '../settings/services/SettingsSlice'
 import { freezeApi } from '../freeze/services/FreezeSlice'
 import { pauseApi } from '../freeze/services/PauseSlice'
+import { expenseApi } from '../expenses/services/ExpenseSlice'
+import { voucherApi } from '../vouchers/services/VoucherSlice'
+import { employeeApi } from '../hr/services/EmployeeSlice'
+import { leaveApi } from '../hr/services/LeaveSlice'
+import { leavePermissionApi } from '../hr/services/LeavePermissionSlice'
+
+
 
 import { isRejectedWithValue } from '@reduxjs/toolkit'
-import toast from 'react-hot-toast'
+
 
 const rtkQueryErrorLogger = (api) => (next) => (action) => {
   if (isRejectedWithValue(action)) {
@@ -66,6 +73,11 @@ export const store = configureStore({
     [settingsApi.reducerPath]: settingsApi.reducer,
     [freezeApi.reducerPath]: freezeApi.reducer,
     [pauseApi.reducerPath]: pauseApi.reducer,
+    [expenseApi.reducerPath]: expenseApi.reducer,
+    [voucherApi.reducerPath]: voucherApi.reducer,
+    [employeeApi.reducerPath]: employeeApi.reducer,
+    [leaveApi.reducerPath]: leaveApi.reducer,
+    [leavePermissionApi.reducerPath]: leavePermissionApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
@@ -87,6 +99,11 @@ export const store = configureStore({
       settingsApi.middleware,
       freezeApi.middleware,
       pauseApi.middleware,
+      expenseApi.middleware,
+      voucherApi.middleware,
+      employeeApi.middleware,
+      leaveApi.middleware,
+      leavePermissionApi.middleware,
     ]),
 })
 

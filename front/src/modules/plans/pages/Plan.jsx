@@ -4,6 +4,7 @@ import { useAddFeatureToPlanMutation, useRemoveFeatureFromPlanMutation } from '.
 import { ScrollText, Activity, Plus, Search, Filter, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { LanguageContext } from '../../shared/context/LanguageContext';
+import Button from '../../shared/components/Button';
 import PlanModal from '../components/PlanModal';
 import PlanViewModal from '../components/PlanViewModal';
 import DataTable from '../../shared/components/DataTable';
@@ -139,10 +140,12 @@ const Plan = () => {
                         {t('manage_plans_desc')}
                     </p>
                 </div>
-                <button onClick={() => { setEditingPlan(null); setIsModalOpen(true); }} className="btn-orange flex items-center gap-2 h-14 px-8 shadow-lg font-main">
-                    <Plus size={18} />
-                    <span>{t('add_new')}</span>
-                </button>
+                <Button
+                    onClick={() => { setEditingPlan(null); setIsModalOpen(true); }}
+                    className="btn-orange h-14 px-8 shadow-lg !w-auto"
+                    title={t('add_new')}
+                    icon={<Plus size={18} />}
+                />
             </div>
 
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">

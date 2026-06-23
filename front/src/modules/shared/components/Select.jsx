@@ -50,7 +50,7 @@ const Select = ({ label, options = [], register, name, errors, placeholder, setV
             {/* Display Button */}
             <div 
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-blue/30 ${isOpen ? 'border-blue/50 ring-2 ring-blue/5' : ''}`}
+                className={`w-full min-h-14 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-blue/30 ${isOpen ? 'border-blue/50 ring-2 ring-blue/5' : ''}`}
             >
                 <span className={`text-xs font-bold ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-light/40'}`}>
                     {selectedOption ? selectedOption.label : (t(placeholder) || t('select_option') || 'Select...')}

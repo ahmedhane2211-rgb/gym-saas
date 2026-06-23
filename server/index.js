@@ -24,7 +24,12 @@ import { authUser } from "./middlewares/authUser.js";
 import checkSubscription from "./middlewares/checkSubscription.js";
 import subscriptionFreezeRouter from "./routes/subscriptionFreezeRouter.js";
 import subscriptionPauseRouter from "./routes/subscriptionPauseRouter.js";
+import expensesRouter from "./routes/expensesRoute.js";
+import vouchersRouter from "./routes/vouchersRoute.js";
+import employeesRouter from "./routes/employeesRoute.js";
+import leavesRouter from "./routes/leavesRoute.js";
 import { expireOldPauses } from "./utils/checkSubscriptionPause.js";
+import leavesPermissionsRouter from "./routes/leavesPermissionsRoute.js";
 
 
 const app = express();
@@ -66,6 +71,11 @@ app.use("/api/refunds", refundRouter);
 app.use("/api/cash-report", cashReportRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/settings", settingsRouter);
+app.use("/api/expenses", expensesRouter);
+app.use("/api/vouchers", vouchersRouter);
+app.use("/api/employees", employeesRouter);
+app.use("/api/leaves", leavesRouter);
+app.use("/api/leaves-permissions", leavesPermissionsRouter);
 
 
 // Start the server

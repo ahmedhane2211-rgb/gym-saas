@@ -22,6 +22,7 @@ import CoachViewModal from '../components/CoachViewModal';
 import DataTable from '../../shared/components/DataTable';
 import SearchFilter from '../../shared/components/SearchFilter';
 import useFilter from '../../shared/hooks/useFilter';
+import Button from '../../shared/components/Button';
 
 
 const Coach = () => {
@@ -181,15 +182,12 @@ const Coach = () => {
                 <SearchFilter onSearch={setSearchTerm} placeholder={t('search_coaches') || 'Search coaches...'} />
 
 
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button
-                        onClick={handleOpenAdd}
-                        className="btn-orange flex items-center gap-2 h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)]"
-                    >
-                        <Plus size={18} />
-                        <span>{t('add_new')}</span>
-                    </button>
-                </div>
+                <Button
+                    onClick={handleOpenAdd}
+                    className="btn-orange h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)] !w-auto"
+                    title={t('add_new')}
+                    icon={<Plus size={18} />}
+                />
             </div>
 
             {/* DataTable */}

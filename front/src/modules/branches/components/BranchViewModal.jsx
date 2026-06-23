@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
-import { X, MapPin, Phone, Building2, ShieldCheck, Calendar } from 'lucide-react';
+import { MapPin, Phone, Building2, ShieldCheck, Calendar } from 'lucide-react';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import formattedDate from '../../shared/utils/formattedDate';
+import AppModal from '../../shared/components/AppModal';
 
 const BranchViewModal = ({ isOpen, onClose, branch }) => {
     const { t } = useContext(LanguageContext);
@@ -17,22 +18,14 @@ const BranchViewModal = ({ isOpen, onClose, branch }) => {
     ];
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="relative w-full max-w-xl bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/5 rounded-[32px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-                {/* Visual Header */}
+        <AppModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-xl" showCloseFooter closeText={t('close')} headerContent={<div />}>
                 <div className="h-32 bg-gradient-to-r from-orange to-orange/30 relative">
-                    <button 
-                        onClick={onClose}
-                        className="absolute top-6 ltr:right-6 rtl:left-6 p-2 bg-white/20 hover:bg-white/40 text-white rounded-xl backdrop-blur-md transition-all"
-                    >
-                        <X size={20} />
-                    </button>
                     <div className="absolute -bottom-10 ltr:left-10 rtl:right-10 w-24 h-24 rounded-3xl bg-white dark:bg-gray-dark border-4 border-white dark:border-gray-dark flex items-center justify-center shadow-xl">
                         <Building2 size={40} className="text-orange" />
                     </div>
                 </div>
 
-                <div className="p-10 pt-16 space-y-8">
+                <div className="pt-16 space-y-8">
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
                             <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{branch.name}</h2>
@@ -56,16 +49,8 @@ const BranchViewModal = ({ isOpen, onClose, branch }) => {
                             </div>
                         ))}
                     </div>
-
-                    <button 
-                        onClick={onClose}
-                        className="w-full py-5 bg-gray-900 dark:bg-white text-white dark:text-black font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all"
-                    >
-                        {t('close')}
-                    </button>
                 </div>
-            </div>
-        </div>
+        </AppModal>
     );
 };
 

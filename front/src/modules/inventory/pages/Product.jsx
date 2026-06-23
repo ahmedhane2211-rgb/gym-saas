@@ -8,6 +8,7 @@ import ProductViewModal from '../components/ProductViewModal';
 import DataTable from '../../shared/components/DataTable';
 import SearchFilter from '../../shared/components/SearchFilter';
 import useFilter from '../../shared/hooks/useFilter';
+import Button from '../../shared/components/Button';
 
 
 const Product = () => {
@@ -147,10 +148,12 @@ const Product = () => {
 
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <SearchFilter onSearch={setSearchTerm} placeholder={t('search_products')} />
-                <button onClick={() => { setEditingProduct(null); setIsModalOpen(true); }} className="btn-orange flex items-center gap-2 h-14 px-8 shadow-lg font-main">
-                    <Plus size={18} />
-                    <span>{t('add_new')}</span>
-                </button>
+                <Button
+                    onClick={() => { setEditingProduct(null); setIsModalOpen(true); }}
+                    className="btn-orange h-14 px-8 shadow-lg !w-auto"
+                    title={t('add_new')}
+                    icon={<Plus size={18} />}
+                />
             </div>
 
             <DataTable

@@ -18,6 +18,7 @@ import formattedDate from '../../shared/utils/formattedDate';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import SearchFilter from '../../shared/components/SearchFilter';
 import useFilter from '../../shared/hooks/useFilter';
+import Button from '../../shared/components/Button';
 
 
 const Users = () => {
@@ -178,14 +179,13 @@ const Users = () => {
         <SearchFilter onSearch={setSearchTerm} placeholder={t('search_users') || 'Search users...'} />
 
         <div className="flex items-center gap-3 w-full md:w-auto">
-
-          <button
+          <Button
+            title={t('add_new')}
             onClick={handleOpenAdd}
+            icon={<Plus size={18} />}
+            isLoading={isAdding}
             className="btn-orange flex items-center gap-2 h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)]"
-          >
-            <Plus size={18} />
-            <span>{t('add_new')}</span>
-          </button>
+          />
         </div>
       </div>
 

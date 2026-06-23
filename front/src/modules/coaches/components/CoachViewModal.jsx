@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { X, Award, Banknote, Calendar, Activity, Shield, Mail, Phone } from 'lucide-react';
+import { Award, Banknote, Calendar, Activity, Shield, Mail, Phone } from 'lucide-react';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import formattedDate from '../../shared/utils/formattedDate';
 import DetailItem from '../../shared/components/DetailItem';
+import AppModal from '../../shared/components/AppModal';
 
 const CoachViewModal = ({ isOpen, onClose, coach }) => {
   const { t } = useContext(LanguageContext);
@@ -10,21 +11,9 @@ const CoachViewModal = ({ isOpen, onClose, coach }) => {
   if (!isOpen || !coach) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative w-full max-w-lg bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/5 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-        {/* Header Overlay */}
+    <AppModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-lg" showCloseFooter closeText={t('close')} headerContent={<div />}>
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-orange to-orange/50 opacity-10" />
-        
-        {/* Close Button */}
-        <button 
-          onClick={onClose}
-          className="absolute top-6 ltr:right-6 rtl:left-6 p-2 text-gray-400 hover:text-orange transition-colors z-10 bg-white/10 dark:bg-black/20 rounded-full backdrop-blur-md"
-        >
-          <X size={20} />
-        </button>
-
-        {/* Content */}
-        <div className="relative pt-12 px-8 pb-8 space-y-8">
+        <div className="relative space-y-8">
           {/* Profile Header */}
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="w-24 h-24 rounded-3xl border-4 border-white dark:border-gray-dark shadow-xl overflow-hidden bg-gray-100 dark:bg-gray-dark -mt-4">
@@ -67,16 +56,8 @@ const CoachViewModal = ({ isOpen, onClose, coach }) => {
             <DetailItem icon={<Calendar size={16}/>} label={t('created_at')} value={formattedDate(coach.created_at)} />
           </div>
 
-          {/* Actions */}
-          <button 
-            onClick={onClose}
-            className="w-full py-4 bg-gray-100 dark:bg-white/5 rounded-xl text-gray-500 dark:text-gray-400 font-black text-[12px] uppercase tracking-[0.3em] hover:bg-orange hover:text-black transition-all"
-          >
-            {t('close')}
-          </button>
         </div>
-      </div>
-    </div>
+    </AppModal>
   );
 };
 

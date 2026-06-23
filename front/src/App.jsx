@@ -23,6 +23,13 @@ import OwnerLayout from './modules/owner/components/OwnerLayout';
 import OwnerDashboard from './modules/owner/pages/OwnerDashboard';
 import Subscriptions from './modules/owner/pages/Subscriptions';
 import Settings from './modules/settings/pages/Settings';
+import Expense from './modules/expenses/pages/Expense';
+import Voucher from './modules/vouchers/pages/Voucher';
+import Employee from './modules/hr/pages/Employee';
+import Leave from './modules/hr/pages/Leave';
+import LeavePermission from './modules/hr/pages/LeavePermission';
+
+
 
 
 import SubscriptionExpired from './modules/shared/pages/SubscriptionExpired';
@@ -50,8 +57,13 @@ function App() {
             <Route path="/sales-invoice" element={<SalesInvoice />} />
             <Route path="/sales-report" element={<SalesReport />} />
             <Route path="/sales-return-invoice" element={<RefundPage />} />
-            <Route path="/expenses" element={<Plan />} />
-            <Route path="/income" element={<Plan />} />
+            <Route path="/expenses" element={<Expense />} />
+            <Route path="/vouchers" element={<Voucher />} />
+            <Route path="/employees" element={<Employee />} />
+            <Route path="/leaves" element={<Leave />} />
+            <Route path="/leaves-permissions" element={<LeavePermission />} />
+
+
             <Route path="/cash-day" element={<CashReport />} />
             <Route path="/settings" element={<Settings />} />
 
