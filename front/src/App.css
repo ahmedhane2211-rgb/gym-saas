@@ -109,7 +109,7 @@
   }
 
   .glass-card {
-    @apply bg-white/70 dark:bg-white/[0.03] backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl shadow-xl dark:shadow-[0_0_50px_rgba(0, 0, 0, 0.5)];
+    @apply bg-white/70 dark:bg-white/[0.03] backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl shadow-xl dark:shadow-[0_0_50px_rgba(0,0,0,0.5)];
   }
 
   .nav-link {
