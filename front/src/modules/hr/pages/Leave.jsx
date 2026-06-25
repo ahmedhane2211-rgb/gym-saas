@@ -14,6 +14,7 @@ import {
     useGetLeavesQuery,
     useUpdateLeaveMutation
 } from "../services/LeaveSlice";
+import StatsCard from "../../shared/components/StatsCard";
 
 const Leave = () => {
     const { t } = useContext(LanguageContext);
@@ -111,11 +112,7 @@ const Leave = () => {
                 <div className="flex gap-4">
                     {stats.map((stat) => (
                         <div key={stat.label} className="glass-card p-6 min-w-[200px] flex flex-col justify-between h-32 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ltr:translate-x-2 ltr:-translate-y-2 rtl:-translate-x-2 rtl:-translate-y-2">
-                                {cloneElement(stat.icon, { size: 64 })}
-                            </div>
-                            <p className="text-gray-600 dark:text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
-                            <p className="text-4xl font-black text-orange">{stat.value}</p>
+                            <StatsCard stat={stat} />
                         </div>
                     ))}
                 </div>

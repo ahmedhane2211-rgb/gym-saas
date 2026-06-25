@@ -30,6 +30,11 @@ import employeesRouter from "./routes/employeesRoute.js";
 import leavesRouter from "./routes/leavesRoute.js";
 import { expireOldPauses } from "./utils/checkSubscriptionPause.js";
 import leavesPermissionsRouter from "./routes/leavesPermissionsRoute.js";
+import pumpingMoneyRouter from "./routes/pumpingMoneyRoute.js";
+import ownerWithdrawalsRouter from "./routes/ownerWithdrawalsRoute.js";
+import employeeWithdrawalsRouter from "./routes/employeeWithdrawalsRoute.js";
+import employeeBonusDeductionRouter from "./routes/employeeBonusDeductionRoute.js";
+import salaryPaymentRouter from "./routes/salaryPaymentRoute.js";
 
 
 const app = express();
@@ -76,6 +81,11 @@ app.use("/api/vouchers", vouchersRouter);
 app.use("/api/employees", employeesRouter);
 app.use("/api/leaves", leavesRouter);
 app.use("/api/leaves-permissions", leavesPermissionsRouter);
+app.use("/api/pumping-money", pumpingMoneyRouter);
+app.use("/api/owner-withdrawals", ownerWithdrawalsRouter);
+app.use("/api/employee-withdrawals", employeeWithdrawalsRouter);
+app.use("/api/employee-bonus-deduction", employeeBonusDeductionRouter);
+app.use("/api/salary-payments", salaryPaymentRouter);
 
 
 // Start the server

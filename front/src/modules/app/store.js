@@ -22,11 +22,17 @@ import { voucherApi } from '../vouchers/services/VoucherSlice'
 import { employeeApi } from '../hr/services/EmployeeSlice'
 import { leaveApi } from '../hr/services/LeaveSlice'
 import { leavePermissionApi } from '../hr/services/LeavePermissionSlice'
+import { pumpingMoneyApi } from '../financial/services/PumpingMoneySlice'
+import { ownerWithdrawalsApi } from '../financial/services/OwnerWithdrawalsSlice'
+import { employeeWithdrawalsApi } from '../financial/services/EmployeeWithdrawalsSlice'
 
 
 
 import { isRejectedWithValue } from '@reduxjs/toolkit'
 
+
+import { employeeBonusDeductionApi } from '../hr/services/EmployeeBonusDeductionSlice'
+import { salaryPaymentApi } from '../hr/services/SalaryPaymentSlice'
 
 const rtkQueryErrorLogger = (api) => (next) => (action) => {
   if (isRejectedWithValue(action)) {
@@ -78,6 +84,11 @@ export const store = configureStore({
     [employeeApi.reducerPath]: employeeApi.reducer,
     [leaveApi.reducerPath]: leaveApi.reducer,
     [leavePermissionApi.reducerPath]: leavePermissionApi.reducer,
+    [pumpingMoneyApi.reducerPath]: pumpingMoneyApi.reducer,
+    [ownerWithdrawalsApi.reducerPath]: ownerWithdrawalsApi.reducer,
+    [employeeWithdrawalsApi.reducerPath]: employeeWithdrawalsApi.reducer,
+    [employeeBonusDeductionApi.reducerPath]: employeeBonusDeductionApi.reducer,
+    [salaryPaymentApi.reducerPath]: salaryPaymentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
@@ -104,6 +115,11 @@ export const store = configureStore({
       employeeApi.middleware,
       leaveApi.middleware,
       leavePermissionApi.middleware,
+      pumpingMoneyApi.middleware,
+      ownerWithdrawalsApi.middleware,
+      employeeWithdrawalsApi.middleware,
+      employeeBonusDeductionApi.middleware,
+      salaryPaymentApi.middleware,
     ]),
 })
 

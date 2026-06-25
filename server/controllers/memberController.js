@@ -81,6 +81,8 @@ export const getAllMembers = async (req, res) => {
        SELECT 1 FROM subscription_pause sp
        WHERE sp.subscription_id = s.id
          AND sp.status = 'active'
+         AND CURRENT_DATE >= sp.from_date
+         AND CURRENT_DATE <= sp.to_date
      )`,
       [req.user.branchId]
     );
@@ -94,6 +96,8 @@ export const getAllMembers = async (req, res) => {
        SELECT 1 FROM subscription_pause sp
        WHERE sp.subscription_id = s.id
          AND sp.status = 'active'
+         AND CURRENT_DATE >= sp.from_date
+         AND CURRENT_DATE <= sp.to_date
      )
      AND s.end_date >= CURRENT_DATE`,
       [req.user.branchId]
@@ -121,7 +125,10 @@ export const getAllMembers = async (req, res) => {
       'status', CASE
         WHEN EXISTS (
           SELECT 1 FROM subscription_pause sp2
-          WHERE sp2.subscription_id = s.id AND sp2.status = 'active'
+          WHERE sp2.subscription_id = s.id 
+            AND sp2.status = 'active'
+            AND CURRENT_DATE >= sp2.from_date
+            AND CURRENT_DATE <= sp2.to_date
         ) THEN 'freezed'
         ELSE s.status
       END,

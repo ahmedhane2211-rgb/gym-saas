@@ -1,7 +1,17 @@
-import React from "react";
+import { useEffect, useCallback } from "react";
 import { X } from "lucide-react";
 
 const AppModal = ({ isOpen, onClose, title, children, footer, maxWidth = "max-w-[650px]", headerContent, closeText = "Close", showCloseFooter = false }) => {
+    const esc = useCallback((event) => {
+        if (event.key === "Escape") onClose();
+    }, [onClose]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        window.addEventListener("keydown", esc);
+        return () => window.removeEventListener("keydown", esc);
+    }, [isOpen, esc]);
+
     if (!isOpen) return null;
 
     return (
@@ -14,7 +24,10 @@ const AppModal = ({ isOpen, onClose, title, children, footer, maxWidth = "max-w-
                             <div className="w-12 h-1 bg-orange rounded-full" />
                         </div>
                     )}
-                    <button onClick={onClose} className="p-2 text-gray-500 hover:text-orange transition-colors">
+                    <button
+                        onClick={onClose}
+                        className="relative z-10 p-2 text-gray-500 hover:text-orange transition-colors"
+                    >
                         <X size={24} />
                     </button>
                 </div>

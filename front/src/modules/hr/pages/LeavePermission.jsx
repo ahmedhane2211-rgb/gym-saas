@@ -17,6 +17,7 @@ import {
     useApproveLeavePermissionMutation,
     useRejectLeavePermissionMutation
 } from "../services/LeavePermissionSlice";
+import StatsCard from "../../shared/components/StatsCard";
 
 const LeavePermission = () => {
     const { t } = useContext(LanguageContext);
@@ -44,8 +45,8 @@ const LeavePermission = () => {
 
     const handleSubmit = async (data) => {
         const body = {
-            employee_id: Number(data.employee_id),
-            leaves_id: Number(data.leaves_id),
+            employee_id: data.employee_id,
+            leaves_id: data.leaves_id,
             from_date: data.from_date,
             to_date: data.to_date,
             from_time: data.from_time || null,
@@ -229,15 +230,7 @@ const LeavePermission = () => {
                 <div className="flex gap-4 flex-wrap">
                     {stats.map((stat) => (
                         <div key={stat.label} className="glass-card p-6 min-w-[150px] flex flex-col justify-between h-32 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ltr:translate-x-2 ltr:-translate-y-2 rtl:-translate-x-2 rtl:-translate-y-2">
-                                {cloneElement(stat.icon, { size: 64 })}
-                            </div>
-                            <p className="text-gray-600 dark:text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
-                            <p className={`text-4xl font-black ${
-                                stat.color === "orange" ? "text-orange" : 
-                                stat.color === "blue" ? "text-blue" : 
-                                stat.color === "green" ? "text-green-500" : "text-red-500"
-                            }`}>{stat.value}</p>
+                            <StatsCard stat={stat} />
                         </div>
                     ))}
                 </div>

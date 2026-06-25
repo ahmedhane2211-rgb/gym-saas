@@ -5,11 +5,15 @@ import { pool } from "../models/db.js";
 
 // Get all freeze plans
 const getAllFreezePlans = async (req, res) => {
+    const {branchId} = req.user;
   try {
-    const result = await pool.query('SELECT * FROM freeze_plan ORDER BY days ASC');
-    res.json(result.rows);
+    if (!branchId) {
+      return res.status(400).json({ message: 'branch_id is required' });
+    }
+    const result = await pool.query('SELECT * FROM freeze_plan WHERE branch_id = $1 ORDER BY days ASC',[branchId]);
+    return res.status(200).json({ data:result.rows});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -23,9 +27,9 @@ const getFreezePlanById = async (req, res) => {
       return res.status(404).json({ message: 'Freeze plan not found' });
     }
 
-    res.json(result.rows[0]);
+    return res.status(200).json({ data:result.rows[0]});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -33,21 +37,21 @@ const getFreezePlanById = async (req, res) => {
 const createFreezePlan = async (req, res) => {
   try {
     const { days, max_uses,name } = req.body;
-
+    const {branchId} = req.user;
     if (!days || !max_uses || !name) {
       return res.status(400).json({ message: 'days, max_uses and name are required' });
     }
 
     const result = await pool.query(
-      'INSERT INTO freeze_plan (days, max_uses,name) VALUES ($1, $2,$3) RETURNING *',
-      [days, max_uses,name]
+      'INSERT INTO freeze_plan (days, max_uses,name,branch_id) VALUES ($1, $2,$3,$4) RETURNING *',
+      [days, max_uses,name,branchId]
     );
     if(result.rowCount == 0){
       return res.status(400).json({ message: 'Failed to create freeze plan' });
     }
     return res.status(201).json({ message: 'Freeze plan created successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -56,7 +60,7 @@ const updateFreezePlan = async (req, res) => {
   try {
     const { id } = req.params;
     const { days, max_uses,name } = req.body;
-
+    
     if (!days || !max_uses||!name) {
       return res.status(400).json({ message: 'days, max_uses and name are required' });
     }

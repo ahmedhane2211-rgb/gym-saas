@@ -138,6 +138,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           {activeModule === 'hr' && !isCollapsed && (
             <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
               <NavItem to="/employees" icon={<UserCheck />} name={t('employees')} subItem />
+              <NavItem to="/salaries" icon={<Banknote />} name={t('salaries') || 'الرواتب'} subItem />
+              <NavItem to="/bonuses-deductions" icon={<TrendingUp />} name={t('bonuses_deductions') || 'المكافآت والخصومات'} subItem />
               <NavItem to="/leaves" icon={<Calendar />} name={t('leaves') || 'الاجازات'} subItem />
               <NavItem to="/leaves-permissions" icon={<FileText />} name={t('leaves_permissions')} subItem />
 
@@ -164,7 +166,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
               <NavItem to="/expenses" icon={<ArrowUpCircle />} name={t('expenses')} subItem />
               <NavItem to="/vouchers" icon={<ArrowUpCircle />} name={t('vouchers')} subItem />
-              {/* <NavItem to="/income" icon={<ArrowDownCircle />} name={t('income')} subItem /> */}
+              <NavItem to="/pumping-money" icon={<TrendingUp />} name={t('pumping_money')} subItem />
+              <NavItem to="/owner-withdrawals" icon={<ArrowDownCircle />} name={t('owner_withdrawals')} subItem />
+              <NavItem to="/employee-withdrawals" icon={<Banknote />} name={t('employee_withdrawals')} subItem />
               <NavItem to="/cash-day" icon={<Wallet />} name={t('cash_day')} subItem />
             </div>
           )}

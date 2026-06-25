@@ -21,6 +21,7 @@ import { LanguageContext } from '../../shared/context/LanguageContext';
 import Select from '../../shared/components/Select';
 import Button from '../../shared/components/Button';
 import Input from '../../shared/components/Input';
+import StatsCard from '../../shared/components/StatsCard';
 
 const SalesInvoice = () => {
     const { t } = useContext(LanguageContext);
@@ -164,6 +165,7 @@ const SalesInvoice = () => {
         }
     };
 
+    
     return (
         <div className="space-y-10 animate-in fade-in duration-700">
             {/* Page Header */}
@@ -178,16 +180,6 @@ const SalesInvoice = () => {
                     <p className="text-gray-600 dark:text-gray-500 text-xs font-bold uppercase tracking-widest max-w-md leading-relaxed ml-1">
                         {t('create_new_invoice_desc') || 'Generate professional sales receipts for gym products and merchandise.'}
                     </p>
-                </div>
-                
-                <div className="flex gap-4">
-                    <div className="glass-card p-6 min-w-[200px] flex flex-col justify-between h-32 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity translate-x-2 -translate-y-2">
-                            <Calculator size={64} className="text-blue" />
-                        </div>
-                        <p className="text-gray-600 dark:text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">{t('invoice_total') || 'Invoice Total'}</p>
-                        <p className="text-4xl font-black text-blue">{finalTotal.toLocaleString()} <span className="text-xs">EGP</span></p>
-                    </div>
                 </div>
             </div>
 

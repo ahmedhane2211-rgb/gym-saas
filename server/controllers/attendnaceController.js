@@ -84,7 +84,9 @@ const checkMemberIn = async (req, res) => {
             `SELECT id 
              FROM subscription_pause 
              WHERE subscription_id = $1 
-               AND status = 'active' 
+               AND status = 'active'
+               AND CURRENT_DATE >= from_date
+               AND CURRENT_DATE <= to_date
              LIMIT 1`,
             [subscription.rows[0].id]
         );

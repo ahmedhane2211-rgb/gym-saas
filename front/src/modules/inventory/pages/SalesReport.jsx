@@ -7,6 +7,7 @@ import InvoiceViewModal from '../components/InvoiceViewModal';
 import formattedDate from '../../shared/utils/formattedDate';
 import formatNum from '../../shared/utils/formatNum';
 import SearchFilter from '../../shared/components/SearchFilter';
+import StatsCard from '../../shared/components/StatsCard';
 
 const SalesReport = () => {
     const { t } = useContext(LanguageContext);
@@ -102,11 +103,7 @@ const SalesReport = () => {
                 <div className="flex gap-4">
                     {stats.map((stat) => (
                         <div key={stat.label} className="glass-card p-6 min-w-[200px] flex flex-col justify-between h-32 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity translate-x-2 -translate-y-2">
-                                {stat.icon}
-                            </div>
-                            <p className="text-gray-600 dark:text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
-                            <p className={`text-4xl font-black ${stat.color === 'green' ? 'text-green-500' : 'text-blue'}`}>{stat.value}</p>
+                            <StatsCard stat={stat} />
                         </div>
                     ))}
                 </div>

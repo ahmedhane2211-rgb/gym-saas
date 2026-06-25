@@ -28,6 +28,11 @@ import Voucher from './modules/vouchers/pages/Voucher';
 import Employee from './modules/hr/pages/Employee';
 import Leave from './modules/hr/pages/Leave';
 import LeavePermission from './modules/hr/pages/LeavePermission';
+import PumpingMoney from './modules/financial/pages/PumpingMoney';
+import OwnerWithdrawals from './modules/financial/pages/OwnerWithdrawals';
+import EmployeeWithdrawals from './modules/financial/pages/EmployeeWithdrawals';
+import Salaries from './modules/hr/pages/Salaries';
+import BonusesDeductions from './modules/hr/pages/BonusesDeductions';
 
 
 
@@ -60,8 +65,13 @@ function App() {
             <Route path="/expenses" element={<Expense />} />
             <Route path="/vouchers" element={<Voucher />} />
             <Route path="/employees" element={<Employee />} />
+            <Route path="/salaries" element={<Salaries />} />
+            <Route path="/bonuses-deductions" element={<BonusesDeductions />} />
             <Route path="/leaves" element={<Leave />} />
             <Route path="/leaves-permissions" element={<LeavePermission />} />
+            <Route path="/pumping-money" element={<PumpingMoney />} />
+            <Route path="/owner-withdrawals" element={<OwnerWithdrawals />} />
+            <Route path="/employee-withdrawals" element={<EmployeeWithdrawals />} />
 
 
             <Route path="/cash-day" element={<CashReport />} />
