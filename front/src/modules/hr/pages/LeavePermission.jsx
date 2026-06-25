@@ -45,7 +45,7 @@ const LeavePermission = () => {
 
     const handleSubmit = async (data) => {
         const body = {
-            employee_id: data.employee_id,
+            employee_id: data.employee_id, 
             leaves_id: data.leaves_id,
             from_date: data.from_date,
             to_date: data.to_date,
