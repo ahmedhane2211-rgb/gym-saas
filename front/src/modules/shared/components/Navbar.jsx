@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Globe, Moon, Sun, Bell, ChevronDown } from 'lucide-react';
+import { Search, Globe, Moon, Sun, Bell, ChevronDown, Menu } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGetProfileQuery } from '../../auth/services/AuthSlice';
 import { useGetSettingsQuery } from '../../settings/services/SettingsSlice';
 
 
-const Navbar = () => {
+const Navbar = ({ isMobileOpen, setIsMobileOpen }) => {
   const { i18n, t } = useTranslation();
   const [isDark, setIsDark] = useState(document.documentElement.classList.contains('dark'));
   const { data } = useGetProfileQuery();
@@ -50,18 +50,15 @@ const Navbar = () => {
   return (
     <header className="h-20 bg-white/50 dark:bg-black/50 backdrop-blur-md border-b border-gray-200 dark:border-white/5 sticky top-0 z-40 px-8 flex items-center justify-between transition-colors duration-300">
       {/* Search Bar & Nav */}
-      <div className="flex items-center gap-12">
+      <div className="flex items-center gap-4 lg:gap-12">
+        {/* Mobile Menu Toggle */}
+        <button
+          onClick={() => setIsMobileOpen && setIsMobileOpen(!isMobileOpen)}
+          className="lg:hidden p-2 hover:bg-orange/10 hover:text-orange rounded-lg transition-all"
+        >
+          <Menu size={20} className="text-gray-600 dark:text-gray-300" />
+        </button>
 
-        {/* <div className="relative group">
-          <div className="absolute inset-y-0 ltr:left-4 rtl:right-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-orange transition-colors">
-            <Search size={16} />
-          </div>
-          <input 
-            type="text" 
-            placeholder={t('search_command')} 
-            className="bg-gray-100 dark:bg-gray-dark/50 border border-gray-200 dark:border-white/5 rounded-xl py-2 ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 text-gray-900 dark:text-white text-xs w-64 focus:outline-none focus:border-orange/30 transition-all placeholder:text-gray-500 font-medium"
-          />
-        </div> */}
         <div className="flex items-center gap-4 text-gray-500 dark:text-gray-light">
           {/* Language Toggle */}
           <button 
@@ -98,7 +95,6 @@ const Navbar = () => {
           </div>
           <div className="w-10 h-10 rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 group-hover:border-orange/50 transition-colors shadow-sm">
             <img src={companyLogo || "https://api.dicebear.com/7.x/avataaars/svg?seed=Erik"} alt="Profile" className="w-full h-full object-cover" />
-
           </div>
           <ChevronDown size={14} className="text-gray-400 group-hover:text-orange transition-colors" />
         </div>

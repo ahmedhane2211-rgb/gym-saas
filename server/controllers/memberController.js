@@ -133,6 +133,11 @@ export const getAllMembers = async (req, res) => {
         ELSE s.status
       END,
       'plan_id', s.plans_id,
+      'freeze_plan_id', s.freeze_plan_id,
+      'pauses_count', (
+        SELECT COUNT(*)::int FROM subscription_pause sp3
+        WHERE sp3.subscription_id = s.id
+      ),
 
       'features',
       COALESCE(
@@ -173,9 +178,10 @@ export const getAllMembers = async (req, res) => {
   FROM members m
   JOIN users u ON m.user_id = u.id
  LEFT JOIN LATERAL (
-    SELECT * FROM subscription
-    WHERE member_id = m.id
-    ORDER BY start_date DESC
+    SELECT sub.*, p.freeze_plan_id FROM subscription sub
+    LEFT JOIN plans p ON sub.plans_id = p.id
+    WHERE sub.member_id = m.id
+    ORDER BY sub.start_date DESC
     LIMIT 1
   ) s ON true
 
@@ -189,7 +195,7 @@ export const getAllMembers = async (req, res) => {
     ON fp.features_id = f.id
 
   WHERE m.branch_id = $1
-  GROUP BY m.id, u.id, s.id, s.start_date, s.end_date,s.status, s.plans_id`,
+  GROUP BY m.id, u.id, s.id, s.start_date, s.end_date, s.status, s.plans_id, s.freeze_plan_id`,
   [branchId]
 );
     return res.status(200).json({ data: result.rows || [], status: true });
@@ -198,7 +204,6 @@ export const getAllMembers = async (req, res) => {
   }
 };
 
-// جلب عضو واحد
 export const getMemberById = async (req, res) => {
   const { id } = req.params;
   if (!id) {
@@ -207,13 +212,49 @@ export const getMemberById = async (req, res) => {
       .json({ message: "الرجاء توفير معرف العضو", status: false });
   }
   try {
-    const result = await pool.query("SELECT * FROM members WHERE id = $1", [
-      id,
-    ]);
-    if (result.rows.length === 0) {
+    const memberResult = await pool.query(
+      `SELECT m.*, 
+              json_build_object(
+                'id', u.id,
+                'full_name', u.full_name,
+                'email', u.email,
+                'phone', u.phone,
+                'gender', u.gender,
+                'is_active', u.is_active,
+                'photo', u.photo
+              ) as user
+       FROM members m
+       JOIN users u ON m.user_id = u.id
+       WHERE m.id = $1`,
+      [id]
+    );
+
+    if (memberResult.rows.length === 0) {
       return res.status(404).json({ message: "عضو غير موجود", status: false });
     }
-    res.status(200).json({ data: result.rows[0], status: true });
+
+    const subscriptionsResult = await pool.query(
+      `SELECT s.*, p.name as plan_name, p.duration as plan_duration
+       FROM subscription s
+       LEFT JOIN plans p ON s.plans_id = p.id
+       WHERE s.member_id = $1
+       ORDER BY s.start_date DESC`,
+      [id]
+    );
+
+    const attendanceResult = await pool.query(
+      `SELECT id, check_in
+       FROM attendance
+       WHERE member_id = $1
+       ORDER BY check_in DESC`,
+      [id]
+    );
+
+    const member = memberResult.rows[0];
+    member.subscriptions = subscriptionsResult.rows;
+    member.attendance = attendanceResult.rows;
+
+    res.status(200).json({ data: member, status: true });
   } catch (error) {
     res.status(500).json({ message: error.message, status: false });
   }

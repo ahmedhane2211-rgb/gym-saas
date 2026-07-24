@@ -10,7 +10,7 @@ const MoneyModal = ({ isOpen, onClose, onSubmit, isLoading, title }) => {
     const { t } = useContext(LanguageContext);
 
     useEffect(() => {
-        if (isOpen) reset({ value: '', date: '', notes: '' });
+        if (isOpen) reset({ value: '', date: new Date().toISOString().split('T')[0], notes: '' });
     }, [isOpen, reset]);
 
     if (!isOpen) return null;

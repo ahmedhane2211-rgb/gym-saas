@@ -380,6 +380,7 @@
   "select_expense_placeholder": "اختر المصروف",
   "leave_permission_details":"تفاصيل طلب الاذن",
   "serial":"م",
+  "freeze_plan":"باقة التجميد",
   "payment_voucher_description": "اختر مصروف وحدد القيمة والتاريخ",
   "receipt_voucher_description": "اختر اسم الإيراد وحدد القيمة والتاريخ",
   "revenue_name": "اسم الإيراد",
@@ -454,6 +455,15 @@
   "amount": "القيمة",
   "date": "التاريخ",
   "bonus": "مكافأة",
-  "deduction": "خصم"
+  "deduction": "خصم",
+  "basic_salary": "الراتب الأساسي",
+  "member_profile": "الملف الشخصي للعضو",
+  "back_to_members": "العودة إلى الأعضاء",
+  "personal_info": "البيانات الشخصية",
+  "recent_attendance": "سجل الحضور الأخير",
+  "subscription_history": "سجل الاشتراكات",
+  "no_attendance": "لا يوجد سجل حضور حتى الآن.",
+  "no_subscriptions": "لا يوجد سجل اشتراكات لهذا العضو.",
+  "view_profile": "عرض الملف الشخصي"
 }
 

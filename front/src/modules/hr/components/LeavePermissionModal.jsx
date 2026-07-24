@@ -21,8 +21,8 @@ const LeavePermissionModal = ({ isOpen, onClose, onSubmit, initialData, isLoadin
         reset({
             employee_id: initialData?.employee_id || "",
             leaves_id: initialData?.leaves_id || "",
-            from_date: initialData?.from_date ? String(initialData.from_date).slice(0, 10) : "",
-            to_date: initialData?.to_date ? String(initialData.to_date).slice(0, 10) : "",
+            from_date: initialData?.from_date ? String(initialData.from_date).slice(0, 10) : new Date().toISOString().split('T')[0],
+            to_date: initialData?.to_date ? String(initialData.to_date).slice(0, 10) : new Date().toISOString().split('T')[0],
             from_time: initialData?.from_time || "",
             to_time: initialData?.to_time || "",
             requested_minutes: initialData?.requested_minutes || ""

@@ -20,7 +20,7 @@ const EmployeeBonusDeductionModal = ({ isOpen, onClose, onSubmit, isLoading }) =
     ];
 
     useEffect(() => {
-        if (isOpen) reset({ employee_id: '', type: 'bonus', value: '', date: '', notes: '' });
+        if (isOpen) reset({ employee_id: '', type: 'bonus', value: '', date: new Date().toISOString().split('T')[0], notes: '' });
     }, [isOpen, reset]);
 
     if (!isOpen) return null;

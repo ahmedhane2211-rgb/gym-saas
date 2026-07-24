@@ -17,6 +17,10 @@ const getPlans = async (req, res) => {
     p.duration,
     p.is_active,
     p.description,
+    p.freeze_plan_id,
+    fr.name AS freeze_name,
+    fr.days AS freeze_days,
+    fr.max_uses AS freeze_max_uses,
     COALESCE(
       json_agg(
         json_build_object(
@@ -30,8 +34,9 @@ const getPlans = async (req, res) => {
    FROM plans p
    LEFT JOIN features_plan fp ON p.id = fp.plans_id
    LEFT JOIN features f ON fp.features_id = f.id
+   LEFT JOIN freeze_plan fr ON p.freeze_plan_id = fr.id
    WHERE p.branch_id = $1
-   GROUP BY p.id`,
+   GROUP BY p.id, p.freeze_plan_id, fr.name, fr.days, fr.max_uses`,
       [branchId]
     );
 
@@ -49,6 +54,7 @@ const getPlans = async (req, res) => {
 // 🔥 CREATE
 const createPlan = async (req, res) => {
   const { duration, name, price, isActive, description } = req.body;
+  const freeze_plan_id = req.body.freeze_plan_id || req.body.freezePlanId;
   const gym_id = req.user?.gymId;
   const branch_id = req.user?.branchId;
 
@@ -86,10 +92,10 @@ const createPlan = async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO plans 
-      ( duration, name, price, is_active, description, gym_id,branch_id) 
-      VALUES ($1,$2,$3,$4,$5,$6,$7) 
+      ( duration, name, price, is_active, description, gym_id, branch_id, freeze_plan_id) 
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8) 
       RETURNING *`,
-      [duration, name, price, isActive, description, gym_id, branch_id]
+      [duration, name, price, isActive, description, gym_id, branch_id, freeze_plan_id || null]
     );
 
     return res.status(201).json({
@@ -166,6 +172,7 @@ const updatePlans = async (req, res) => {
   const { gymId } = req.user;
 
   const { duration, name, price, isActive, description } = req.body;
+  const freeze_plan_id = req.body.freeze_plan_id || req.body.freezePlanId;
 
   if (!id)
     return res.status(400).json({ message: "الرجاء توفير ID", status: false });
@@ -188,10 +195,10 @@ const updatePlans = async (req, res) => {
   try {
     const result = await pool.query(
       `UPDATE plans 
-       SET duration=$1, name=$2, price=$3, is_active=$4, description=$5 
-       WHERE id=$6 AND gym_id=$7 
+       SET duration=$1, name=$2, price=$3, is_active=$4, description=$5, freeze_plan_id=$6 
+       WHERE id=$7 AND gym_id=$8 
        RETURNING *`,
-      [duration, name, price, isActive, description, id, gymId]
+      [duration, name, price, isActive, description, freeze_plan_id || null, id, gymId]
     );
 
     if (result.rows.length === 0) {

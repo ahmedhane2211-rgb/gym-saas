@@ -5,10 +5,8 @@ import {
   Users,
   Dumbbell,
   UserCheck,
-  CreditCard,
   Settings,
   HelpCircle,
-  Plus,
   ChevronDown,
   ChevronRight,
   Banknote,
@@ -28,18 +26,17 @@ import {
   Sparkles,
   TrendingUp,
   BriefcaseBusiness,
-  Calendar
+  Calendar,
+  X
 } from 'lucide-react';
 import { LanguageContext } from '../context/LanguageContext';
 import deleteToken from '../utils/deleteToken';
 import { useGetSettingsQuery } from '../../settings/services/SettingsSlice';
 
-
-const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
+const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) => {
   const { t } = useContext(LanguageContext);
   const { data: settingsData } = useGetSettingsQuery();
   const companyName = settingsData?.data?.company_name || 'GYM';
-  const companyLogo = settingsData?.data?.logo;
   const navigate = useNavigate();
   const [activeModule, setActiveModule] = useState('people');
 
@@ -52,9 +49,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     }
   };
 
+  const closeMobile = () => setIsMobileOpen && setIsMobileOpen(false);
+
   const NavItem = ({ to, icon, name, subItem = false }) => (
     <NavLink
       to={to}
+      onClick={closeMobile}
       style={{ fontSize: 'var(--font-size-sm)' }}
       className={({ isActive }) =>
         `nav-link ${isActive ? 'active' : ''} ${subItem ? 'ltr:pl-14 rtl:pr-14 py-2.5 opacity-80 hover:opacity-100 text-size-base' : 'text-[14px]'} ${isCollapsed && !subItem ? 'justify-center px-0' : ''}`
@@ -86,27 +86,31 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const handleLogout = () => {
     deleteToken();
   };
-  return (
-    <aside className={`${isCollapsed ? 'w-20' : 'w-72'} h-screen bg-white dark:bg-dark border-r border-gray-200 dark:border-white/5 flex flex-col fixed ltr:left-0 rtl:right-0 top-0 z-50 overflow-hidden shadow-2xl transition-all duration-300`}>
-      {/* Logo & Toggle */}
+
+  const sidebarContent = (
+    <>
       <div className={`p-8 pb-10 flex items-center ${isCollapsed ? 'justify-center px-4' : 'justify-between'} transition-all duration-300`}>
         {!isCollapsed && (
           <div className="flex flex-col items-start animate-in fade-in duration-500">
             <h1 className="text-gray-900 dark:text-white font-black tracking-widest text-2xl italic uppercase leading-none">
               {companyName.split(' ')[0]} <span className="text-orange block">{companyName.split(' ').slice(1).join(' ')}</span>
             </h1>
-
           </div>
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 transition-colors"
+          className="hidden lg:flex p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 transition-colors"
         >
           {isCollapsed ? <Menu size={20} /> : <ChevronLeft size={20} className="rtl:rotate-180" />}
         </button>
+        <button
+          onClick={closeMobile}
+          className="flex lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 transition-colors"
+        >
+          <X size={20} />
+        </button>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-grow overflow-y-auto custom-scrollbar pb-8 px-4 space-y-2">
         <NavItem to="/dashboard" icon={<LayoutDashboard />} name={t('dashboard')} />
 
@@ -133,6 +137,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             </div>
           )}
         </div>
+
         <div>
           <ModuleHeader id="hr" name={t('hr')} icon={<BriefcaseBusiness />} isOpen={activeModule === 'hr'} />
           {activeModule === 'hr' && !isCollapsed && (
@@ -142,8 +147,20 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               <NavItem to="/bonuses-deductions" icon={<TrendingUp />} name={t('bonuses_deductions') || 'المكافآت والخصومات'} subItem />
               <NavItem to="/leaves" icon={<Calendar />} name={t('leaves') || 'الاجازات'} subItem />
               <NavItem to="/leaves-permissions" icon={<FileText />} name={t('leaves_permissions')} subItem />
+            </div>
+          )}
+        </div>
 
-
+        <div>
+          <ModuleHeader id="financials" name={t('financials')} icon={<Banknote />} isOpen={activeModule === 'financials'} />
+          {activeModule === 'financials' && !isCollapsed && (
+            <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
+              <NavItem to="/expenses" icon={<ArrowUpCircle />} name={t('expenses')} subItem />
+              <NavItem to="/vouchers" icon={<ArrowUpCircle />} name={t('vouchers')} subItem />
+              <NavItem to="/pumping-money" icon={<TrendingUp />} name={t('pumping_money')} subItem />
+              <NavItem to="/owner-withdrawals" icon={<ArrowDownCircle />} name={t('owner_withdrawals')} subItem />
+              <NavItem to="/employee-withdrawals" icon={<Banknote />} name={t('employee_withdrawals')} subItem />
+              <NavItem to="/cash-day" icon={<Wallet />} name={t('cash_day')} subItem />
             </div>
           )}
         </div>
@@ -159,30 +176,14 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             </div>
           )}
         </div>
-        
-        <div>
-          <ModuleHeader id="financials" name={t('financials')} icon={<Banknote />} isOpen={activeModule === 'financials'} />
-          {activeModule === 'financials' && !isCollapsed && (
-            <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
-              <NavItem to="/expenses" icon={<ArrowUpCircle />} name={t('expenses')} subItem />
-              <NavItem to="/vouchers" icon={<ArrowUpCircle />} name={t('vouchers')} subItem />
-              <NavItem to="/pumping-money" icon={<TrendingUp />} name={t('pumping_money')} subItem />
-              <NavItem to="/owner-withdrawals" icon={<ArrowDownCircle />} name={t('owner_withdrawals')} subItem />
-              <NavItem to="/employee-withdrawals" icon={<Banknote />} name={t('employee_withdrawals')} subItem />
-              <NavItem to="/cash-day" icon={<Wallet />} name={t('cash_day')} subItem />
-            </div>
-          )}
-        </div>
-        {/* <NavItem to="/settings" icon={<Settings />} name={t('settings')} /> */}
       </nav>
 
-      {/* Footer Area */}
       <div className="p-6 space-y-6">
-        <div className={`pt-4 border-t border-gray-200 dark:border-white/5 ${isCollapsed ? 'px-0 flex items-center  flex-col' : 'items-start'}`}>
+        <div className={`pt-4 border-t border-gray-200 dark:border-white/5 ${isCollapsed ? 'px-0 flex items-center flex-col' : 'items-start'}`}>
           <button onClick={handleLogout} className="flex items-center gap-3 cursor-pointer text-red-600 hover:text-red-900 dark:hover:text-red-500 text-[12px] font-bold uppercase tracking-widest transition-colors py-2">
             <LogOut /> {!isCollapsed && t("logout")}
           </button>
-          <button onClick={() => {navigate("/settings")}} className="flex items-center gap-3 cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white text-[12px] font-bold uppercase tracking-widest transition-colors py-2">
+          <button onClick={() => { navigate("/settings"); closeMobile(); }} className="flex items-center gap-3 cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white text-[12px] font-bold uppercase tracking-widest transition-colors py-2">
             <Settings size={18} />
             {!isCollapsed && <span>{t("settings")}</span>}
           </button>
@@ -192,7 +193,29 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           </NavLink>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className={`${isCollapsed ? 'w-20' : 'w-72'} h-screen bg-white dark:bg-dark border-r border-gray-200 dark:border-white/5 flex-col fixed ltr:left-0 rtl:right-0 top-0 z-50 overflow-hidden shadow-2xl transition-all duration-300 hidden lg:flex`}>
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-[60] lg:hidden backdrop-blur-sm"
+          onClick={closeMobile}
+        />
+      )}
+
+      {/* Mobile Drawer */}
+      <aside className={`w-72 h-screen bg-white dark:bg-dark border-r border-gray-200 dark:border-white/5 flex flex-col fixed ltr:left-0 rtl:right-0 top-0 z-[70] overflow-hidden shadow-2xl transition-transform duration-300 lg:hidden ${isMobileOpen ? 'translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full'}`}>
+        {sidebarContent}
+      </aside>
+    </>
   );
 };
 

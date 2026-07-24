@@ -7,6 +7,7 @@ import CheckBox from '../../shared/components/CheckBox';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import { useGetFeaturesQuery } from '../services/FeatureSlice';
 import Select from '../../shared/components/Select';
+import { useGetFreezePlansQuery } from '../../freeze/services/FreezeSlice';
 
 const PlanModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title }) => {
   const { register, handleSubmit, reset, control, formState: { errors } } = useForm({
@@ -24,6 +25,9 @@ const PlanModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
   const { data: featuresData } = useGetFeaturesQuery();
   const availableFeatures = Array.isArray(featuresData) ? featuresData : (featuresData?.data || []);
 
+  const { data: freezePlansResponse } = useGetFreezePlansQuery();
+  const freezePlans = Array.isArray(freezePlansResponse) ? freezePlansResponse : (freezePlansResponse?.data || []);
+
   useEffect(() => {
     if (initialData) {
       reset({
@@ -32,6 +36,7 @@ const PlanModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
         duration: initialData.duration || '',
         description: initialData.description || '',
         isActive: initialData.isActive ?? true,
+        freeze_plan_id: initialData.freeze_plan_id || initialData.freezePlanId || '',
         features: initialData.features?.map(f => ({
             featuresId: f.featuresId || f.id,
             value: f.value || ''
@@ -44,6 +49,7 @@ const PlanModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
         duration: '',
         description: '',
         isActive: true,
+        freeze_plan_id: '',
         features: []
       });
     }
@@ -87,6 +93,23 @@ const PlanModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
             <div className="relative">
               <Input label="description" placeholder="Details about the plan..." name="description" register={register} errors={errors} />
               <div className="absolute top-9 ltr:right-4 rtl:left-4 text-gray-400"><FileText size={18} /></div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-gray-400 dark:text-gray-light/50 tracking-[0.2em] uppercase px-1">
+                {t('select_freeze_plan') || 'اختر باقة التجميد'}
+              </label>
+              <select
+                {...register('freeze_plan_id')}
+                className="w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl py-3.5 px-4 text-xs text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 transition-all focus:border-orange/50 focus:outline-none"
+              >
+                <option value="" className="bg-white dark:bg-dark">{t('select_option') || 'اختر...'}</option>
+                {freezePlans.map((plan) => (
+                  <option key={plan.id} value={plan.id} className="bg-white dark:bg-dark">
+                    {plan.name} ({plan.days} {t('days')} - {t('max_uses')}: {plan.max_uses})
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Dynamic Features Section */}

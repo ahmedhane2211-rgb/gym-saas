@@ -73,6 +73,29 @@ const createPause = async (req, res) => {
       return res.status(400).json({ message: 'subscription_id, freeze_id, from_date and to_date are required' });
     }
 
+    // Check subscription and get its plan's freeze_plan_id
+    const subResult = await pool.query(
+      `SELECT s.plans_id, p.freeze_plan_id 
+       FROM subscription s 
+       JOIN plans p ON s.plans_id = p.id 
+       WHERE s.id = $1`,
+      [subscription_id]
+    );
+
+    if (subResult.rowCount === 0) {
+      return res.status(404).json({ message: 'الاشتراك غير موجود' });
+    }
+
+    const { freeze_plan_id } = subResult.rows[0];
+
+    if (!freeze_plan_id) {
+      return res.status(400).json({ message: 'هذا الاشتراك لا يدعم التجميد' });
+    }
+
+    if (freeze_id !== freeze_plan_id) {
+      return res.status(400).json({ message: 'باقة التجميد المحددة غير مطابقة لباقة الاشتراك' });
+    }
+
     // Check freeze plan exists
     const freezePlan = await pool.query(
       'SELECT * FROM freeze_plan WHERE id = $1',
@@ -97,7 +120,7 @@ const createPause = async (req, res) => {
 
     if (timesUsed >= max_uses) {
       return res.status(400).json({ 
-        message: `Freeze limit reached. You have used ${timesUsed}/${max_uses} freezes for this subscription` 
+        message: `تم الوصول للحد الأقصى للتجميد. لقد استخدمت ${timesUsed}/${max_uses} تجميد في هذا الاشتراك` 
       });
     }
 

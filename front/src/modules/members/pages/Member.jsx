@@ -28,8 +28,10 @@ import Button from '../../shared/components/Button';
 import StatsCard from '../../shared/components/StatsCard';
 
 
-const Member = () => {
+import { useNavigate } from 'react-router-dom';
 
+const Member = () => {
+  const navigate = useNavigate();
   const { t } = useContext(LanguageContext);
   const searchInputRef = useRef(null);
 
@@ -270,7 +272,12 @@ const Member = () => {
                     />
                 </div>
                 <div>
-                    <p className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-tight italic">{member?.user?.full_name}</p>
+                    <p 
+                        onClick={() => navigate(`/members/profile/${member.id}`)}
+                        className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-tight italic hover:text-orange cursor-pointer transition-colors"
+                    >
+                        {member?.user?.full_name}
+                    </p>
                     <p className="text-gray-500 dark:text-gray-600 text-[10px] font-bold uppercase tracking-widest">ID: MB-{member?.id?.toString().padStart(3, '0')}</p>
                 </div>
             </div>

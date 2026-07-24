@@ -16,7 +16,7 @@ const getAllUsers = async(req,res)=>{
 }
 const createUser = async(req,res)=>{
     const {gymId,branchId} = req.user;
-    const {full_name,email,password,phone,address,role,is_active,gender,date_of_birthday} = req.body;
+    const {full_name,email,password,phone,address,role,is_active,gender,date_of_birthday,basic_salary} = req.body;
     const photoUrl = req.file ? req.file.path : null;
 
     if(!full_name || !email || !phone || !address || !role || is_active === undefined || !date_of_birthday || !gender){
@@ -33,8 +33,21 @@ const createUser = async(req,res)=>{
         if(result.rows.length === 0){
             return res.status(400).json({message:"فشل إنشاء المستخدم",status:false})
         }
+        const newUser = result.rows[0];
 
-        return res.status(201).json({message:"تم إنشاء المستخدم بنجاح",data:result.rows[0]});
+        if(role === 'reception' || role === 'coach'){
+            const salary = Number(basic_salary) || 0;
+            const existingEmp = await pool.query("SELECT id FROM employees WHERE user_id = $1", [newUser.id]);
+            if(existingEmp.rows.length === 0){
+                await pool.query(
+                    `INSERT INTO employees (user_id, branch_id, name, email, phone, gender, basic_salary, total_salary, date_of_joining, active, created_at)
+                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,CURRENT_DATE,true,NOW())`,
+                    [newUser.id, branchId, full_name, email, phone, gender, salary, salary]
+                );
+            }
+        }
+
+        return res.status(201).json({message:"تم إنشاء المستخدم بنجاح",data:newUser});
     } catch (error) {
         return res.status(500).json({message:error.message,status:false})
     }
@@ -62,25 +75,21 @@ const updateUser = async(req,res)=>{
     if(!id){
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
-    const {full_name,email,password,phone,address,role,is_active,gender,date_of_birthday} = req.body;
+    const {full_name,email,password,phone,address,role,is_active,gender,date_of_birthday,basic_salary} = req.body;
     const photoUrl = req.file ? req.file.path : null;
     if(!full_name || !email || !phone || !address || !role || is_active === undefined || !date_of_birthday || !gender){
         return res.status(400).json({message:"الرجاء توفير جميع الحقول المطلوبة",status:false})
     }
     try {
-        // 1. جلب بيانات المستخدم القديمة
-        const userResult = await pool.query("SELECT photo FROM users WHERE id = $1 ", [id]);
+        const userResult = await pool.query("SELECT photo,password FROM users WHERE id = $1 ", [id]);
         if (userResult.rows.length === 0) {
             return res.status(404).json({ message: "المستخدم غير موجود", status: false });
         }
         const oldPhotoUrl = userResult.rows[0].photourl;
 
-        // 2. تحديد الصورة الجديدة (إذا لم يرفع صورة، نستخدم القديمة)
         let finalPhotoUrl = oldPhotoUrl;
         if (req.file) {
-            finalPhotoUrl = req.file.path; // الرابط الجديد من كلاودناري
-            
-            // 3. حذف الصورة القديمة من كلاودناري لتوفير المساحة
+            finalPhotoUrl = req.file.path;
             if (oldPhotoUrl) {
                 await deleteImageFromCloudinary(oldPhotoUrl);
             }
@@ -94,6 +103,27 @@ const updateUser = async(req,res)=>{
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدم بهذا المعرف",status:false})
         }
+
+        if(role === 'reception' || role === 'coach'){
+            const salary = Number(basic_salary) || 0;
+            const existingEmp = await pool.query("SELECT id FROM employees WHERE user_id = $1", [id]);
+            if(existingEmp.rows.length > 0){
+                await pool.query(
+                    `UPDATE employees SET name=$1, email=$2, phone=$3, gender=$4, basic_salary=$5, total_salary=$6, active=true, branch_id=$7 WHERE user_id=$8`,
+                    [full_name, email, phone, gender, salary, salary, branchId, id]
+                );
+            } else {
+                await pool.query(
+                    `INSERT INTO employees (user_id, branch_id, name, email, phone, gender, basic_salary, total_salary, date_of_joining, active, created_at)
+                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,CURRENT_DATE,true,NOW())`,
+                    [id, branchId, full_name, email, phone, gender, salary, salary]
+                );
+            }
+        } else {
+            // If role changed away from reception/coach, deactivate employee record
+            await pool.query("UPDATE employees SET active=false WHERE user_id=$1", [id]);
+        }
+
         res.status(200).json({message:"تم تحديث المستخدم بنجاح",status:true});
     }
         catch (error) {

@@ -364,6 +364,7 @@
   "add_freeze": "Add New Freeze Plan",
   "update_freeze": "Update Freeze Plan",
   "max_uses": "Max Uses",
+  "freeze_plan":"Freeze Plan",
   "manage_freezes_desc": "Manage subscription freeze packages, days and maximum uses.",
   "freeze_subscription": "Freeze Subscription",
   "select_freeze_plan": "Select Freeze Plan",
@@ -450,6 +451,15 @@
   "amount": "Amount",
   "date": "Date",
   "bonus": "Bonus",
-  "deduction": "Deduction"
+  "deduction": "Deduction",
+  "basic_salary": "Basic Salary",
+  "member_profile": "Member Profile",
+  "back_to_members": "Back to Members",
+  "personal_info": "Personal Info",
+  "recent_attendance": "Recent Attendance",
+  "subscription_history": "Subscription History",
+  "no_attendance": "No attendance records yet.",
+  "no_subscriptions": "No subscriptions recorded.",
+  "view_profile": "View Profile"
 }
 

@@ -42,8 +42,21 @@ const PlanViewModal = ({ isOpen, onClose, plan }) => {
                                 <span className="text-[9px] font-black uppercase tracking-widest">{t('duration')}</span>
                             </div>
                             <p className="text-xl font-black text-gray-900 dark:text-white italic">{plan.duration} <span className="text-[10px] font-bold text-gray-400">{t('days')}</span></p>
-                        </div>
                     </div>
+                    </div>
+                    {plan.freeze_plan_id && (
+                        <div className="p-4 rounded-2xl bg-orange/5 border border-orange/10 space-y-2">
+                            <div className="flex items-center gap-2 text-orange">
+                                <span className="text-[9px] font-black uppercase tracking-widest">{t('freeze_plan') || 'باقة التجميد'}</span>
+                            </div>
+                            <p className="text-sm font-black text-gray-900 dark:text-white uppercase italic tracking-tight">
+                                {plan.freeze_name}
+                            </p>
+                            <p className="text-[10px] font-bold text-gray-500">
+                                {plan.freeze_days} {t('days')} - {t('max_uses')}: {plan.freeze_max_uses}
+                            </p>
+                        </div>
+                    )}
 
                     {/* Features List */}
                     <div className="space-y-4">

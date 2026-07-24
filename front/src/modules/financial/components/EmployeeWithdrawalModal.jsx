@@ -16,7 +16,7 @@ const EmployeeWithdrawalModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
     const employeeOptions = employees.map(e => ({ value: e.id, label: `${e.name} — ${t('basic_salary')}: ${e.basic_salary}` }));
 
     useEffect(() => {
-        if (isOpen) reset({ employee_id: '', value: '', date: '', notes: '' });
+        if (isOpen) reset({ employee_id: '', value: '', date: new Date().toISOString().split('T')[0], notes: '' });
     }, [isOpen, reset]);
 
     if (!isOpen) return null;

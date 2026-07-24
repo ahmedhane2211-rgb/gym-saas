@@ -57,16 +57,16 @@ const UserModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative w-full max-w-2xl bg-[#121212] border border-white/5 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="relative w-full max-w-2xl bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/5 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         {/* Header */}
         <div className="p-8 pb-4 flex items-center justify-between">
           <div className="space-y-1">
-            <h2 className="text-2xl font-black text-white italic uppercase tracking-widest">{t(title)}</h2>
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white italic uppercase tracking-widest">{t(title)}</h2>
             <div className="w-12 h-1 bg-orange rounded-full" />
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-500 hover:text-white transition-colors"
+            className="p-2 text-gray-500 hover:text-orange transition-colors"
           >
             <X size={24} />
           </button>
@@ -218,7 +218,7 @@ const UserModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
                   {...register('role', {
                     required: t('role_required'),
                   })}
-                  className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-blue/30"
+                  className="w-full min-h-14 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl p-4 text-gray-900 dark:text-white transition-all focus:border-orange/50 focus:outline-none focus:ring-0 cursor-pointer"
                 >
                   <option value="">{t('select_role')}</option>
                   {[
@@ -246,6 +246,17 @@ const UserModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
                 </div>
               )}
             </div>
+
+            {(watch('role') === 'reception' || watch('role') === 'coach') && (
+              <Input
+                label="basic_salary"
+                type="number"
+                placeholder="0"
+                name="basic_salary"
+                register={register}
+                errors={errors}
+              />
+            )}
           </div>
 
           {/* Footer Actions */}
@@ -257,11 +268,10 @@ const UserModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title })
             <Button
               onClick={onClose}
               title={t('cancel')}
-              className="w-full text-gray-600 font-black text-[10px] tracking-[0.3em] uppercase hover:text-white transition-colors flex items-center justify-center gap-2"
+              className="w-full text-gray-600 font-black text-[10px] tracking-[0.3em] uppercase hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center gap-2"
             />
           </div>
         </form>
-
       </div>
     </div>
   );

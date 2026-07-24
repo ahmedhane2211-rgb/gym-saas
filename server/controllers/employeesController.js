@@ -5,6 +5,18 @@ const getAllEmployees = async (req, res) => {
   const { branchId } = user;
 
   try {
+    // Auto-create employee records for any coach or reception users that don't have one
+    await pool.query(
+      `INSERT INTO employees (user_id, branch_id, name, email, phone, gender, basic_salary, total_salary, date_of_joining, active, created_at)
+       SELECT id, branch_id, full_name, email, phone, gender, 0, 0, CURRENT_DATE, true, NOW()
+       FROM users
+       WHERE role IN ('coach', 'reception') AND branch_id = $1
+       AND NOT EXISTS (
+         SELECT 1 FROM employees WHERE employees.user_id = users.id
+       )`,
+      [branchId]
+    );
+
     const result = await pool.query(
       `SELECT employees.*, json_build_object(
         'id', users.id,

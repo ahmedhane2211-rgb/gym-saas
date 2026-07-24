@@ -163,7 +163,7 @@ const Users = () => {
           </p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           {stats.map((stat) => (
             <div key={stat.label} className="glass-card p-6 min-w-[200px] flex flex-col justify-between h-32 relative overflow-hidden group">
               <StatsCard stat={stat} />

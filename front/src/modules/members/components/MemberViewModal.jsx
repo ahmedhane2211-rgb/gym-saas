@@ -6,9 +6,11 @@ import DetailItem from '../../shared/components/DetailItem';
 import { QRCodeCanvas } from 'qrcode.react';
 import toast from 'react-hot-toast';
 import { useUseFeatureMutation } from '../../plans/services/FeatureSlice';
+import { useNavigate } from 'react-router-dom';
 
 const MemberViewModal = ({ isOpen, onClose, member }) => {
   const { t } = useContext(LanguageContext);
+  const navigate = useNavigate();
   const [useFeature, { isLoading: isUsingFeature }] = useUseFeatureMutation();
 
   const handleUseFeature = async (featureId) => {
@@ -91,9 +93,19 @@ const MemberViewModal = ({ isOpen, onClose, member }) => {
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('active_subscription') || 'Active Subscription'}</span>
                 </div>
             {member?.subscription ? (
-                <div className="grid grid-cols-1 gap-1 text-right">
-                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{t('expires_at') || 'Expires At'}</p>
-                    <p className="text-xs font-black text-blue uppercase tracking-tight">{formattedDate(member?.subscription.end_date)}</p>
+                <div className="flex flex-col gap-1.5 text-right">
+                    <div>
+                        <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{t('expires_at') || 'Expires At'}</p>
+                        <p className="text-xs font-black text-blue uppercase tracking-tight">{formattedDate(member?.subscription.end_date)}</p>
+                    </div>
+                    {member?.subscription?.freeze_plan_id && (
+                        <div>
+                            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{t('remaining_freezes') || 'التجميدات المتبقية'}</p>
+                            <p className="text-xs font-black text-orange uppercase tracking-tight">
+                                {Math.max(0, (member?.subscription?.freeze_max_uses || 0) - (member?.subscription?.pauses_count || 0))} / {member?.subscription?.freeze_max_uses || 0}
+                            </p>
+                        </div>
+                    )}
                 </div>
             ) : (
                 <p className="text-xs font-bold text-gray-400 text-center uppercase tracking-widest py-2 italic">{t('no_active_subscription') || 'No active subscription found'}</p>
@@ -185,12 +197,23 @@ const MemberViewModal = ({ isOpen, onClose, member }) => {
           </div>
 
           {/* Actions */}
-          <button 
-            onClick={onClose}
-            className="w-full py-5 bg-gray-900 dark:bg-white text-white dark:text-black font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all"
-          >
-            {t('close')}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={() => {
+                onClose();
+                navigate(`/members/profile/${member.id}`);
+              }}
+              className="w-full py-5 bg-orange text-black font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all"
+            >
+              {t('view_profile') || 'View Profile'}
+            </button>
+            <button 
+              onClick={onClose}
+              className="w-full py-5 bg-gray-950 dark:bg-white text-white dark:text-black font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all"
+            >
+              {t('close')}
+            </button>
+          </div>
         </div>
       </div>
     </div>

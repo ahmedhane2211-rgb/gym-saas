@@ -13,7 +13,7 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
     const [activeTab, setActiveTab] = useState("personal");
     const { data: usersResponse } = useGetUsersQuery();
     const users = Array.isArray(usersResponse) ? usersResponse : (usersResponse?.data || usersResponse?.users || []);
-    const employeeUsers = users.filter((user) => String(user.role || "").toLowerCase() === "employee");
+    const employeeUsers = users.filter((user) => ["employee", "reception", "coach"].includes(String(user.role || "").toLowerCase()));
     const salaryValues = useWatch({
         control,
         name: ["basic_salary", "additional_salary", "allowances", "health_insurance", "social_insurance"]
@@ -35,7 +35,7 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
             marital_status: initialData?.marital_status || "",
             qualification: initialData?.qualification || "",
             address: initialData?.address || "",
-            date_of_joining: initialData?.date_of_joining ? String(initialData.date_of_joining).slice(0, 10) : "",
+            date_of_joining: initialData?.date_of_joining ? String(initialData.date_of_joining).slice(0, 10) : new Date().toISOString().split('T')[0],
             basic_salary: initialData?.basic_salary || "",
             additional_salary: initialData?.additional_salary || "",
             allowances: initialData?.allowances || "",

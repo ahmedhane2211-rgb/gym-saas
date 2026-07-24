@@ -8,6 +8,7 @@ import Dashboard from './modules/dashboard/pages/Dashboard';
 import MainLayout from './modules/shared/components/MainLayout';
 import { LanguageProvider } from './modules/shared/context/LanguageContext';
 import Member from './modules/members/pages/Member';
+import MemberProfile from './modules/members/pages/MemberProfile';
 import Coach from './modules/coaches/pages/Coach';
 import Attendance from './modules/attendance/pages/Attendance';
 import Plan from './modules/plans/pages/Plan';
@@ -52,6 +53,7 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/members" element={<Member />} />
+            <Route path="/members/profile/:id" element={<MemberProfile />} />
             <Route path="/coaches" element={<Coach />} />
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/plans" element={<Plan />} />
