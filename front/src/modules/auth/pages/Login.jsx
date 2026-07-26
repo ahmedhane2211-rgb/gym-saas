@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import authBg from '../../../assets/auth-bg.png';
@@ -8,8 +8,10 @@ import Button from '../../shared/components/Button';
 import { useLoginMutation } from '../services/AuthSlice';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
+import { LanguageContext } from '../../shared/context/LanguageContext';
 
 const Login = () => {
+  const {t} = useContext(LanguageContext)
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
     const {register,handleSubmit,formState:{errors}} = useForm();
@@ -99,7 +101,7 @@ const Login = () => {
 
           {/* Login Button */}
           <Button
-            title={isLoading ? "Loading..." : "Initialize Login"}
+            title={isLoading ? "Loading..." : t("login")}
             className="w-full bg-orange hover:bg-orange/90 text-black font-bold py-4 rounded-xl flex items-center justify-center space-x-2 transition-all active:scale-[0.98] shadow-[0_0_20px_rgba(255,95,31,0.3)]"
           />
 

@@ -380,6 +380,7 @@
   "select_expense_placeholder": "اختر المصروف",
   "leave_permission_details":"تفاصيل طلب الاذن",
   "serial":"م",
+  "manage_bonuses_deductions_desc":"إدارة المكافآت والخصومات للموظفين.",
   "freeze_plan":"باقة التجميد",
   "payment_voucher_description": "اختر مصروف وحدد القيمة والتاريخ",
   "receipt_voucher_description": "اختر اسم الإيراد وحدد القيمة والتاريخ",

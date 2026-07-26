@@ -20,7 +20,7 @@ const Input = ({
 
   return (
     <div className="space-y-2">
-      <label className="text-[10px] font-bold text-gray-400 dark:text-gray-light/50 tracking-[0.2em] uppercase">
+      <label style={{fontSize:"var(--font-size-sm)"}} className="font-bold text-gray-400 dark:text-gray-light/50">
         {t(label)}
       </label>
 

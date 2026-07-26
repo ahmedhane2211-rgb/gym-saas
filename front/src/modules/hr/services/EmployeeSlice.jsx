@@ -13,7 +13,7 @@ export const employeeApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ["Employees"],
+    tagTypes: ["Employees", "Users"],
     endpoints: (build) => ({
         getEmployees: build.query({
             query: () => ({

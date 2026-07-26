@@ -5,7 +5,7 @@ const formattedDate = (date) => {
         month: 'long',
         day: 'numeric',
     };
-    return new Date(date).toLocaleDateString('en-US', options);
+    return new Date(date).toLocaleDateString('ar-EG', options);
 }
 
 export default formattedDate;

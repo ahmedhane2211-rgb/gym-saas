@@ -7,7 +7,13 @@ const getAllUsers = async(req,res)=>{
     const {user} = req;
     const branchId = user.branchId;
     try {
-        const result = await pool.query("SELECT * FROM users WHERE branch_id = $1 AND role != 'owner' AND role != 'admin' ", [branchId]);
+        const result = await pool.query(
+            `SELECT users.*, employees.basic_salary 
+             FROM users 
+             LEFT JOIN employees ON employees.user_id = users.id 
+             WHERE users.branch_id = $1 AND users.role != 'owner' AND users.role != 'admin'`, 
+            [branchId]
+        );
         
         return res.status(200).json(result.rows);
     } catch (error) {
@@ -60,7 +66,13 @@ const getUser = async(req,res)=>{
         return res.status(400).json({message:"الرجاء توفير معرف المستخدم",status:false})
     }
     try {
-        const result = await pool.query("SELECT * FROM users WHERE id = $1",[id]);
+        const result = await pool.query(
+            `SELECT users.*, employees.basic_salary 
+             FROM users 
+             LEFT JOIN employees ON employees.user_id = users.id 
+             WHERE users.id = $1 AND users.branch_id = $2`,
+            [id, branchId]
+        );
         if(result.rows.length === 0){
             return res.status(404).json({message:"لا يوجد مستخدم بهذا المعرف",status:false})
         }

@@ -1,7 +1,6 @@
 import express from "express"
 import { createGym, deleteGym, getGym, getGyms, updateGym } from "../controllers/gymController.js"
 import upload from "../middlewares/multerConfig.js"
-import { authUser } from "../middlewares/authUser.js"
 
 
 const gymRouter = express.Router()

@@ -8,12 +8,34 @@ const getAllEmployees = async (req, res) => {
     // Auto-create employee records for any coach or reception users that don't have one
     await pool.query(
       `INSERT INTO employees (user_id, branch_id, name, email, phone, gender, basic_salary, total_salary, date_of_joining, active, created_at)
-       SELECT id, branch_id, full_name, email, phone, gender, 0, 0, CURRENT_DATE, true, NOW()
-       FROM users
-       WHERE role IN ('coach', 'reception') AND branch_id = $1
+       SELECT 
+         u.id, 
+         u.branch_id, 
+         u.full_name, 
+         u.email, 
+         u.phone, 
+         u.gender, 
+         COALESCE((SELECT salary FROM coaches WHERE coaches.user_id = u.id), 0) as basic_salary, 
+         COALESCE((SELECT salary FROM coaches WHERE coaches.user_id = u.id), 0) as total_salary, 
+         CURRENT_DATE, 
+         true, 
+         NOW()
+       FROM users u
+       WHERE u.role IN ('coach', 'reception') AND u.branch_id = $1
        AND NOT EXISTS (
-         SELECT 1 FROM employees WHERE employees.user_id = users.id
+         SELECT 1 FROM employees WHERE employees.user_id = u.id
        )`,
+      [branchId]
+    );
+
+    // Sync basic_salary from coaches table for coaches that have 0 basic_salary in employees
+    await pool.query(
+      `UPDATE employees 
+       SET basic_salary = coaches.salary, total_salary = coaches.salary
+       FROM coaches
+       WHERE employees.user_id = coaches.user_id
+         AND employees.basic_salary = 0
+         AND employees.branch_id = $1`,
       [branchId]
     );
 
@@ -296,24 +318,56 @@ const deleteEmployee = async (req, res) => {
     return res.status(400).json({ message: "الرجاء توفير معرف الموظف", status: false });
   }
 
+  const client = await pool.connect();
   try {
-    const result = await pool.query(
-      `DELETE FROM employees
-      USING users
-      WHERE employees.user_id = users.id
-        AND employees.id = $1
-        AND users.branch_id = $2
-      RETURNING employees.*`,
-      [id, branchId],
+    await client.query("BEGIN");
+
+    const empResult = await client.query(
+      `SELECT user_id FROM employees WHERE id = $1 AND branch_id = $2`,
+      [id, branchId]
     );
 
-    if (result.rows.length === 0) {
+    if (empResult.rows.length === 0) {
+      await client.query("ROLLBACK");
       return res.status(404).json({ message: "الموظف غير موجود", status: false });
     }
 
+    const userId = empResult.rows[0].user_id;
+
+    // Delete the employee
+    await client.query(`DELETE FROM employees WHERE id = $1`, [id]);
+
+    // Delete coach record if any
+    await client.query(`DELETE FROM coaches WHERE user_id = $1`, [userId]);
+
+    // Delete user record if any
+    if (userId) {
+      await client.query(`DELETE FROM users WHERE id = $1`, [userId]);
+    }
+
+    await client.query("COMMIT");
     return res.status(200).json({ message: "تم حذف الموظف بنجاح", status: true });
   } catch (error) {
-    return res.status(500).json({ message: error.message, status: false });
+    await client.query("ROLLBACK");
+    try {
+      await pool.query(
+        `UPDATE employees SET active = false, basic_salary = 0, total_salary = 0 WHERE id = $1`,
+        [id]
+      );
+      
+      const empResult = await pool.query(`SELECT user_id FROM employees WHERE id = $1`, [id]);
+      if (empResult.rows.length > 0 && empResult.rows[0].user_id) {
+        const userId = empResult.rows[0].user_id;
+        await pool.query(`UPDATE users SET is_active = false WHERE id = $1`, [userId]);
+        await pool.query(`DELETE FROM coaches WHERE user_id = $1`, [userId]);
+      }
+      
+      return res.status(200).json({ message: "تم إيقاف الموظف وتصفير راتبه بنجاح لوجود سجلات مالية مرتبطة به", status: true });
+    } catch (innerError) {
+      return res.status(500).json({ message: error.message, status: false });
+    }
+  } finally {
+    client.release();
   }
 };
 

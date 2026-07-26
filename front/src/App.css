@@ -6,16 +6,14 @@
 
 @layer base {
   @theme {
-
-
     /* Kinetic Brand Colors */
-    --color-orange: #FF5F1F;
-    --color-blue: #007FFF;
+    --color-orange: #ff5f1f;
+    --color-blue: #007fff;
     --color-purple: #a15ab8;
-    --color-dark: #0D0F14;
+    --color-dark: #0d0f14;
     --color-black: #050505;
-    --color-gray-dark: #1A1D23;
-    --color-gray-light: #94A3B8;
+    --color-gray-dark: #1a1d23;
+    --color-gray-light: #94a3b8;
 
     /* Typography Variables */
     --font-main: "Cairo", "Outfit", sans-serif;
@@ -80,8 +78,6 @@
     font-family: var(--font-heading);
     font-weight: var(--font-weight-black);
     letter-spacing: -0.02em;
-    text-transform: uppercase;
-    font-style: italic;
   }
 }
 
@@ -99,12 +95,12 @@
 
 @layer components {
   .btn-blue {
-    @apply bg-blue text-black px-6 py-3 rounded-xl font-black uppercase text-[11px] tracking-[0.2em] transition-all hover:bg-blue/80 active:scale-95 shadow-lg;
+    @apply bg-blue text-black px-6 py-3 rounded-xl font-black text-[14px] tracking-[0.2em] transition-all hover:bg-blue/80 active:scale-95 shadow-lg;
     font-family: var(--font-main);
   }
 
   .btn-orange {
-    @apply bg-orange text-black px-6 py-3 rounded-xl font-black uppercase text-[11px] tracking-[0.2em] transition-all hover:bg-orange/90 active:scale-95 shadow-lg;
+    @apply bg-orange text-black px-6 py-3 rounded-xl font-black text-[14px] tracking-[0.2em] transition-all hover:bg-orange/90 active:scale-95 shadow-lg;
     font-family: var(--font-main);
   }
 
@@ -113,7 +109,7 @@
   }
 
   .nav-link {
-    @apply flex items-center gap-4 px-6 py-4 text-gray-400 dark:text-gray-500 font-black text-[12px] tracking-[0.2em] uppercase transition-all hover:text-orange dark:hover:text-white rounded-2xl;
+    @apply flex items-center gap-4 px-6 py-4 text-gray-400 dark:text-gray-500 font-black text-[12px] transition-all hover:text-orange dark:hover:text-white rounded-2xl;
     font-family: var(--font-main);
   }
 

@@ -25,7 +25,7 @@ const getAllSubscriptions = async (req, res) => {
                 SELECT DISTINCT ON (gym_id) *
                 FROM users
                 WHERE role = 'admin'
-                ORDER BY gym_id, id ASC
+                ORDER BY gym_id, created_at  ASC
             ) u ON g.id = u.gym_id
             LEFT JOIN (
                 SELECT DISTINCT ON (gym_id) *

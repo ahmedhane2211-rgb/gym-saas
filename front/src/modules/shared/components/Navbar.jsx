@@ -67,7 +67,7 @@ const Navbar = ({ isMobileOpen, setIsMobileOpen }) => {
             title="Change Language"
           >
             <Globe size={18} />
-            <span className="text-[10px] font-black uppercase tracking-widest">{i18n.language === 'ar' ? 'English' : 'عربي'}</span>
+            <span className="text-[14px] hidden sm:block font-medium tracking-widest">{i18n.language === 'ar' ? 'English' : 'عربي'}</span>
           </button>
 
           {/* Theme Toggle */}
@@ -87,7 +87,7 @@ const Navbar = ({ isMobileOpen, setIsMobileOpen }) => {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-6 sm:block hidden">
         <div className="flex items-center gap-3 ltr:pl-6 rtl:pr-6 ltr:border-l rtl:border-r border-gray-200 dark:border-white/5 cursor-pointer group">
           <div className="text-right hidden sm:block">
             <p className="text-gray-900 dark:text-white text-xs font-bold">{data?.data?.user?.full_name}</p>

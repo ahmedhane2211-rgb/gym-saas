@@ -1,9 +1,15 @@
-import React from 'react';
-import { Mail, Phone, ArrowLeft, ShieldAlert, Sparkles, LogOut } from 'lucide-react';
-import deleteToken from '../utils/deleteToken';
+import React from "react";
+import {
+  Mail,
+  Phone,
+  ArrowLeft,
+  ShieldAlert,
+  Sparkles,
+  LogOut,
+} from "lucide-react";
+import deleteToken from "../utils/deleteToken";
 
 const SubscriptionExpired = () => {
-
   const handleLogout = () => {
     deleteToken();
   };
@@ -19,7 +25,7 @@ const SubscriptionExpired = () => {
         <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl overflow-hidden relative group">
           {/* Top Decoration */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange/50 to-transparent"></div>
-          
+
           <div className="flex flex-col items-center text-center">
             {/* Icon Header */}
             <div className="relative mb-8">
@@ -31,15 +37,16 @@ const SubscriptionExpired = () => {
 
             {/* Content */}
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
-              انتهت <span className="text-orange italic">فترة الاشتراك.</span>
+              انتهت <span className="text-orange ">فترة الاشتراك.</span>
             </h1>
             <p className="text-gray-400 text-lg max-w-md mb-12 leading-relaxed">
-              لقد انتهت صلاحية اشتراك النادي الخاص بك. يرجى التواصل مع الإدارة لتجديد الاشتراك والاستمرار في استخدام النظام.
+              لقد انتهت صلاحية اشتراك النادي الخاص بك. يرجى التواصل مع الإدارة
+              لتجديد الاشتراك والاستمرار في استخدام النظام.
             </p>
 
             {/* Contact Grid */}
             <div className="grid md:grid-cols-2 gap-4 w-full mb-12">
-              <a 
+              <a
                 href="tel:01098843280"
                 className="flex items-center gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-orange/30 hover:bg-orange/5 transition-all group/item"
               >
@@ -47,12 +54,14 @@ const SubscriptionExpired = () => {
                   <Phone size={20} />
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">تواصل هاتفياً</p>
+                  <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">
+                    تواصل هاتفياً
+                  </p>
                   <p className="text-white font-bold text-lg">01098843280</p>
                 </div>
               </a>
 
-              <a 
+              <a
                 href="mailto:medoo1342005@gmail.com"
                 className="flex items-center gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-orange/30 hover:bg-orange/5 transition-all group/item"
               >
@@ -60,15 +69,19 @@ const SubscriptionExpired = () => {
                   <Mail size={20} />
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">البريد الإلكتروني</p>
-                  <p className="text-white font-bold text-sm">medoo1342005@gmail.com</p>
+                  <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">
+                    البريد الإلكتروني
+                  </p>
+                  <p className="text-white font-bold text-sm">
+                    medoo1342005@gmail.com
+                  </p>
                 </div>
               </a>
             </div>
 
             {/* Footer Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-              <button 
+              <button
                 onClick={handleLogout}
                 className="flex items-center justify-center gap-3 px-8 py-4 bg-orange text-white rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg shadow-orange/20 active:scale-95"
               >
