@@ -35,23 +35,7 @@ const createCoach = async (req, res) => {
             return res.status(400).json({ message: "فشل إنشاء المدرب", status: false });
         }
 
-        // Add or update corresponding employee record so they show up in Salaries
-        const u = users.rows[0];
-        const existingEmployee = await pool.query("SELECT id FROM employees WHERE user_id = $1", [userId]);
-        if (existingEmployee.rows.length > 0) {
-            await pool.query(
-                `UPDATE employees SET basic_salary = $1, total_salary = $2, active = true, branch_id = $3 WHERE user_id = $4`,
-                [salary, salary, user.branchId, userId]
-            );
-        } else {
-            await pool.query(
-                `INSERT INTO employees (
-                    user_id, branch_id, basic_salary, total_salary, 
-                    name, email, phone, gender, date_of_joining, active, created_at
-                 ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE, true, NOW())`,
-                [userId, user.branchId, salary, salary, u.full_name, u.email, u.phone, u.gender]
-            );
-        }
+        
 
         await pool.query('COMMIT')
         return res.status(201).json({ data: result.rows[0], status: true, message: "تم إنشاء المدرب بنجاح" });
@@ -106,16 +90,6 @@ const deleteCoach = async (req, res) => {
         return res.status(400).json({ message: "الرجاء توفير معرف المدرب", status: false });
     }
     try {
-        const coach = await pool.query("SELECT user_id FROM coaches WHERE id = $1", [id]);
-        if (coach.rows.length > 0) {
-            const userId = coach.rows[0].user_id;
-            try {
-                await pool.query("DELETE FROM employees WHERE user_id = $1", [userId]);
-            } catch (err) {
-                // If deletion fails (e.g. references exist), deactivate employee and set salary to 0
-                await pool.query("UPDATE employees SET active = false, basic_salary = 0, total_salary = 0 WHERE user_id = $1", [userId]);
-            }
-        }
         const result = await pool.query("DELETE FROM coaches WHERE id = $1 RETURNING *", [id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "مدرب غير موجود", status: false });
@@ -150,12 +124,6 @@ const updateCoach = async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "مدرب غير موجود", status: false });
         }
-
-        // Also update corresponding employee record
-        await pool.query(
-            `UPDATE employees SET basic_salary = $1, total_salary = $2 WHERE user_id = $3`,
-            [salary, salary, userId]
-        );
 
         return res.status(200).json({ data: result.rows[0], status: true, message: "تم تحديث المدرب بنجاح" });
     } catch (error) {

@@ -96,7 +96,8 @@ const VoucherModal = ({
             className="cursor-pointer"
           >
             <CheckBox
-              label={t("payment_voucher")}
+            t={t}
+              label={"payment_voucher"}
               name="type_payment"
               checked={voucherType === "payment"}
               onChange={() => handleTypeChange("payment")}
@@ -107,14 +108,15 @@ const VoucherModal = ({
             className="cursor-pointer"
           >
             <CheckBox
-              label={t("receipt_voucher")}
+            t={t}
+              label={"receipt_voucher"}
               name="type_receipt"
               checked={voucherType === "receipt"}
               onChange={() => handleTypeChange("receipt")}
             />
           </div>
         </div>
-
+<div className="grid md:grid-cols-2 gap-4 grid-cols-1 ">
         {voucherType === "payment" && (
           <div className="space-y-2">
             <Select
@@ -154,6 +156,7 @@ const VoucherModal = ({
           </div>
         )}
 
+        
         <div className="relative">
           <Input
             label="amount"
@@ -206,7 +209,7 @@ const VoucherModal = ({
           />
         </div>
 
-        <div className="relative">
+        <div className="relative md:col-span-2">
           <label className="text-[10px] font-bold text-gray-400 dark:text-gray-light/50 tracking-[0.2em] uppercase px-1">
             {t("note")}
           </label>
@@ -216,7 +219,7 @@ const VoucherModal = ({
             className={`w-full bg-gray-50 dark:bg-white/3 border border-gray-200 dark:border-white/10 rounded-xl p-4 text-xs text-gray-900 dark:text-white focus:outline-none ${focusBorderClass} transition-all font-bold resize-none h-20`}
           />
         </div>
-
+</div>
         <div className="flex flex-col gap-4">
           <Button
             title={

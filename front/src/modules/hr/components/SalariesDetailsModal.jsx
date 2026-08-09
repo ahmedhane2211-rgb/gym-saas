@@ -1,19 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  User,
-  Phone,
-  Mail,
-  Calendar,
-  Banknote,
-  BadgeInfo,
-  FileText,
-} from "lucide-react";
+import React, { useContext, useRef } from "react";
+import { Printer, User } from "lucide-react";
 import { LanguageContext } from "../../shared/context/LanguageContext";
-import DetailItem from "../../shared/components/DetailItem";
 import formattedDate from "../../shared/utils/formattedDate";
 import AppModal from "../../shared/components/AppModal";
-import { useGetMonthlyBonusDeductionsQuery } from "../services/EmployeeBonusDeductionSlice";
-import { useGetEmployeeWithdrawalsQuery } from "../../financial/services/EmployeeWithdrawalsSlice";
 
 const SalariesDetailsModal = ({
   isOpen,
@@ -21,69 +10,20 @@ const SalariesDetailsModal = ({
   employee,
   selectedMonth,
   selectedYear,
+  bonusLoading = false,
+  withdrawalsLoading = false,
 }) => {
   const { t } = useContext(LanguageContext);
-  const [activeTab, setActiveTab] = useState("withdrawals");
-
-  // Default: first day of selected month to last day of selected month
-  const getDefaultDates = () => {
-    const year = selectedYear || new Date().getFullYear();
-    const month = selectedMonth || new Date().getMonth() + 1;
-    const formatNum = (num) => String(num).padStart(2, "0");
-    const lastDay = new Date(year, month, 0).getDate();
-
-    return {
-      start: `${year}-${formatNum(month)}-01`,
-      end: `${year}-${formatNum(month)}-${formatNum(lastDay)}`,
-    };
-  };
-
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  useEffect(() => {
-    if (isOpen) {
-      const defaults = getDefaultDates();
-      setStartDate(defaults.start);
-      setEndDate(defaults.end);
-    }
-  }, [isOpen, selectedMonth, selectedYear]);
-
-  const { data: bonusResponse, isLoading: bonusLoading } =
-    useGetMonthlyBonusDeductionsQuery(
-      { month: selectedMonth, year: selectedYear },
-      { skip: !isOpen || !employee },
-    );
-  const { data: withdrawalsResponse, isLoading: withdrawalsLoading } =
-    useGetEmployeeWithdrawalsQuery(undefined, { skip: !isOpen || !employee });
+  const printAreaRef = useRef(null);
 
   if (!isOpen || !employee) return null;
 
-  const bonuses = Array.isArray(bonusResponse)
-    ? bonusResponse
-    : bonusResponse?.data || [];
-  const withdrawals = Array.isArray(withdrawalsResponse)
-    ? withdrawalsResponse
-    : withdrawalsResponse?.data || [];
-
-  const empWithdrawals = withdrawals.filter(
-    (w) => w.employee_id === employee.id,
-  );
-
-  // Filter bonuses/deductions of the employee within selected date range
-  const empBonusesDeductions = bonuses.filter((b) => {
-    if (b.employee_id !== employee.id) return false;
-    if (!b.date) return true;
-    const bDate = b.date.slice(0, 10);
-    if (startDate && bDate < startDate) return false;
-    if (endDate && bDate > endDate) return false;
-    return true;
-  });
-
-  const tabs = [
-    { id: "withdrawals", label: t("employee_withdrawals") },
-    { id: "bonuses_deductions", label: t("bonuses_deductions") },
-  ];
+  // Use pre-fetched data from parent (passed via _withdrawals and _bonuses)
+  const empWithdrawals = employee._withdrawals || [];
+  const empBonusesDeductions = (employee._bonuses || []).map((b) => ({
+    ...b,
+    type: b.type === 0 ? "bonus" : "deduction",
+  }));
 
   const userName =
     employee.user?.full_name ||
@@ -91,170 +31,315 @@ const SalariesDetailsModal = ({
     employee.name ||
     `EMP-${employee.id}`;
 
+  const paymentRecord = employee.paymentRecord;
+  const isPaid = paymentRecord && paymentRecord.payment_status === "تم القبض";
+
+  const totalSalary = isPaid
+    ? Number(paymentRecord.basic_salary || 0)
+    : Number(employee.total_salary || 0);
+
+  const totalBonuses = isPaid
+    ? Number(paymentRecord.total_rewards || 0)
+    : empBonusesDeductions
+        .filter((b) => b.type === "bonus")
+        .reduce((acc, b) => acc + Number(b.value), 0);
+
+  const totalDeductions = isPaid
+    ? Number(paymentRecord.total_discounts || 0)
+    : empBonusesDeductions
+        .filter((b) => b.type === "deduction")
+        .reduce((acc, b) => acc + Number(b.value), 0);
+
+  const totalWithdrawals = isPaid
+    ? Number(paymentRecord.withdrawals?.total || 0)
+    : empWithdrawals.reduce((acc, w) => acc + Number(w.value), 0);
+
+  const netSalary = isPaid
+    ? Number(paymentRecord.net_salary || 0)
+    : (() => {
+        const calculated = totalSalary + totalBonuses - totalDeductions - totalWithdrawals - Number(employee.pending_debt || 0);
+        return calculated < 0 ? 0 : calculated;
+      })();
+
+  const handlePrint = () => {
+    const printContent = printAreaRef.current.innerHTML;
+    const originalContent = document.body.innerHTML;
+
+    // Create a style block for the print layout matching the dark dashboard view
+    const printStyles = `
+      <style>
+        body {
+          background-color: #0b1329 !important;
+          color: #ffffff !important;
+          font-family: system-ui, -apple-system, sans-serif;
+          padding: 20px;
+          direction: rtl;
+        }
+        .print-container {
+          max-width: 800px;
+          margin: 0 auto;
+          background: #111b33;
+          border-radius: 16px;
+          padding: 24px;
+          border: 1px solid rgba(255,255,255,0.05);
+        }
+        h2, h3 {
+          text-align: center;
+          margin-bottom: 20px;
+          color: #ffffff;
+        }
+        .header-info-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(255,255,255,0.05);
+          padding: 16px;
+          border-radius: 12px;
+          margin-bottom: 24px;
+        }
+        .info-item {
+          font-size: 14px;
+        }
+        .info-item span {
+          color: #38bdf8;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 24px;
+        }
+        th, td {
+          border-bottom: 1px solid rgba(255,255,255,0.05);
+          padding: 12px;
+          text-align: right;
+          font-size: 14px;
+        }
+        th {
+          background-color: rgba(255,255,255,0.02);
+          color: #94a3b8;
+          font-weight: bold;
+        }
+        .text-orange {
+          color: #f97316 !important;
+        }
+        .text-red {
+          color: #ef4444 !important;
+        }
+        .text-green {
+          color: #22c55e !important;
+        }
+        .no-data {
+          text-align: center;
+          color: #94a3b8;
+          padding: 16px 0;
+        }
+        @media print {
+          body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+          }
+          .print-container {
+            background: #ffffff !important;
+            border: none !important;
+            color: #000000 !important;
+          }
+          h2, h3 {
+            color: #000000 !important;
+          }
+          .header-info-grid {
+            background: none !important;
+            border: 1px solid #e2e8f0 !important;
+            color: #000000 !important;
+          }
+          .info-item span {
+            color: #0284c7 !important;
+          }
+          th {
+            background-color: #f8fafc !important;
+            color: #475569 !important;
+            border-bottom: 2px solid #cbd5e1 !important;
+          }
+          td {
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #000000 !important;
+          }
+          .text-orange, .text-red, .text-green {
+            color: #000000 !important;
+          }
+        }
+      </style>
+    `;
+
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>مسيرات الراتب - ${userName}</title>
+          ${printStyles}
+        </head>
+        <body>
+          <div class="print-container">
+            ${printContent}
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+              window.close();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  const monthNamesAr = [
+    "يناير",
+    "فبراير",
+    "مارس",
+    "أبريل",
+    "مايو",
+    "يونيو",
+    "يوليو",
+    "أغسطس",
+    "سبتمبر",
+    "أكتوبر",
+    "نوفمبر",
+    "ديسمبر",
+  ];
+  const displayMonth = selectedMonth ? monthNamesAr[selectedMonth - 1] : "";
+
   return (
     <AppModal
       isOpen={isOpen}
       onClose={onClose}
+      maxWidth="max-w-3xl"
       headerContent={
-        <div className="flex items-center gap-5">
-          <div className="w-16 h-16 rounded-2xl bg-orange/10 text-orange flex items-center justify-center">
-            <User size={28} />
-          </div>
-          <div>
-            <h3 className="text-2xl font-black text-gray-900 dark:text-white  uppercase tracking-widest">
-              {userName}
+        <div className="flex items-center justify-between w-full pl-8 rtl:pl-0 rtl:pr-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-orange/10 text-orange flex items-center justify-center shrink-0">
+              <User size={24} />
+            </div>
+            <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
+              مسيرات الراتب - {userName}
             </h3>
-            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">
-              {t("basic_salary")}: {employee.basic_salary}
-            </p>
           </div>
+          <button
+            onClick={handlePrint}
+            className="p-3 bg-gray-100 dark:bg-white/[0.05] hover:bg-orange hover:text-black rounded-xl text-gray-600 dark:text-gray-300 transition-all flex items-center justify-center"
+            title={t("print") || "طباعة"}
+          >
+            <Printer size={18} />
+          </button>
         </div>
       }
       showCloseFooter
       closeText={t("close")}
     >
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-2 bg-gray-100 dark:bg-white/[0.03] p-1 rounded-2xl">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? "bg-orange text-black shadow-lg" : "text-gray-500 hover:text-gray-900 dark:hover:text-white"}`}
-            >
-              {tab.label}
-            </button>
-          ))}
+      <div
+        ref={printAreaRef}
+        className="space-y-8 text-right"
+        style={{ direction: "rtl" }}
+      >
+        {/* Salary Sheet Header Info */}
+        <div className="text-center space-y-1">
+          <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">
+            الشهر : {displayMonth} - السنة : {selectedYear}
+          </h3>
         </div>
 
-        {activeTab === "bonuses_deductions" && (
-          <div className="flex flex-col md:flex-row items-center gap-3 bg-gray-50 dark:bg-white/[0.01] p-3 rounded-xl">
-            <div className="flex flex-col w-full">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
-                {t("from_date") || "من تاريخ"}
-              </label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="h-10 px-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.02] text-gray-900 dark:text-white text-xs outline-none focus:border-orange transition-colors w-full"
-              />
-            </div>
-            <div className="flex flex-col w-full">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
-                {t("to_date") || "إلى تاريخ"}
-              </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="h-10 px-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.02] text-gray-900 dark:text-white text-xs outline-none focus:border-orange transition-colors w-full"
-              />
-            </div>
+        {/* Employee Profile Metadata Grid */}
+        <div className="grid grid-cols-2 gap-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 p-5 rounded-2xl">
+          <div className="text-sm font-bold text-gray-600 dark:text-gray-400">
+            الاسم :{" "}
+            <span className="text-blue dark:text-sky-400 font-black">
+              {userName}
+            </span>
           </div>
-        )}
+          <div className="text-sm font-bold text-gray-600 dark:text-gray-400">
+            الرقم الوظيفي :{" "}
+            <span className="text-blue dark:text-sky-400 font-black">
+              {employee.job_number || "—"}
+            </span>
+          </div>
+          <div className="text-sm font-bold text-gray-600 dark:text-gray-400">
+            الجوال :{" "}
+            <span className="text-blue dark:text-sky-400 font-black">
+              {employee.phone || employee.user?.phone || "—"}
+            </span>
+          </div>
+          <div className="text-sm font-bold text-gray-600 dark:text-gray-400">
+            الحالة الاجتماعية :{" "}
+            <span className="text-blue dark:text-sky-400 font-black">
+              {t(employee.marital_status) || "—"}
+            </span>
+          </div>
+          <div className="text-sm font-bold text-gray-600 dark:text-gray-400 col-span-2">
+            رقم الهوية :{" "}
+            <span className="text-blue dark:text-sky-400 font-black">
+              {employee.national_id || "—"}
+            </span>
+          </div>
+        </div>
 
-        {activeTab === "withdrawals" && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left rtl:text-right border-collapse">
+        {/* Bonuses and Deductions Section */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest border-b border-gray-100 dark:border-white/5 pb-2">
+            المكافآت والخصومات
+          </h4>
+          <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-white/5">
+            <table className="w-full text-right border-collapse">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-white/5 bg-gray-100/50 dark:bg-white/[0.02]">
+                <tr className="bg-gray-100/50 dark:bg-white/[0.02]">
                   <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
-                    {t("amount")}
+                    النوع
                   </th>
                   <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
-                    {t("date")}
+                    القيمة
                   </th>
                   <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
-                    {t("note")}
+                    التاريخ
+                  </th>
+                  <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
+                    ملاحظة
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-white/10">
-                {withdrawalsLoading ? (
-                  <tr>
-                    <td colSpan={3} className="text-center py-4 text-xs">
-                      {t("loading")}
-                    </td>
-                  </tr>
-                ) : empWithdrawals.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={3}
-                      className="text-center py-4 text-xs text-gray-400"
-                    >
-                      {t("no_data")}
-                    </td>
-                  </tr>
-                ) : (
-                  empWithdrawals.map((w) => (
-                    <tr
-                      key={w.id}
-                      className="hover:bg-gray-50 dark:hover:bg-white/[0.01]"
-                    >
-                      <td className="px-4 py-3 text-xs font-bold text-gray-900 dark:text-white">
-                        {Number(w.value).toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">
-                        {w.date?.slice(0, 10)}
-                      </td>
-                      <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">
-                        {w.notes || "—"}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {activeTab === "bonuses_deductions" && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left rtl:text-right border-collapse">
-              <thead>
-                <tr className="border-b border-gray-200 dark:border-white/5 bg-gray-100/50 dark:bg-white/[0.02]">
-                  <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
-                    {t("type")}
-                  </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
-                    {t("amount")}
-                  </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
-                    {t("date")}
-                  </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
-                    {t("note")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-white/10">
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                 {bonusLoading ? (
                   <tr>
-                    <td colSpan={4} className="text-center py-4 text-xs">
-                      {t("loading")}
+                    <td
+                      colSpan={4}
+                      className="text-center py-4 text-xs text-gray-400"
+                    >
+                      جاري التحميل...
                     </td>
                   </tr>
                 ) : empBonusesDeductions.length === 0 ? (
                   <tr>
                     <td
                       colSpan={4}
-                      className="text-center py-4 text-xs text-gray-400"
+                      className="text-center py-4 text-xs text-blue dark:text-sky-400 font-bold"
                     >
-                      {t("no_data")}
+                      لا يوجد
                     </td>
                   </tr>
                 ) : (
                   empBonusesDeductions.map((b) => (
                     <tr
                       key={b.id}
-                      className="hover:bg-gray-50 dark:hover:bg-white/[0.01]"
+                      className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01]"
                     >
-                      <td className="px-4 py-3 text-xs">
+                      <td className="px-4 py-3 text-xs font-bold">
                         <span
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${b.type === "bonus" ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"}`}
+                          className={
+                            b.type === "bonus"
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }
                         >
-                          {b.type === "bonus" ? t("bonus") : t("deduction")}
+                          {b.type === "bonus" ? "مكافأة" : "خصم"}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-xs font-bold text-gray-900 dark:text-white">
@@ -272,7 +357,107 @@ const SalariesDetailsModal = ({
               </tbody>
             </table>
           </div>
-        )}
+        </div>
+
+        {/* Withdrawals Section */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest border-b border-gray-100 dark:border-white/5 pb-2">
+            مسحوبات
+          </h4>
+          <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-white/5">
+            <table className="w-full text-right border-collapse">
+              <thead>
+                <tr className="bg-gray-100/50 dark:bg-white/[0.02]">
+                  <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
+                    التاريخ
+                  </th>
+                  <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
+                    القيمة
+                  </th>
+                  <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
+                    ملاحظة
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                {withdrawalsLoading ? (
+                  <tr>
+                    <td
+                      colSpan={3}
+                      className="text-center py-4 text-xs text-gray-400"
+                    >
+                      جاري التحميل...
+                    </td>
+                  </tr>
+                ) : empWithdrawals.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={3}
+                      className="text-center py-4 text-xs text-blue dark:text-sky-400 font-bold"
+                    >
+                      لا يوجد
+                    </td>
+                  </tr>
+                ) : (
+                  empWithdrawals.map((w) => (
+                    <tr
+                      key={w.id}
+                      className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01]"
+                    >
+                      <td className="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">
+                        {w.date?.slice(0, 10)}
+                      </td>
+                      <td className="px-4 py-3 text-xs font-bold text-gray-900 dark:text-white">
+                        {Number(w.value).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                        {w.notes || "—"}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Salary Summary Totals */}
+        <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-white/5">
+          <table className="w-full text-center border-collapse">
+            <thead>
+              <tr className="bg-gray-100/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
+                  الراتب الأساسي
+                </th>
+                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
+                  عموله
+                </th>
+                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
+                  خصم
+                </th>
+                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">
+                  الراتب الاجمالي
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-4 py-4 text-sm font-bold text-gray-900 dark:text-white">
+                  {totalSalary.toLocaleString()}
+                </td>
+                <td className="px-4 py-4 text-sm font-bold text-gray-900 dark:text-white">
+                  {totalBonuses.toLocaleString()}
+                </td>
+                <td className="px-4 py-4 text-sm font-bold text-gray-900 dark:text-white">
+                  {(totalDeductions + totalWithdrawals).toLocaleString()}
+                </td>
+                <td className="px-4 py-4 text-sm font-bold text-orange">
+                  {netSalary.toLocaleString()}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </AppModal>
   );

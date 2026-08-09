@@ -22,6 +22,13 @@ export const salaryPaymentApi = createApi({
             }),
             providesTags: ["SalaryPayments"]
         }),
+        getMonthlyPayments: build.query({
+            query: ({ month, year }) => ({
+                url: `salary-payments/monthly?month=${month}&year=${year}`,
+                method: "GET"
+            }),
+            providesTags: ["SalaryPayments"]
+        }),
         getEmployeePayments: build.query({
             query: (employeeId) => ({
                 url: `salary-payments/${employeeId}`,
@@ -42,6 +49,7 @@ export const salaryPaymentApi = createApi({
 
 export const {
     useGetAllPaymentsQuery,
+    useGetMonthlyPaymentsQuery,
     useGetEmployeePaymentsQuery,
     usePaySalaryMutation
 } = salaryPaymentApi;

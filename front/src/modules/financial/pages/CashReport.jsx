@@ -21,15 +21,25 @@ const CashReport = () => {
   const { t } = useContext(LanguageContext);
 
   // Default filter to current month
-  const today = new Date().toISOString().split("T")[0];
-  const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-    .toISOString()
-    .split("T")[0];
+const now = new Date();
 
-  const [filters, setFilters] = useState({
-    from: firstDay,
-    to: today,
-  });
+const year = now.getFullYear();
+const month = now.getMonth();
+
+const formatDate = (year, month, day) => {
+  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+};
+
+const firstDay = formatDate(year, month, 1);
+
+// آخر يوم في الشهر
+const lastDate = new Date(year, month + 1, 0).getDate();
+const lastDay = formatDate(year, month, lastDate);
+
+const [filters, setFilters] = useState({
+  from: firstDay,
+  to: lastDay,
+});
 
   const {
     data: response,

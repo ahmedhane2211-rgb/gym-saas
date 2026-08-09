@@ -14,7 +14,7 @@ const LeavePermissionModal = ({ isOpen, onClose, onSubmit, initialData, isLoadin
     const { data: employeesResponse } = useGetEmployeesQuery();
     const { data: leavesResponse } = useGetLeavesQuery();
 
-    const employees = Array.isArray(employeesResponse) ? employeesResponse : (employeesResponse?.data || employeesResponse?.employees || []);
+    const employees = (Array.isArray(employeesResponse) ? employeesResponse : (employeesResponse?.data || employeesResponse?.employees || [])).filter(e => e.active);
     const leaves = Array.isArray(leavesResponse) ? leavesResponse : (leavesResponse?.data || leavesResponse?.leaves || []);
 
     useEffect(() => {

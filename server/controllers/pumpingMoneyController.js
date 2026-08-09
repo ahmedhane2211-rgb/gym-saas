@@ -4,7 +4,7 @@ const getAllPumpingMoney = async (req, res) => {
   const { branchId } = req.user;
   try {
     const result = await pool.query(
-      `SELECT * FROM pumping_money WHERE branch_id = $1 ORDER BY date DESC`,
+      `SELECT * FROM pumping_money WHERE branch_id = $1 ORDER BY created_at DESC`,
       [branchId]
     );
     return res.status(200).json({ data: result.rows || [], status: true });

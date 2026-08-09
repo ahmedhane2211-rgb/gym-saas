@@ -14,9 +14,10 @@ employeeBonusDeductionRouter.get("/monthly", authorize(["admin"]), async (req, r
   }
   try {
     const result = await pool.query(
-      `SELECT ebd.*, e.name as employee_name 
+      `SELECT ebd.*, u.full_name as employee_name 
        FROM employee_bonuses_deductions ebd
        JOIN employees e ON ebd.employee_id = e.id
+       JOIN users u ON e.user_id = u.id
        WHERE ebd.branch_id = $1
        AND EXTRACT(MONTH FROM ebd.date) = $2
        AND EXTRACT(YEAR FROM ebd.date) = $3

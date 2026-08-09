@@ -13,7 +13,7 @@ const EmployeeBonusDeductionModal = ({ isOpen, onClose, onSubmit, isLoading }) =
   const { data: empResponse } = useGetEmployeesQuery();
   const employees = Array.isArray(empResponse) ? empResponse : empResponse?.data || [];
 
-  const employeeOptions = employees.map((e) => ({ value: e.id, label: e.name }));
+  const employeeOptions = employees.map((e) => ({ value: e.id, label: e.name })).filter((e) => e.active );
   const typeOptions = [
     { value: "bonus", label: t("bonus") || "مكافأة" },
     { value: "deduction", label: t("deduction") || "خصم" },

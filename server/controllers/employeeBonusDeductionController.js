@@ -4,9 +4,10 @@ const getAll = async (req, res) => {
   const { branchId } = req.user;
   try {
     const result = await pool.query(
-      `SELECT ebd.*, e.name as employee_name
+      `SELECT ebd.*, u.full_name as employee_name
        FROM employee_bonuses_deductions ebd
        JOIN employees e ON ebd.employee_id = e.id
+       JOIN users u ON e.user_id = u.id
        WHERE ebd.branch_id = $1
        ORDER BY ebd.date DESC`,
       [branchId]
@@ -59,11 +60,14 @@ const create = async (req, res) => {
 
   try {
     const empCheck = await pool.query(
-      `SELECT id FROM employees WHERE id = $1 AND branch_id = $2`,
+      `SELECT id, active FROM employees WHERE id = $1 AND branch_id = $2`,
       [employee_id, branchId]
     );
     if (empCheck.rows.length === 0) {
       return res.status(404).json({ message: "الموظف غير موجود", status: false });
+    }
+    if (!empCheck.rows[0].active) {
+      return res.status(400).json({ message: "لا يمكن إضافة مكافأة أو خصم لموظف غير نشط", status: false });
     }
 
     const result = await pool.query(

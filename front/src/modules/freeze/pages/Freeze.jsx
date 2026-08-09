@@ -109,7 +109,7 @@ const Freeze = () => {
       header: "name",
       render: (plan) => (
         <div className="flex items-center gap-4 text-gray-900 dark:text-white font-black text-sm uppercase tracking-tight ">
-          <div className="p-2.5 rounded-xl bg-orange/10 text-orange">
+          <div className="p-2.5 rounded-xl bg-orange/10 text-orange print:hidden">
             <Award size={18} />
           </div>
           {plan.name}
@@ -120,7 +120,7 @@ const Freeze = () => {
       header: "days",
       render: (plan) => (
         <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">
-          <Calendar size={14} className="text-blue" />
+          <Calendar size={14} className="text-blue print:hidden" />
           {plan.days} {t("days")}
         </div>
       ),
@@ -129,7 +129,7 @@ const Freeze = () => {
       header: "max_uses",
       render: (plan) => (
         <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">
-          <ShieldAlert size={14} className="text-purple" />
+          <ShieldAlert size={14} className="text-purple print:hidden" />
           {plan.max_uses}
         </div>
       ),

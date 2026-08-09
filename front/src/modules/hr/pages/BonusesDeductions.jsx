@@ -7,7 +7,7 @@ import SearchFilter from "../../shared/components/SearchFilter";
 import useFilter from "../../shared/hooks/useFilter";
 import Button from "../../shared/components/Button";
 import {
-  useGetMonthlyBonusDeductionsQuery,
+  useGetBonusDeductionsQuery,
   useAddBonusDeductionMutation,
   useDeleteBonusDeductionMutation,
 } from "../services/EmployeeBonusDeductionSlice";
@@ -16,13 +16,8 @@ import SectionTitle from "../../shared/components/SectionTitle";
 
 const BonusesDeductions = () => {
   const { t } = useContext(LanguageContext);
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
 
-  const { data: bonusResponse, isLoading } = useGetMonthlyBonusDeductionsQuery({
-    month: currentMonth,
-    year: currentYear,
-  });
+  const { data: bonusResponse, isLoading } = useGetBonusDeductionsQuery();
   const [addBonusDeduction, { isLoading: isAdding }] =
     useAddBonusDeductionMutation();
   const [deleteBonusDeduction] = useDeleteBonusDeductionMutation();

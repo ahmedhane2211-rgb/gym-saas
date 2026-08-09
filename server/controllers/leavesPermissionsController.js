@@ -25,7 +25,7 @@ const fetchFullLeavePermission = async (id) => {
     `SELECT lp.*,
             json_build_object(
               'id', e.id,
-              'name', e.name,
+              'name', u.full_name,
               'branch_id', e.branch_id,
               'user', json_build_object(
                 'id', u.id,
@@ -62,7 +62,7 @@ const getAllLeavesPermissions = async (req, res) => {
       `SELECT lp.*,
               json_build_object(
                 'id', e.id,
-                'name', e.name,
+                'name', u.full_name,
                 'branch_id', e.branch_id,
                 'user', json_build_object(
                   'id', u.id,
@@ -120,6 +120,17 @@ const createLeavePermission = async (req, res) => {
   try {
     if (!employee_id || !leaves_id || !from_date || !to_date) {
       return res.status(400).json({ message: "الرجاء ملء جميع الحقول المطلوبة", status: false });
+    }
+
+    const empActiveCheck = await pool.query(
+      `SELECT active FROM employees WHERE id = $1 AND branch_id = $2`,
+      [employee_id, branchId]
+    );
+    if (empActiveCheck.rows.length === 0) {
+      return res.status(404).json({ message: "الموظف غير موجود", status: false });
+    }
+    if (!empActiveCheck.rows[0].active) {
+      return res.status(400).json({ message: "لا يمكن تقديم طلب إجازة لموظف غير نشط", status: false });
     }
 
     const start = new Date(from_date);

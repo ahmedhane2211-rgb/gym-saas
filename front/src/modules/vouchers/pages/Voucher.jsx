@@ -15,6 +15,7 @@ import DataTable from "../../shared/components/DataTable";
 import SearchFilter from "../../shared/components/SearchFilter";
 import useFilter from "../../shared/hooks/useFilter";
 import SectionTitle from "../../shared/components/SectionTitle";
+import formatNum from "../../shared/utils/formatNum";
 
 const Voucher = () => {
   const { t, i18n } = useContext(LanguageContext);
@@ -92,14 +93,21 @@ const Voucher = () => {
         </div>
       ),
     },
-
+    {
+      header: "voucher_name",
+      render: (voucher) => (
+        <span className="font-bold text-gray-900 dark:text-white text-sm">
+          {voucher.expense_name || voucher.revenue_name || "—"}
+        </span>
+      ),
+    },
     {
       header: "amount",
       render: (voucher) => (
         <span
           className={`font-black text-lg ${voucher.type === "payment" ? "text-red-600 dark:text-red-500" : "text-green-600 dark:text-green-500"}`}
         >
-          {voucher.amount} EGP
+          {formatNum(voucher.amount)} EGP
         </span>
       ),
     },
@@ -111,13 +119,12 @@ const Voucher = () => {
         </span>
       ),
     },
+    
     {
-      header: "description",
+      header: "note",
       render: (voucher) => (
-        <span className="font-bold text-gray-900 dark:text-white text-sm">
-          {voucher.type === "payment"
-            ? voucher.expense?.name || voucher.expenseName || "—"
-            : voucher.revenueName || "—"}
+        <span className="text-gray-500 dark:text-gray-400 font-bold text-sm">
+          {voucher.note || "—"}
         </span>
       ),
     },

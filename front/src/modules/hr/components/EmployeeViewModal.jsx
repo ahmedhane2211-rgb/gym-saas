@@ -4,6 +4,7 @@ import { LanguageContext } from "../../shared/context/LanguageContext";
 import DetailItem from "../../shared/components/DetailItem";
 import formattedDate from "../../shared/utils/formattedDate";
 import AppModal from "../../shared/components/AppModal";
+import formatNum from "../../shared/utils/formatNum";
 
 const EmployeeViewModal = ({ isOpen, onClose, employee }) => {
   const { t } = useContext(LanguageContext);
@@ -48,9 +49,9 @@ const EmployeeViewModal = ({ isOpen, onClose, employee }) => {
             <h3 className="text-3xl font-black text-gray-900 dark:text-white  uppercase tracking-widest">
               {userName}
             </h3>
-            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">
+            {/* <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">
               ID: EMP-{employee.id?.toString().padStart(3, "0")}
-            </p>
+            </p> */}
           </div>
         </div>
       }
@@ -84,8 +85,8 @@ const EmployeeViewModal = ({ isOpen, onClose, employee }) => {
           />
           <DetailItem
             icon={<User size={16} />}
-            label={t("type")}
-            value={t(employee.type) || "N/A"}
+            label={t("gender")}
+            value={t(employee.user?.gender) || "N/A"}
           />
           <DetailItem
             icon={<BadgeInfo size={16} />}
@@ -105,7 +106,7 @@ const EmployeeViewModal = ({ isOpen, onClose, employee }) => {
           <DetailItem
             icon={<BadgeInfo size={16} />}
             label={t("address")}
-            value={value("address")}
+            value={employee.user?.address || "N/A"}
           />
         </div>
       )}
@@ -145,42 +146,42 @@ const EmployeeViewModal = ({ isOpen, onClose, employee }) => {
           <DetailItem
             icon={<Banknote size={16} />}
             label={t("basic_salary")}
-            value={value("basic_salary")}
+            value={formatNum(value("basic_salary"))}
           />
           <DetailItem
             icon={<Banknote size={16} />}
             label={t("additional_salary")}
-            value={value("additional_salary")}
+            value={formatNum(value("additional_salary"))}
           />
           <DetailItem
             icon={<Banknote size={16} />}
             label={t("allowances")}
-            value={value("allowances")}
+            value={formatNum(value("allowances"))}
           />
           <DetailItem
             icon={<Banknote size={16} />}
             label={t("health_insurance")}
-            value={value("health_insurance")}
+            value={formatNum(value("health_insurance"))}
           />
           <DetailItem
             icon={<Banknote size={16} />}
             label={t("social_insurance")}
-            value={value("social_insurance")}
+            value={formatNum(value("social_insurance"))}
           />
           <DetailItem
             icon={<Banknote size={16} />}
             label={t("tax")}
-            value={value("tax")}
+            value={formatNum(value("tax"))}
           />
           <DetailItem
             icon={<Banknote size={16} />}
             label={t("pending_debt")}
-            value={value("pending_debt")}
+            value={formatNum(value("pending_debt"))}
           />
           <DetailItem
             icon={<Banknote size={16} />}
             label={t("total_salary")}
-            value={value("total_salary")}
+            value={formatNum(value("total_salary"))}
           />
         </div>
       )}

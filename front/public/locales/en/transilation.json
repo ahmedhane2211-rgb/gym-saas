@@ -364,6 +364,8 @@
   "add_freeze": "Add New Freeze Plan",
   "update_freeze": "Update Freeze Plan",
   "max_uses": "Max Uses",
+  "voucher_name":"Voucher Name",
+  "no_features_added":"No Features Added",
   "manage_bonuses_deductions_desc":"Manage bonuses and deductions for employees.",
   "freeze_plan":"Freeze Plan",
   "manage_freezes_desc": "Manage subscription freeze packages, days and maximum uses.",

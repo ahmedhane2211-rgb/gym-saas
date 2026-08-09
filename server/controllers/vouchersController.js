@@ -8,7 +8,16 @@ const getAllVouchers = async (req, res) => {
       return res.status(400).json({ message: "الرجاء ارسال الايدي الخاص بالفرع", status: false });
     }
   try {
-    let result = await pool.query('SELECT * FROM vouchers WHERE branch_id = $1', [branchId]);
+    let result = await pool.query(`
+      SELECT 
+        v.*,
+        e.name AS expense_name
+      FROM vouchers v
+      LEFT JOIN expenses e 
+        ON v.expense_id = e.id
+      WHERE v.branch_id = $1
+      ORDER BY v.created_at DESC
+    `, [branchId]);
 
     if(result.rowCount === 0) {
       return res.status(200).json({ data: [], status: true,mesaage: "لا توجد قسائم"});
@@ -41,7 +50,8 @@ const createVoucher = async (req, res) => {
     date,
     note,
     clientId,
-    expense_id
+    expense_id,
+    revenueName
   } = req.body;
   
   const { branchId } = req.user;
@@ -71,6 +81,9 @@ const createVoucher = async (req, res) => {
 
     if(type === "payment" && !expense_id){
         return res.status(400).json({ message: "الرجاء ملء جميع الحقول (المصروف)", status: false });
+    }
+    if(type === "receipt" && !revenueName){
+        return res.status(400).json({ message: "الرجاء ملء جميع الحقول (الايراد)", status: false });
     }
 
   const client = await pool.connect();
@@ -138,9 +151,9 @@ const createVoucher = async (req, res) => {
     // ✅ INSERT VOUCHER RECORD
     const result = await client.query(
       `INSERT INTO vouchers (
-        type, amount, date, note, client_id, expense_id, branch_id
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [type, amount, date, note || null, clientId || null, expense_id || null, branchId]
+        type, amount, date, note, client_id, expense_id, branch_id,revenue_name
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7,$8) RETURNING *`,
+      [type, amount, date, note || null, clientId || null, expense_id || null, branchId, revenueName || null]
     );
 
     // ✅ UPDATE CASH REPORT
@@ -150,10 +163,13 @@ const createVoucher = async (req, res) => {
 
     const voucherType = type === "receipt" ? "قسيمة قبض" : "قسيمة صرف";
     
+    const cashReportValue =
+    type === "payment" ? -Number(amount) : Number(amount);
+
     await client.query(
       `INSERT INTO cash_report (type, value, total_value, branch_id)
        VALUES ($1, $2, $3, $4)`,
-      [voucherType, amount, newBalance, branchId]
+      [voucherType, cashReportValue, newBalance, branchId]
     );
 
     await client.query('COMMIT');
@@ -245,7 +261,7 @@ const deleteVoucher = async (req, res) => {
     await client.query(
       `INSERT INTO cash_report (type, value, total_value, branch_id)
        VALUES ($1, $2, $3, $4)`,
-      [reverseType, Number(amount), Number(newBalance), branchId]
+      [reverseType, type === "receipt" ? Number(-amount) : Number(amount), Number(newBalance), branchId]
     );
 
     await client.query('COMMIT');

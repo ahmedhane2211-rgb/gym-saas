@@ -11,6 +11,7 @@ import {
   useDeleteEmployeeWithdrawalMutation,
 } from "../services/EmployeeWithdrawalsSlice";
 import SectionTitle from "../../shared/components/SectionTitle";
+import formattedDate from "../../shared/utils/formattedDate";
 
 const EmployeeWithdrawals = () => {
   const { t } = useContext(LanguageContext);
@@ -73,7 +74,7 @@ const EmployeeWithdrawals = () => {
       header: "date",
       render: (row) => (
         <span className="text-gray-600 dark:text-gray-400 text-xs">
-          {row.date?.slice(0, 10)}
+          {formattedDate(row.date)}
         </span>
       ),
     },
@@ -100,10 +101,11 @@ const EmployeeWithdrawals = () => {
       </div>
 
       <DataTable
+      actions={false}
         columns={columns}
         data={records}
         isLoading={isLoading}
-        onDelete={handleDelete}
+        // onDelete={handleDelete}
         title={t("employee_withdrawals")}
       />
 

@@ -241,10 +241,11 @@ const PlanModal = ({
 
           <div className="pt-2">
             <CheckBox
-              label={t("active")}
+              label={"active"}
               name="isActive"
               register={register}
               errors={errors}
+              t={t}
             />
           </div>
         </div>

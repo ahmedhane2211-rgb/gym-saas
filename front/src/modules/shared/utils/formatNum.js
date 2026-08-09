@@ -1,5 +1,9 @@
-const formatNum = (num) => {
-    return num?.toLocaleString('en-US', { minimumFractionDigits: 0});
-}
+ const formatNum = (num) => {
+  if (num === null || num === undefined) return "";
+  const formatted = Number(num).toLocaleString("en-US", {
+    maximumFractionDigits: 0,
+  });
+  return formatted;
+};
 
-export default formatNum
+export default formatNum;

@@ -107,7 +107,7 @@ const Users = () => {
       header: "member_details",
       render: (user) => (
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
+          <div className="w-12 print:hidden h-12 rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
             <img
               src={
                 user.photo ||

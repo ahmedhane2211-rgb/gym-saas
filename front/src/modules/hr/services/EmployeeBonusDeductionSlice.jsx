@@ -22,6 +22,20 @@ export const employeeBonusDeductionApi = createApi({
             }),
             providesTags: ["BonusDeductions"]
         }),
+        getEmployeeMonthlyBonusDeductions: build.query({
+            query: ({ month, year, employee_id }) => ({
+                url: `employee-bonus-deduction/${employee_id}/monthly?month=${month}&year=${year}`,
+                method: "GET"
+            }),
+            providesTags: ["BonusDeductions"]
+        }),
+        getBonusDeductions: build.query({
+            query: () => ({
+                url: `employee-bonus-deduction`,
+                method: "GET"
+            }),
+            providesTags: ["BonusDeductions"]
+        }),
         addBonusDeduction: build.mutation({
             query: (body) => ({
                 url: "employee-bonus-deduction",
@@ -42,6 +56,8 @@ export const employeeBonusDeductionApi = createApi({
 
 export const {
     useGetMonthlyBonusDeductionsQuery,
+    useGetEmployeeMonthlyBonusDeductionsQuery,
+    useGetBonusDeductionsQuery,
     useAddBonusDeductionMutation,
     useDeleteBonusDeductionMutation
 } = employeeBonusDeductionApi;

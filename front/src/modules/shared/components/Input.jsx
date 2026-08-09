@@ -30,6 +30,7 @@ const Input = ({
         disabled={disabled}
         readOnly={readOnly}
         value={value}
+        min={0}
         defaultValue={type === "date" ? today : undefined}
         className={`w-full min-h-14 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl p-4 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 transition-all focus:border-orange/50 focus:outline-none ${className}`}
         {...register(name, validation)}

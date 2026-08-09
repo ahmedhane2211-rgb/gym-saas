@@ -3,6 +3,7 @@ import { DollarSign, FileText, Calendar, User } from 'lucide-react';
 import { LanguageContext } from '../../shared/context/LanguageContext';
 import formattedDate from '../../shared/utils/formattedDate';
 import AppModal from '../../shared/components/AppModal';
+import formatNum from '../../shared/utils/formatNum';
 
 const VoucherViewModal = ({ isOpen, onClose, voucher }) => {
     const { t } = useContext(LanguageContext);
@@ -15,7 +16,7 @@ const VoucherViewModal = ({ isOpen, onClose, voucher }) => {
                 <Icon size={20} />
             </div>
             <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{t(label)}</p>
+                <p className="font-black text-gray-400">{t(label)}</p>
                 <p className="text-sm font-black text-gray-900 dark:text-white mt-1">{value}</p>
             </div>
         </div>
@@ -36,7 +37,7 @@ const VoucherViewModal = ({ isOpen, onClose, voucher }) => {
                             <FileText size={20} />
                         </div>
                         <div>
-                            <p className={`text-[10px] font-black uppercase tracking-widest ${textColor}`}>
+                            <p className={`font-black ${textColor}`}>
                                 {t('voucher_type')}
                             </p>
                             <p className="text-sm font-bold text-gray-900 dark:text-white">
@@ -52,7 +53,7 @@ const VoucherViewModal = ({ isOpen, onClose, voucher }) => {
                                 <DetailItem 
                                     icon={FileText}
                                     label="select_expense"
-                                    value={voucher.expense?.name || voucher.expenseName || '—'}
+                                    value={voucher.expense_name || voucher.expenseName || '—'}
                                     color={dotColor}
                                 />
                                 {voucher.expense && (
@@ -68,7 +69,7 @@ const VoucherViewModal = ({ isOpen, onClose, voucher }) => {
                             <DetailItem 
                                 icon={FileText}
                                 label="revenue_name"
-                                value={voucher.revenueName || '—'}
+                                value={voucher.revenue_name || '—'}
                                 color={dotColor}
                             />
                         )}
@@ -76,7 +77,7 @@ const VoucherViewModal = ({ isOpen, onClose, voucher }) => {
                         <DetailItem 
                             icon={DollarSign}
                             label="amount"
-                            value={`${voucher.amount} EGP`}
+                            value={`${formatNum(voucher.amount)} EGP`}
                             color="green"
                         />
 

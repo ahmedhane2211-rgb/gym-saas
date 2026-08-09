@@ -198,10 +198,11 @@ const DataTable = ({
       </div>
 
       <div
+        
         className="glass-card overflow-hidden animate-in fade-in duration-500"
         ref={tableRef}
       >
-        <div className="overflow-x-auto">
+        <div style={{ direction: isRtl ? "rtl" : "ltr" }} className="overflow-x-auto">
           <table className="w-full text-left rtl:text-right border-collapse">
             <thead>
               <tr className="border-b border-gray-200 dark:border-white/5 bg-gray-100/50 dark:bg-white/[0.02]">

@@ -94,7 +94,7 @@ const Plan = () => {
       header: "plan_name",
       render: (plan) => (
         <div className="flex items-center gap-4 text-gray-900 dark:text-white">
-          <div className="p-2.5 rounded-xl bg-orange/10 text-orange">
+          <div className="p-2.5 print:hidden rounded-xl bg-orange/10 text-orange">
             <ScrollText size={18} />
           </div>
           {plan.name}
@@ -106,9 +106,7 @@ const Plan = () => {
       render: (plan) => (
         <div className="flex items-baseline gap-1 text-gray-900 dark:text-white font-black">
           <span className="text-lg">{plan.price}</span>
-          <span className="text-[10px] text-gray-400">
-            EGP
-          </span>
+          <span className="text-[10px] text-gray-400">EGP</span>
         </div>
       ),
     },
@@ -133,9 +131,7 @@ const Plan = () => {
             </span>
           ))}
           {(!plan.features || plan.features.length === 0) && (
-            <span className="">
-              No features
-            </span>
+            <span className="">No features</span>
           )}
         </div>
       ),
@@ -159,12 +155,7 @@ const Plan = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        
-        <SectionTitle
-          title="plans"
-          description="manage_plans_desc"
-          t={t}
-        />
+        <SectionTitle title="plans" description="manage_plans_desc" t={t} />
         <Button
           onClick={() => {
             setEditingPlan(null);

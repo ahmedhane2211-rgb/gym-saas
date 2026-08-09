@@ -11,9 +11,9 @@ const EmployeeWithdrawalModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
   const { register, handleSubmit, reset, formState: { errors }, setValue, watch } = useForm();
   const { t } = useContext(LanguageContext);
   const { data: empResponse } = useGetEmployeesQuery();
-  const employees = Array.isArray(empResponse) ? empResponse : empResponse?.data || [];
+  const employees = (Array.isArray(empResponse) ? empResponse : empResponse?.data || []).filter(e => e.active);
 
-  const employeeOptions = employees.map((e) => ({ value: e.id, label: `${e.name} — ${t("basic_salary")}: ${e.basic_salary}` }));
+  const employeeOptions = employees.map((e) => ({ value: e.id, label: `${e.name || e.user?.full_name} — ${t("total_salary")}: ${e.total_salary}` }));
 
   useEffect(() => {
     if (isOpen) reset({ employee_id: "", value: "", date: new Date().toISOString().split("T")[0], notes: "" });

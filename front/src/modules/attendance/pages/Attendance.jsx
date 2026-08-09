@@ -68,10 +68,6 @@ const Attendance = () => {
             <p className="text-gray-900 dark:text-white font-black text-xs uppercase tracking-tight ">
               {record.member?.user?.full_name || record.user?.full_name}
             </p>
-
-            <p className="text-gray-500 dark:text-gray-600 text-[9px] font-bold uppercase tracking-widest">
-              MB-{record.member_id?.toString().padStart(3, "0")}
-            </p>
           </div>
         </div>
       ),

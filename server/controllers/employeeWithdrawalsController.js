@@ -4,9 +4,10 @@ const getAllEmployeeWithdrawals = async (req, res) => {
   const { branchId } = req.user;
   try {
     const result = await pool.query(
-      `SELECT ew.*, e.name as employee_name, e.basic_salary
+      `SELECT ew.*, u.full_name as employee_name, e.basic_salary
        FROM employee_withdrawals ew
        JOIN employees e ON ew.employee_id = e.id
+       JOIN users u ON e.user_id = u.id
        WHERE e.branch_id = $1
        ORDER BY ew.date DESC`,
       [branchId]
@@ -22,9 +23,10 @@ const getEmployeeWithdrawal = async (req, res) => {
   const { branchId } = req.user;
   try {
     const result = await pool.query(
-      `SELECT ew.*, e.name as employee_name, e.basic_salary
+      `SELECT ew.*, u.full_name as employee_name, e.basic_salary
        FROM employee_withdrawals ew
        JOIN employees e ON ew.employee_id = e.id
+       JOIN users u ON e.user_id = u.id
        WHERE ew.id = $1 AND e.branch_id = $2`,
       [id, branchId]
     );
@@ -51,7 +53,7 @@ const createEmployeeWithdrawal = async (req, res) => {
 
   try {
     const employeeResult = await pool.query(
-      `SELECT id, name, basic_salary FROM employees WHERE id = $1 AND branch_id = $2`,
+      `SELECT id, total_salary, active FROM employees WHERE id = $1 AND branch_id = $2`,
       [employee_id, branchId]
     );
 
@@ -59,44 +61,59 @@ const createEmployeeWithdrawal = async (req, res) => {
       return res.status(404).json({ message: "الموظف غير موجود", status: false });
     }
 
+    if (!employeeResult.rows[0].active) {
+      return res.status(400).json({ message: "لا يمكن تسجيل سحب لموظف غير نشط", status: false });
+    }
+
     const employee = employeeResult.rows[0];
-    const basicSalary = parseFloat(employee.basic_salary);
-
-    if (value > basicSalary) {
-      return res.status(400).json({
-        message: `لا يمكن السحب أكثر من الراتب الأساسي (${basicSalary})`,
-        status: false
-      });
-    }
-
     const withdrawalDate = new Date(date);
-    const month = withdrawalDate.getMonth() + 1;
-    const year = withdrawalDate.getFullYear();
 
-    const totalWithdrawnResult = await pool.query(
-      `SELECT COALESCE(SUM(value), 0) as total
-       FROM employee_withdrawals
-       WHERE employee_id = $1
-       AND EXTRACT(MONTH FROM date) = $2
-       AND EXTRACT(YEAR FROM date) = $3`,
-      [employee_id, month, year]
+    // Verify cash report has enough balance
+    const cashDay = await pool.query(
+      `SELECT total_value FROM cash_report WHERE branch_id = $1 ORDER BY created_at DESC, id DESC LIMIT 1`,
+      [branchId]
     );
+    const currentTotal = cashDay.rowCount > 0 ? Number(cashDay.rows[0].total_value) : 0;
 
-    const totalWithdrawn = parseFloat(totalWithdrawnResult.rows[0].total);
-
-    if (totalWithdrawn + value > basicSalary) {
+    if (currentTotal < value) {
       return res.status(400).json({
-        message: `إجمالي السحوبات في هذا الشهر (${totalWithdrawn}) مع هذا السحب يتجاوز الراتب الأساسي (${basicSalary})`,
+        message: `رصيد الخزنة غير كافٍ، الرصيد الحالي: ${currentTotal}، قيمة السحب المطلوبة: ${value}`,
         status: false
       });
     }
 
-    const result = await pool.query(
-      `INSERT INTO employee_withdrawals (employee_id, value, date, notes, branch_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [employee_id, value, date, notes || null, branchId]
-    );
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
 
-    return res.status(201).json({ data: result.rows[0], status: true, message: "تم تسجيل السحب بنجاح وسيُخصم من راتب الشهر" });
+      // Lock branch for update
+      await client.query("SELECT 1 FROM branches WHERE id = $1 FOR UPDATE", [branchId]);
+
+      // Insert employee withdrawal
+      const result = await client.query(
+        `INSERT INTO employee_withdrawals (employee_id, value, date, notes, branch_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        [employee_id, value, date + "T12:00:00", notes || null, branchId]
+      );
+
+      // Insert cash report transaction
+      const empNameRes = await client.query(
+        `SELECT u.full_name FROM employees e JOIN users u ON e.user_id = u.id WHERE e.id = $1`,
+        [employee_id]
+      );
+      const empName = empNameRes.rows[0]?.full_name || "موظف";
+      await client.query(
+        `INSERT INTO cash_report (type, value, total_value, branch_id) VALUES ($1, $2, $3, $4)`,
+        [`سحب موظف - ${empName}`, -value, currentTotal - value, branchId]
+      );
+
+      await client.query("COMMIT");
+      return res.status(201).json({ data: result.rows[0], status: true, message: "تم تسجيل السحب بنجاح وخصمه من الخزينة وسيُخصم من راتب الموظف" });
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
   } catch (error) {
     return res.status(500).json({ message: error.message, status: false });
   }

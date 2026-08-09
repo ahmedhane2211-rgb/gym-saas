@@ -281,7 +281,7 @@ const Member = () => {
       header: "member_details",
       render: (member) => (
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
+          <div className="w-12 print:hidden h-12 rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
             <img
               src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member?.user?.full_name}`}
               alt=""
@@ -295,9 +295,9 @@ const Member = () => {
             >
               {member?.user?.full_name}
             </p>
-            <p className="text-gray-500 dark:text-gray-600 font-bold">
+            {/* <p className="text-gray-500 print:hidden dark:text-gray-600 font-bold">
               ID: MB-{member?.id?.toString().padStart(3, "0")}
-            </p>
+            </p> */}
           </div>
         </div>
       ),

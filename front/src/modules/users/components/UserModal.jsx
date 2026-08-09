@@ -238,25 +238,15 @@ const UserModal = ({
             {initialData && (
               <div className="pb-4">
                 <CheckBox
-                  label="Active"
+                  label="active"
                   name="is_active"
                   register={register}
                   errors={errors}
+                  t={t}
                 />
               </div>
             )}
           </div>
-
-          {(watch("role") === "reception" || watch("role") === "coach" || watch("role") === "employee") && (
-            <Input
-              label="basic_salary"
-              type="number"
-              placeholder="0"
-              name="basic_salary"
-              register={register}
-              errors={errors}
-            />
-          )}
         </div>
 
         <div className="flex flex-col gap-4">

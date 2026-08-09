@@ -23,6 +23,7 @@ import {
 } from "../services/EmployeeSlice";
 import StatsCard from "../../shared/components/StatsCard";
 import SectionTitle from "../../shared/components/SectionTitle";
+import formatNum from "../../shared/utils/formatNum";
 
 const Employee = () => {
   const { t } = useContext(LanguageContext);
@@ -72,16 +73,16 @@ const Employee = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm(t("confirm_delete"))) {
-      try {
-        await deleteEmployee(id).unwrap();
-        toast.success(t("delete_success"));
-      } catch (err) {
-        toast.error(err.data?.message || "Delete failed");
-      }
-    }
-  };
+  // const handleDelete = async (id) => {
+  //   if (window.confirm(t("confirm_delete"))) {
+  //     try {
+  //       await deleteEmployee(id).unwrap();
+  //       toast.success(t("delete_success"));
+  //     } catch (err) {
+  //       toast.error(err.data?.message || "Delete failed");
+  //     }
+  //   }
+  // };
 
   const columns = [
     {
@@ -130,7 +131,7 @@ const Employee = () => {
       render: (employee) => (
         <div className="flex items-center gap-2 text-gray-900 dark:text-white text-[11px] font-black uppercase tracking-widest">
           <Banknote size={14} className="text-green-500" />
-          {employee.total_salary || 0}
+          {formatNum(employee.total_salary || 0)}
         </div>
       ),
     },
@@ -224,14 +225,14 @@ const Employee = () => {
         <button
           type="button"
           onClick={() => setActiveStatus("active")}
-          className={`py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${activeStatus === "active" ? "bg-orange text-black shadow-lg" : "text-gray-500 hover:text-gray-900 dark:hover:text-white"}`}
+          className={`py-3 rounded-xl font-black text-sm transition-all ${activeStatus === "active" ? "bg-orange text-black shadow-lg" : "text-gray-500 hover:text-gray-900 dark:hover:text-white"}`}
         >
           {t("active")}
         </button>
         <button
           type="button"
           onClick={() => setActiveStatus("inactive")}
-          className={`py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${activeStatus === "inactive" ? "bg-orange text-black shadow-lg" : "text-gray-500 hover:text-gray-900 dark:hover:text-white"}`}
+          className={`py-3 rounded-xl font-black text-sm transition-all ${activeStatus === "inactive" ? "bg-orange text-black shadow-lg" : "text-gray-500 hover:text-gray-900 dark:hover:text-white"}`}
         >
           {t("inactive")}
         </button>
@@ -263,7 +264,7 @@ const Employee = () => {
           setEditingEmployee(employee);
           setIsModalOpen(true);
         }}
-        onDelete={handleDelete}
+        // onDelete={handleDelete}
         onView={(employee) => {
           setViewingEmployee(employee);
           setIsViewModalOpen(true);

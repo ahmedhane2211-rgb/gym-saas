@@ -12,29 +12,24 @@ import DataTable from "../../shared/components/DataTable";
 import SearchFilter from "../../shared/components/SearchFilter";
 import useFilter from "../../shared/hooks/useFilter";
 import Button from "../../shared/components/Button";
-import { useGetEmployeesQuery } from "../services/EmployeeSlice";
 import { useGetProfileQuery } from "../../auth/services/AuthSlice";
 import {
-  useGetMonthlyBonusDeductionsQuery,
-  useAddBonusDeductionMutation,
-  useDeleteBonusDeductionMutation,
-} from "../services/EmployeeBonusDeductionSlice";
-import { useGetEmployeeWithdrawalsQuery } from "../../financial/services/EmployeeWithdrawalsSlice";
-import {
   usePaySalaryMutation,
-  useGetAllPaymentsQuery,
+  useGetMonthlyPaymentsQuery,
 } from "../services/SalaryPaymentSlice";
-import EmployeeBonusDeductionModal from "../components/EmployeeBonusDeductionModal";
 import SalariesDetailsModal from "../components/SalariesDetailsModal";
 import SectionTitle from "../../shared/components/SectionTitle";
+import formatNum from "../../shared/utils/formatNum";
 
 const Salaries = () => {
   const { t } = useContext(LanguageContext);
   const { data: profileResponse } = useGetProfileQuery();
-  const userProfile = profileResponse?.data;
+  const userProfile = profileResponse?.data?.user || profileResponse?.data;
 
   // User creation date
-  const createdDate = userProfile?.created_at
+  const createdDate = userProfile?.user?.created_at
+    ? new Date(userProfile.user.created_at)
+    : userProfile?.created_at
     ? new Date(userProfile.created_at)
     : new Date();
   const startYear = createdDate.getFullYear() || new Date().getFullYear();
@@ -46,20 +41,17 @@ const Salaries = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
-  // If selectedYear matches startYear, ensure selectedMonth doesn't fall below startMonth
   useEffect(() => {
     if (selectedYear === startYear && selectedMonth < startMonth) {
       setSelectedMonth(startMonth);
     }
   }, [selectedYear, startYear, startMonth, selectedMonth]);
 
-  // List of years from user creation year to current year
   const years = [];
   for (let y = startYear; y <= currentYear; y++) {
     years.push(y);
   }
 
-  // List of months (1-12), filtered to start from startMonth if selectedYear is startYear
   const months = Array.from({ length: 12 }, (_, i) => i + 1).filter((m) => {
     if (selectedYear === startYear) {
       return m >= startMonth;
@@ -67,64 +59,33 @@ const Salaries = () => {
     return true;
   });
 
-  const { data: empResponse, isLoading: empLoading } = useGetEmployeesQuery();
-  const { data: bonusResponse, isLoading: bonusLoading } =
-    useGetMonthlyBonusDeductionsQuery({
-      month: selectedMonth,
-      year: selectedYear,
-    });
-  const { data: withdrawalsResponse, isLoading: withdrawalsLoading } =
-    useGetEmployeeWithdrawalsQuery();
-  const { data: paymentsResponse, isLoading: paymentsLoading } =
-    useGetAllPaymentsQuery();
+  const { data: monthlyResponse, isLoading } = useGetMonthlyPaymentsQuery({
+    month: selectedMonth,
+    year: selectedYear,
+  });
 
-  const [addBonusDeduction, { isLoading: isAddingBonus }] =
-    useAddBonusDeductionMutation();
-  const [paySalary, { isLoading: isPaying }] = usePaySalaryMutation();
+  const [paySalary] = usePaySalaryMutation();
 
-  // const [isBonusModalOpen, setIsBonusModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const employees = Array.isArray(empResponse)
-    ? empResponse
-    : empResponse?.data || [];
-  const bonuses = Array.isArray(bonusResponse)
-    ? bonusResponse
-    : bonusResponse?.data || [];
-  const withdrawals = Array.isArray(withdrawalsResponse)
-    ? withdrawalsResponse
-    : withdrawalsResponse?.data || [];
-  const payments = Array.isArray(paymentsResponse)
-    ? paymentsResponse
-    : paymentsResponse?.data || [];
+  const monthlyData = Array.isArray(monthlyResponse)
+    ? monthlyResponse
+    : monthlyResponse?.data || [];
 
-  const filteredEmployees = useFilter(employees, searchTerm, [
-    "name",
-    "job_number",
-  ]);
+  const filteredData = useFilter(
+    monthlyData.map((row) => ({ ...row, _searchName: row.employees?.name || "", _searchJob: row.employees?.job_number || "" })),
+    searchTerm,
+    ["_searchName", "_searchJob"]
+  );
 
-  const handleAddBonusDeduction = async (data) => {
-    try {
-      await addBonusDeduction(data).unwrap();
-      toast.success(t("add_success"));
-      setIsBonusModalOpen(false);
-    } catch (err) {
-      toast.error(err.data?.message || "Failed");
-    }
-  };
-
-  const handlePaySalary = async (employee) => {
-    if (
-      window.confirm(
-        t("confirm_pay_salary", { name: employee.name }) ||
-          `هل تريد دفع راتب ${employee.name} للشهر الحالي؟`,
-      )
-    ) {
+  const handlePaySalary = async (row) => {
+    const empName = row.employees?.name || "";
+    if (window.confirm(`هل تريد دفع راتب ${empName} للشهر الحالي؟`)) {
       try {
         await paySalary({
-          employee_id: employee.id,
+          employee_id: row.employees?.id,
           month: selectedMonth,
           year: selectedYear,
         }).unwrap();
@@ -135,75 +96,41 @@ const Salaries = () => {
     }
   };
 
-  const calculateNetSalary = (employee) => {
-    const empBonuses = bonuses.filter((b) => b.employee_id === employee.id);
-    const empWithdrawals = withdrawals.filter(
-      (w) => w.employee_id === employee.id,
-    );
-
-    const totalBonuses = empBonuses
-      .filter((b) => b.type === "bonus")
-      .reduce((acc, b) => acc + Number(b.value), 0);
-    const totalDeductions = empBonuses
-      .filter((b) => b.type === "deduction")
-      .reduce((acc, b) => acc + Number(b.value), 0);
-    const totalWithdrawals = empWithdrawals.reduce(
-      (acc, w) => acc + Number(w.value),
-      0,
-    );
-
-    return (
-      Number(employee.basic_salary) +
-      totalBonuses -
-      totalDeductions -
-      totalWithdrawals
-    );
-  };
-
-  const isPaidThisMonth = (employeeId) => {
-    return payments.some(
-      (p) =>
-        p.employee_id === employeeId &&
-        Number(p.month) === selectedMonth &&
-        Number(p.year) === selectedYear,
-    );
-  };
-
   const columns = [
     {
       header: "employee_details",
-      render: (employee) => (
+      render: (row) => (
         <div>
-          <p className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-tight ">
-            {employee.name}
+          <p className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-tight">
+            {row.employees?.name}
           </p>
           <p className="text-gray-500 dark:text-gray-600 text-[10px] font-bold uppercase tracking-widest">
-            {employee.job_number || `EMP-${employee.id}`}
+            {row.employees?.job_number || `EMP-${row.employees?.id}`}
           </p>
         </div>
       ),
     },
     {
       header: "basic_salary",
-      render: (employee) => (
+      render: (row) => (
         <span className="text-gray-900 dark:text-white text-xs font-bold">
-          {Number(employee.basic_salary).toLocaleString()}
+          {formatNum(Number(row.basic_salary || 0))}
         </span>
       ),
     },
     {
       header: "net_salary",
-      render: (employee) => (
-        <div className="flex items-center gap-2 text-gray-900 dark:text-white text-[11px] font-black uppercase tracking-widest">
+      render: (row) => (
+        <div className="flex items-center gap-2 text-gray-900 dark:text-white font-black">
           <Banknote size={14} className="text-green-500" />
-          {calculateNetSalary(employee).toLocaleString()}
+          {formatNum(Number(row.net_salary || 0))}
         </div>
       ),
     },
     {
       header: "status",
-      render: (employee) => {
-        const paid = isPaidThisMonth(employee.id);
+      render: (row) => {
+        const paid = row.payment_status === "تم القبض";
         return (
           <span
             className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${paid ? "bg-green-500/10 text-green-500" : "bg-yellow-500/10 text-yellow-500"}`}
@@ -215,13 +142,18 @@ const Salaries = () => {
     },
     {
       header: "actions",
-      render: (employee) => {
-        const paid = isPaidThisMonth(employee.id);
+      render: (row) => {
+        const paid = row.payment_status === "تم القبض";
         return (
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
-                setSelectedEmployee(employee);
+                setSelectedEmployee({
+                  ...row.employees,
+                  paymentRecord: paid ? row : null,
+                  _withdrawals: row.withdrawals?.data || [],
+                  _bonuses: row.rewards_discount_wastes?.rewards_discount || [],
+                });
                 setIsDetailsModalOpen(true);
               }}
               className="p-2 text-gray-400 hover:text-blue transition-colors"
@@ -231,7 +163,7 @@ const Salaries = () => {
             </button>
             {!paid && (
               <button
-                onClick={() => handlePaySalary(employee)}
+                onClick={() => handlePaySalary(row)}
                 className="p-2 text-gray-400 hover:text-green-500 transition-colors"
                 title={t("pay_salary")}
               >
@@ -247,7 +179,11 @@ const Salaries = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <SectionTitle title="salaries" description="manage_salaries_desc" t={t} />
+        <SectionTitle
+          title="salaries"
+          description="manage_salaries_desc"
+          t={t}
+        />
       </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -293,10 +229,8 @@ const Salaries = () => {
 
       <DataTable
         columns={columns}
-        data={filteredEmployees}
-        isLoading={
-          empLoading || bonusLoading || withdrawalsLoading || paymentsLoading
-        }
+        data={filteredData}
+        isLoading={isLoading}
         actions={false}
         title={t("salaries")}
       />

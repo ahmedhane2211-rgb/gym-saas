@@ -39,7 +39,7 @@ const MemberModal = ({
   const memberslist = usersList.filter((user) => user.role === "member");
 
   const { data: plansData } = useGetPlansQuery();
-  const plans = Array.isArray(plansData) ? plansData : plansData?.data || [];
+  const plans = Array.isArray(plansData) ? plansData.filter((plan) => plan.is_active === true) : plansData?.data.filter((plan) => plan.is_active === true) || [];
 
   const selectedPlanId = watch("plansId");
   const startDate = watch("startDate");

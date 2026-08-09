@@ -32,6 +32,7 @@ import {
 import { LanguageContext } from "../context/LanguageContext";
 import deleteToken from "../utils/deleteToken";
 import { useGetSettingsQuery } from "../../settings/services/SettingsSlice";
+import { useGetProfileQuery } from "../../auth/services/AuthSlice";
 
 const Sidebar = ({
   isCollapsed,
@@ -41,6 +42,61 @@ const Sidebar = ({
 }) => {
   const { t } = useContext(LanguageContext);
   const { data: settingsData } = useGetSettingsQuery();
+  const { data: profileResponse } = useGetProfileQuery();
+  const userRole =
+    profileResponse?.data?.user?.role ||
+    profileResponse?.data?.role ||
+    profileResponse?.role ||
+    "admin";
+
+  const isAllowed = (path) => {
+    if (
+      !userRole ||
+      userRole === "admin" ||
+      userRole === "owner" ||
+      userRole === "superadmin"
+    ) {
+      return true;
+    }
+    if (userRole === "reception") {
+      const restrictedForReception = [
+        "/dashboard",
+        "/coaches",
+        "/branches",
+        "/employee-withdrawals",
+        "/cash-day",
+        "/employees",
+        "/salaries",
+        "/bonuses-deductions",
+        "/leaves",
+        "/leaves-permissions",
+        "/pumping-money",
+        "/owner-withdrawals",
+        "/settings",
+      ];
+      return !restrictedForReception.includes(path);
+    }
+    if (userRole === "coach") {
+      const allowedForCoach = [
+        "/dashboard",
+        "/members",
+        "/coaches",
+        "/attendance",
+      ];
+      return allowedForCoach.includes(path);
+    }
+    if (userRole === "employee") {
+      const allowedForEmployee = [
+        "/dashboard",
+        "/attendance",
+        "/leaves",
+        "/leaves-permissions",
+      ];
+      return allowedForEmployee.includes(path);
+    }
+    return true;
+  };
+
   const companyName = settingsData?.data?.company_name || "GYM";
   const navigate = useNavigate();
   const [activeModule, setActiveModule] = useState("people");
@@ -138,214 +194,292 @@ const Sidebar = ({
       </div>
 
       <nav className="flex-grow overflow-y-auto custom-scrollbar pb-8 px-4 space-y-2">
-        <NavItem
-          to="/dashboard"
-          icon={<LayoutDashboard />}
-          name={t("dashboard")}
-        />
-
-        <div className="pt-4">
-          <ModuleHeader
-            id="people"
-            name={t("community")}
-            icon={<Users />}
-            isOpen={activeModule === "people"}
+        {isAllowed("/dashboard") && (
+          <NavItem
+            to="/dashboard"
+            icon={<LayoutDashboard />}
+            name={t("dashboard")}
           />
-          {activeModule === "people" && !isCollapsed && (
-            <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
-              <NavItem
-                to="/users"
-                icon={<ShieldCheck />}
-                name={t("users")}
-                subItem
-              />
-              <NavItem
-                to="/members"
-                icon={<Dumbbell />}
-                name={t("members")}
-                subItem
-              />
-              <NavItem
-                to="/coaches"
-                icon={<UserCheck />}
-                name={t("coaches")}
-                subItem
-              />
-            </div>
-          )}
-        </div>
+        )}
 
-        <div>
-          <ModuleHeader
-            id="operations"
-            name={t("operations")}
-            icon={<Settings />}
-            isOpen={activeModule === "operations"}
-          />
-          {activeModule === "operations" && !isCollapsed && (
-            <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
-              <NavItem
-                to="/plans"
-                icon={<ScrollText />}
-                name={t("plans")}
-                subItem
-              />
-              <NavItem
-                to="/features"
-                icon={<Sparkles />}
-                name={t("features")}
-                subItem
-              />
-              <NavItem
-                to="/freeze"
-                icon={<ScrollText />}
-                name={t("freezes") || "التجميدات"}
-                subItem
-              />
-              <NavItem
-                to="/attendance"
-                icon={<ClipboardCheck />}
-                name={t("attendance")}
-                subItem
-              />
-              <NavItem
-                to="/branches"
-                icon={<MapPin />}
-                name={t("branches")}
-                subItem
-              />
-            </div>
-          )}
-        </div>
+        {["/users", "/members", "/coaches"].some((path) => isAllowed(path)) && (
+          <div className="pt-4">
+            <ModuleHeader
+              id="people"
+              name={t("community")}
+              icon={<Users />}
+              isOpen={activeModule === "people"}
+            />
+            {activeModule === "people" && !isCollapsed && (
+              <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
+                {isAllowed("/users") && (
+                  <NavItem
+                    to="/users"
+                    icon={<ShieldCheck />}
+                    name={t("users")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/members") && (
+                  <NavItem
+                    to="/members"
+                    icon={<Dumbbell />}
+                    name={t("members")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/coaches") && (
+                  <NavItem
+                    to="/coaches"
+                    icon={<UserCheck />}
+                    name={t("coaches")}
+                    subItem
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
-        <div>
-          <ModuleHeader
-            id="hr"
-            name={t("hr")}
-            icon={<BriefcaseBusiness />}
-            isOpen={activeModule === "hr"}
-          />
-          {activeModule === "hr" && !isCollapsed && (
-            <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
-              <NavItem
-                to="/employees"
-                icon={<UserCheck />}
-                name={t("employees")}
-                subItem
-              />
-              <NavItem
-                to="/salaries"
-                icon={<Banknote />}
-                name={t("salaries") || "الرواتب"}
-                subItem
-              />
-              <NavItem
-                to="/bonuses-deductions"
-                icon={<TrendingUp />}
-                name={t("bonuses_deductions") || "المكافآت والخصومات"}
-                subItem
-              />
-              <NavItem
-                to="/leaves"
-                icon={<Calendar />}
-                name={t("leaves") || "الاجازات"}
-                subItem
-              />
-              <NavItem
-                to="/leaves-permissions"
-                icon={<FileText />}
-                name={t("leaves_permissions")}
-                subItem
-              />
-            </div>
-          )}
-        </div>
+        {["/plans", "/features", "/freeze", "/attendance", "/branches"].some(
+          (path) => isAllowed(path),
+        ) && (
+          <div>
+            <ModuleHeader
+              id="operations"
+              name={t("operations")}
+              icon={<Settings />}
+              isOpen={activeModule === "operations"}
+            />
+            {activeModule === "operations" && !isCollapsed && (
+              <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
+                {isAllowed("/plans") && (
+                  <NavItem
+                    to="/plans"
+                    icon={<ScrollText />}
+                    name={t("plans")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/features") && (
+                  <NavItem
+                    to="/features"
+                    icon={<Sparkles />}
+                    name={t("features")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/freeze") && (
+                  <NavItem
+                    to="/freeze"
+                    icon={<ScrollText />}
+                    name={t("freezes") || "التجميدات"}
+                    subItem
+                  />
+                )}
+                {isAllowed("/attendance") && (
+                  <NavItem
+                    to="/attendance"
+                    icon={<ClipboardCheck />}
+                    name={t("attendance")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/branches") && (
+                  <NavItem
+                    to="/branches"
+                    icon={<MapPin />}
+                    name={t("branches")}
+                    subItem
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
-        <div>
-          <ModuleHeader
-            id="financials"
-            name={t("financials")}
-            icon={<Banknote />}
-            isOpen={activeModule === "financials"}
-          />
-          {activeModule === "financials" && !isCollapsed && (
-            <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
-              <NavItem
-                to="/expenses"
-                icon={<ArrowUpCircle />}
-                name={t("expenses")}
-                subItem
-              />
-              <NavItem
-                to="/vouchers"
-                icon={<ArrowUpCircle />}
-                name={t("vouchers")}
-                subItem
-              />
-              <NavItem
-                to="/pumping-money"
-                icon={<TrendingUp />}
-                name={t("pumping_money")}
-                subItem
-              />
-              <NavItem
-                to="/owner-withdrawals"
-                icon={<ArrowDownCircle />}
-                name={t("owner_withdrawals")}
-                subItem
-              />
-              <NavItem
-                to="/employee-withdrawals"
-                icon={<Banknote />}
-                name={t("employee_withdrawals")}
-                subItem
-              />
-              <NavItem
-                to="/cash-day"
-                icon={<Wallet />}
-                name={t("cash_day")}
-                subItem
-              />
-            </div>
-          )}
-        </div>
+        {[
+          "/employees",
+          "/bonuses-deductions",
+          "/leaves",
+          "/leaves-permissions",
+          "/salaries",
+        ].some((path) => isAllowed(path)) && (
+          <div>
+            <ModuleHeader
+              id="hr"
+              name={t("hr")}
+              icon={<BriefcaseBusiness />}
+              isOpen={activeModule === "hr"}
+            />
+            {activeModule === "hr" && !isCollapsed && (
+              <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
+                {isAllowed("/employees") && (
+                  <NavItem
+                    to="/employees"
+                    icon={<UserCheck />}
+                    name={t("employees")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/bonuses-deductions") && (
+                  <NavItem
+                  to="/bonuses-deductions"
+                  icon={<TrendingUp />}
+                    name={t("bonuses_deductions") || "المكافآت والخصومات"}
+                    subItem
+                  />
+                )}
+                {isAllowed("/leaves") && (
+                  <NavItem
+                    to="/leaves"
+                    icon={<Calendar />}
+                    name={t("leaves") || "الاجازات"}
+                    subItem
+                  />
+                )}
+                {isAllowed("/leaves-permissions") && (
+                  <NavItem
+                    to="/leaves-permissions"
+                    icon={<FileText />}
+                    name={t("leaves_permissions")}
+                    subItem
+                    />
+                  )}
+                  {isAllowed("/salaries") && (
+                    <NavItem
+                      to="/salaries"
+                      icon={<Banknote />}
+                      name={t("salaries") || "الرواتب"}
+                      subItem
+                    />
+                  )}
+              </div>
+            )}
+          </div>
+        )}
 
-        <div>
-          <ModuleHeader
-            id="inventory"
-            name={t("inventory")}
-            icon={<Banknote />}
-            isOpen={activeModule === "inventory"}
-          />
-          {activeModule === "inventory" && !isCollapsed && (
-            <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
-              <NavItem
-                to="/products"
-                icon={<ShoppingBag />}
-                name={t("products")}
-                subItem
-              />
-              <NavItem
-                to="/sales-invoice"
-                icon={<FileText />}
-                name={t("sales_invoice")}
-                subItem
-              />
-              <NavItem
-                to="/sales-report"
-                icon={<TrendingUp />}
-                name={t("sales_report")}
-                subItem
-              />
-              <NavItem
-                to="/sales-return-invoice"
-                icon={<FileClock />}
-                name={t("return_invoice")}
-                subItem
-              />
-            </div>
-          )}
-        </div>
+        {[
+          "/expenses",
+          "/vouchers",
+          "/pumping-money",
+          "/owner-withdrawals",
+          "/employee-withdrawals",
+          "/cash-day",
+        ].some((path) => isAllowed(path)) && (
+          <div>
+            <ModuleHeader
+              id="financials"
+              name={t("financials")}
+              icon={<Banknote />}
+              isOpen={activeModule === "financials"}
+            />
+            {activeModule === "financials" && !isCollapsed && (
+              <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
+                {isAllowed("/expenses") && (
+                  <NavItem
+                    to="/expenses"
+                    icon={<ArrowUpCircle />}
+                    name={t("expenses")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/vouchers") && (
+                  <NavItem
+                    to="/vouchers"
+                    icon={<ArrowUpCircle />}
+                    name={t("vouchers")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/pumping-money") && (
+                  <NavItem
+                    to="/pumping-money"
+                    icon={<TrendingUp />}
+                    name={t("pumping_money")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/owner-withdrawals") && (
+                  <NavItem
+                    to="/owner-withdrawals"
+                    icon={<ArrowDownCircle />}
+                    name={t("owner_withdrawals")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/employee-withdrawals") && (
+                  <NavItem
+                    to="/employee-withdrawals"
+                    icon={<Banknote />}
+                    name={t("employee_withdrawals")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/cash-day") && (
+                  <NavItem
+                    to="/cash-day"
+                    icon={<Wallet />}
+                    name={t("cash_day")}
+                    subItem
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {[
+          "/products",
+          "/sales-invoice",
+          "/sales-report",
+          "/sales-return-invoice",
+        ].some((path) => isAllowed(path)) && (
+          <div>
+            <ModuleHeader
+              id="inventory"
+              name={t("inventory")}
+              icon={<Banknote />}
+              isOpen={activeModule === "inventory"}
+            />
+            {activeModule === "inventory" && !isCollapsed && (
+              <div className="animate-in slide-in-from-top-2 fade-in duration-300 space-y-1">
+                {isAllowed("/products") && (
+                  <NavItem
+                    to="/products"
+                    icon={<ShoppingBag />}
+                    name={t("products")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/sales-invoice") && (
+                  <NavItem
+                    to="/sales-invoice"
+                    icon={<FileText />}
+                    name={t("sales_invoice")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/sales-report") && (
+                  <NavItem
+                    to="/sales-report"
+                    icon={<TrendingUp />}
+                    name={t("sales_report")}
+                    subItem
+                  />
+                )}
+                {isAllowed("/sales-return-invoice") && (
+                  <NavItem
+                    to="/sales-return-invoice"
+                    icon={<FileClock />}
+                    name={t("return_invoice")}
+                    subItem
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </nav>
 
       <div className="p-6 space-y-6">
@@ -358,16 +492,18 @@ const Sidebar = ({
           >
             <LogOut /> {!isCollapsed && t("logout")}
           </button>
-          <button
-            onClick={() => {
-              navigate("/settings");
-              closeMobile();
-            }}
-            className="flex items-center gap-3 cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white text-[12px] font-bold tracking-widest transition-colors py-2"
-          >
-            <Settings size={18} />
-            {!isCollapsed && <span>{t("settings")}</span>}
-          </button>
+          {isAllowed("/settings") && (
+            <button
+              onClick={() => {
+                navigate("/settings");
+                closeMobile();
+              }}
+              className="flex items-center gap-3 cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white text-[12px] font-bold tracking-widest transition-colors py-2"
+            >
+              <Settings size={18} />
+              {!isCollapsed && <span>{t("settings")}</span>}
+            </button>
+          )}
           <NavLink
             to="#"
             className="flex items-center gap-3 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white text-[12px] font-bold tracking-widest transition-colors py-2"

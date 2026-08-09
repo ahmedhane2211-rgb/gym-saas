@@ -108,7 +108,7 @@ const Coach = () => {
       header: "coach_details",
       render: (coach) => (
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
+          <div className="w-12 print:hidden h-12 rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
             <img
               src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${coach.user?.full_name}`}
               alt=""
@@ -118,9 +118,6 @@ const Coach = () => {
           <div>
             <p className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-tight ">
               {coach.user?.full_name}
-            </p>
-            <p className="text-gray-500 dark:text-gray-600 text-[10px] font-bold uppercase tracking-widest">
-              ID: CO-2026-{coach.id?.toString().padStart(3, "0")}
             </p>
           </div>
         </div>

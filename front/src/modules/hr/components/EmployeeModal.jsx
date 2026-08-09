@@ -6,6 +6,7 @@ import Select from "../../shared/components/Select";
 import AppModal from "../../shared/components/AppModal";
 import { LanguageContext } from "../../shared/context/LanguageContext";
 import { useGetUsersQuery } from "../../users/userSlice";
+import CheckBox from "../../shared/components/CheckBox";
 
 const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, title }) => {
     const { register, handleSubmit, reset, watch, setValue, control, formState: { errors } } = useForm();
@@ -13,7 +14,7 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
     const [activeTab, setActiveTab] = useState("personal");
     const { data: usersResponse } = useGetUsersQuery();
     const users = Array.isArray(usersResponse) ? usersResponse : (usersResponse?.data || usersResponse?.users || []);
-    const employeeUsers = users.filter((user) => ["employee", "reception", "coach"].includes(String(user.role || "").toLowerCase()));
+    const employeeUsers = users.filter((user) => ["employee", "reception"].includes(String(user.role || "").toLowerCase()));
     const salaryValues = useWatch({
         control,
         name: ["basic_salary", "additional_salary", "allowances", "health_insurance", "social_insurance"]
@@ -23,18 +24,18 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
 
     useEffect(() => {
         reset({
-            name: initialData?.name || initialData?.user?.full_name || initialData?.user?.name || "",
+            // name: initialData?.name || initialData?.user?.full_name || initialData?.user?.name || "",
             user_id: initialData?.user_id || initialData?.userId || initialData?.user?.id || "",
             job_number: initialData?.job_number || "",
-            email: initialData?.email || initialData?.user?.email || "",
-            phone: initialData?.phone || initialData?.user?.phone || "",
-            plain_password: initialData?.plain_password || "",
-            gender: initialData?.gender || "",
+            // email: initialData?.email || initialData?.user?.email || "",
+            // phone: initialData?.phone || initialData?.user?.phone || "",
+            // plain_password: initialData?.plain_password || "",
+            // gender: initialData?.gender || "",
             national_id: initialData?.national_id || "",
             nationality: initialData?.nationality || "",
             marital_status: initialData?.marital_status || "",
             qualification: initialData?.qualification || "",
-            address: initialData?.address || "",
+            // address: initialData?.address || "",
             date_of_joining: initialData?.date_of_joining ? String(initialData.date_of_joining).slice(0, 10) : new Date().toISOString().split('T')[0],
             basic_salary: initialData?.basic_salary || "",
             additional_salary: initialData?.additional_salary || "",
@@ -45,6 +46,7 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
             pending_debt: initialData?.pending_debt || "",
             total_salary: initialData?.total_salary || "",
             description: initialData?.description || "",
+            active: initialData?.active || "",
         });
         setActiveTab("personal");
     }, [initialData, reset, isOpen]);
@@ -99,6 +101,9 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
 
                     {activeTab === "personal" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+                        <div className="col-span-2">
+                            <CheckBox t={t} label="active" name="active" register={register} />
+                        </div>
                         <Select
                             label="select_user"
                             name="user_id"
@@ -114,23 +119,7 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
                                 }))
                             ]}
                         />
-                        <Input label="name" name="name" register={register} errors={errors} />
-                        <Input label="email" type="email" name="email" register={register} errors={errors} />
-                        <Input label="phone" name="phone" register={register} errors={errors} />
-                        <Input label="password" type="password" name="plain_password" register={register} errors={errors} />
-                        <Select
-                            label="gender"
-                            name="gender"
-                            register={register}
-                            setValue={setValue}
-                            watch={watch}
-                            errors={errors}
-                            options={[
-                                { value: "", label: t("select_gender") },
-                                { value: "male", label: t("male") },
-                                { value: "female", label: t("female") }
-                            ]}
-                        />
+                        {/* <Input label="password" type="password" name="plain_password" register={register} errors={errors} /> */}
                         <Input label="national_id" name="national_id" register={register} errors={errors} />
                         <Input label="nationality" name="nationality" register={register} errors={errors} />
                         <Select
@@ -148,7 +137,7 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
                                 { value: "single", label: t("single") }
                             ]}
                         />
-                        <Input label="address" name="address" register={register} errors={errors} />
+                        {/* <Input label="address" name="address" register={register} errors={errors} /> */}
                     </div>
                     )}
 
