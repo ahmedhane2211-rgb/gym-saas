@@ -317,7 +317,7 @@ const DataTable = ({
                                   }}
                                   className="p-2 dark:text-white hover:text-orange transition-colors"
                                   title={t("options")}
-                                >
+                                > 
                                   <MoreVertical size={16} />
                                 </button>
                                 {activeDropdownRow === item.id && (
