@@ -2,6 +2,10 @@ import bcrypt from "bcryptjs";
 import { pool } from "../models/db.js";
 import { generateToken } from "../utils/generateToken.js";
 import generateHashedPassword from "../utils/generateHashedPassword.js";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -133,4 +137,108 @@ const getUser = async (req, res) => {
   }
 };
 
-export { login, register, getUser };
+const googleLoginOrRegister = async (req, res) => {
+  const { credential } = req.body;
+  if (!credential) {
+    return res.status(400).json({
+      message: "الرجاء توفير معرف جوجل",
+      status: false,
+    });
+  }
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const email = payload['email'];
+    const name = payload['name'];
+    const picture = payload['picture'];
+
+    if (!email) {
+      return res.status(400).json({
+        message: "لم يتم العثور على البريد الإلكتروني في حساب جوجل الخاص بك",
+        status: false,
+      });
+    }
+
+    const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (userResult.rowCount > 0) {
+      const dbUser = userResult.rows[0];
+      if (dbUser.role !== 'admin' && dbUser.role !== 'reception' && dbUser.role !== 'owner') {
+        return res.status(401).json({
+          message: "ليس لديك صلاحية الدخول",
+          status: false,
+        });
+      }
+
+      const { password: _, ...safeUser } = dbUser;
+
+      const token = await generateToken({
+        id: safeUser.id,
+        role: safeUser.role,
+        gymId: safeUser.gym_id,
+        branchId: safeUser.branch_id,
+        user: safeUser,
+      });
+
+      return res.status(200).json({
+        message: "تم تسجيل الدخول بنجاح",
+        status: true,
+        data: safeUser,
+        token,
+      });
+    }
+
+    await pool.query("BEGIN");
+    
+    const createGym = await pool.query(
+      "INSERT INTO gym (name, phone, is_active) VALUES ($1, $2, $3) RETURNING id",
+      ["Default Gym", "0000000000", true]
+    );
+    const gymId = createGym.rows[0].id;
+    
+    const createBranch = await pool.query(
+      "INSERT INTO branches (name, phone, is_active, address, gym_id) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+      ["Default Branch", "0000000000", true, "default", gymId]
+    );
+    const branchId = createBranch.rows[0].id;
+
+    const newUserResult = await pool.query(
+      "INSERT INTO users (full_name, email, password, role, gym_id, phone, address, branch_id, date_of_birthday, gender, photo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *",
+      [name, email, null, 'admin', gymId, '0000000000', 'egypt', branchId, '2005-04-12', 'male', picture]
+    );
+
+    if (newUserResult.rows.length === 0) {
+      await pool.query("ROLLBACK");
+      return res.status(500).json({ message: "فشل عملية التسجيل عبر جوجل", status: false });
+    }
+
+    const newUser = newUserResult.rows[0];
+    await pool.query("COMMIT");
+
+    const { password: _, ...safeUser } = newUser;
+    const token = await generateToken({
+      id: safeUser.id,
+      role: safeUser.role,
+      gymId: safeUser.gym_id,
+      branchId: safeUser.branch_id,
+      user: safeUser,
+    });
+
+    return res.status(201).json({
+      message: "تم تسجيل الدخول وإنشاء الحساب بنجاح",
+      status: true,
+      data: safeUser,
+      token,
+    });
+  } catch (error) {
+    try {
+      await pool.query("ROLLBACK");
+    } catch (_) {}
+    return res.status(400).json({ message: error.message || "فشل التحقق من جوجل", status: false });
+  }
+};
+
+export { login, register, getUser, googleLoginOrRegister };

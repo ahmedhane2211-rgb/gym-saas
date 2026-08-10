@@ -31,6 +31,14 @@ export const authApi = createApi({
       }),
       invalidatesTags: ['user']
     }),
+    googleLogin: build.mutation({
+      query: (data) => ({
+        url: `google`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['user']
+    }),
 
     getProfile: build.query({
       query: () => ({
@@ -44,4 +52,4 @@ export const authApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useRegisterMutation,useLoginMutation,useGetProfileQuery } = authApi
+export const { useRegisterMutation,useLoginMutation,useGoogleLoginMutation,useGetProfileQuery } = authApi

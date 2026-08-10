@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import authBg from '../../../assets/auth-bg.png';
 import { useForm } from 'react-hook-form';
 import Input from '../../shared/components/Input';
 import Button from '../../shared/components/Button';
-import { useLoginMutation } from '../services/AuthSlice';
+import { useLoginMutation, useGoogleLoginMutation } from '../services/AuthSlice';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { LanguageContext } from '../../shared/context/LanguageContext';
@@ -16,6 +16,53 @@ const Login = () => {
   const navigate = useNavigate();
     const {register,handleSubmit,formState:{errors}} = useForm();
     const [login, { isLoading }] = useLoginMutation();
+    const [googleLogin, { isLoading: isGoogleLoading }] = useGoogleLoginMutation();
+
+    const handleGoogleResponse = async (response) => {
+        try {
+            const res = await googleLogin({ credential: response.credential }).unwrap();
+            toast.success(res.message);
+            Cookies.set("token", res.token);
+            
+            if (res.data?.role === 'owner') {
+                navigate("/owner/dashboard");
+            } else {
+                navigate("/dashboard");
+            }
+        } catch (error) {
+            toast.error(error.data?.message || "Google Login failed");
+        }
+    };
+
+    useEffect(() => {
+        const initGoogle = () => {
+            if (window.google) {
+                window.google.accounts.id.initialize({
+                    client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+                    callback: handleGoogleResponse,
+                });
+                window.google.accounts.id.renderButton(
+                    document.getElementById("googleButton"),
+                    {
+                        theme: "filled_black",
+                        size: "large",
+                        text: "continue_with",
+                        width: 382,
+                    }
+                );
+            }
+        };
+
+        const timer = setInterval(() => {
+            if (window.google) {
+                initGoogle();
+                clearInterval(timer);
+            }
+        }, 200);
+
+        return () => clearInterval(timer);
+    }, []);
+
     const onSubmit = async (data) => {
         try {
             const res = await login(data).unwrap();
@@ -106,6 +153,16 @@ const Login = () => {
           />
 
         </form>
+
+        <div className="relative flex py-5 items-center">
+          <div className="flex-grow border-t border-white/10"></div>
+          <span className="flex-shrink mx-4 text-gray-500 text-xs font-bold uppercase tracking-widest">or</span>
+          <div className="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <div className="flex justify-center w-full">
+          <div id="googleButton" className="w-full flex justify-center"></div>
+        </div>
 
         <div className="mt-8 text-center sm:hidden">
           <p className="text-gray-600 text-xs">
