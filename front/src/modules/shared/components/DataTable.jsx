@@ -208,7 +208,7 @@ const DataTable = ({
               <tr className="border-b border-gray-200 dark:border-white/5 bg-gray-100/50 dark:bg-white/[0.02]">
                 <th
                   style={{ fontSize: "var(--font-size-base)" }}
-                  className={`px-8 py-6 font-bold text-gray-500 dark:text-gray-light/60  tracking-[0.2em]`}
+                  className={`px-8 py-6 font-bold text-gray-500 dark:text-white  tracking-[0.2em]`}
                 >
                   {t("serial")}
                 </th>
@@ -216,7 +216,7 @@ const DataTable = ({
                   <th
                     style={{ fontSize: "var(--font-size-base)" }}
                     key={idx}
-                    className={`px-8 font-bold py-6 text-gray-500 dark:text-gray-light/60 tracking-[0.2em] ${col.align === "right" ? "text-right" : ""}`}
+                    className={`px-8 font-bold py-6 text-gray-500 dark:text-white tracking-[0.2em] ${col.align === "right" ? "text-right" : ""}`}
                   >
                     {t(col.header)}
                   </th>
@@ -224,7 +224,7 @@ const DataTable = ({
                 {actions && (
                   <th
                     style={{ fontSize: "var(--font-size-base)" }}
-                    className="px-8 text-center py-6 font-black text-gray-500 dark:text-gray-light/60 tracking-[0.2em] no-print"
+                    className="px-8 text-center py-6 font-black text-gray-500 dark:text-white tracking-[0.2em] no-print"
                   >
                     {t("actions")}
                   </th>
@@ -250,7 +250,7 @@ const DataTable = ({
                     >
                       <td
                         style={{ fontSize: "var(--font-size-sm)" }}
-                        className={`px-8 py-6 font-black text-gray-500 dark:text-gray-light/60  tracking-[0.2em]`}
+                        className={`px-8 py-6 font-black text-gray-500 dark:text-white  tracking-[0.2em]`}
                       >
                         {rowIdx + 1}
                       </td>
@@ -262,7 +262,7 @@ const DataTable = ({
                           {col.render ? (
                             col.render(item)
                           ) : (
-                            <span style={{ fontSize: "var(--font-size-sm)" }} className="text-gray-900 dark:text-gray-100 font-normal">
+                            <span style={{ fontSize: "var(--font-size-sm)" }} className="text-gray-900 dark:text-white font-normal">
                               {item[col.key]}
                             </span>
                           )}
@@ -274,7 +274,7 @@ const DataTable = ({
                             {onCheckIn && (
                               <button
                                 onClick={() => onCheckIn(item)}
-                                className="p-2 text-gray-400 hover:text-green-500 transition-colors"
+                                className="p-2 dark:text-white hover:text-green-500 transition-colors"
                                 title={t("check_in")}
                               >
                                 <LogIn size={16} />
@@ -283,7 +283,7 @@ const DataTable = ({
                             {onView && (
                               <button
                                 onClick={() => onView(item)}
-                                className="p-2 text-gray-400 hover:text-blue transition-colors"
+                                className="p-2 dark:text-white hover:text-blue transition-colors"
                               >
                                 <Eye size={16} />
                               </button>
@@ -291,7 +291,7 @@ const DataTable = ({
                             {onEdit && (
                               <button
                                 onClick={() => onEdit(item)}
-                                className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                className="p-2 dark:text-white hover:text-gray-900 dark:hover:text-white transition-colors"
                               >
                                 <Edit2 size={16} />
                               </button>
@@ -299,7 +299,7 @@ const DataTable = ({
                             {onDelete && (
                               <button
                                 onClick={() => onDelete(item.id)}
-                                className="p-2 text-gray-400 hover:text-rose-500 transition-colors"
+                                className="p-2 dark:text-white hover:text-rose-500 transition-colors"
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -315,7 +315,7 @@ const DataTable = ({
                                         : item.id,
                                     );
                                   }}
-                                  className="p-2 text-gray-400 hover:text-orange transition-colors"
+                                  className="p-2 dark:text-white hover:text-orange transition-colors"
                                   title={t("options")}
                                 >
                                   <MoreVertical size={16} />
