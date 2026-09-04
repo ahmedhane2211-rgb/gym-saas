@@ -115,6 +115,11 @@ const EmployeeViewModal = ({ isOpen, onClose, employee }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <DetailItem
             icon={<BadgeInfo size={16} />}
+            label={t("role") || "Role"}
+            value={t(employee.user?.role) || employee.user?.role || "N/A"}
+          />
+          <DetailItem
+            icon={<BadgeInfo size={16} />}
             label={t("job_number")}
             value={value("job_number")}
           />

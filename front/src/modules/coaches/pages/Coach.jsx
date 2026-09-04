@@ -1,71 +1,51 @@
-import React, { useContext, useState, cloneElement } from "react";
-import {
-  useGetCoachesQuery,
-  useAddCoachMutation,
-  useUpdateCoachMutation,
-  useDeleteCoachMutation,
-} from "../services/CoachSlice";
+import React, { useContext, useState } from "react";
+import { useGetEmployeesQuery } from "../../hr/services/EmployeeSlice";
 import {
   Users as UsersIcon,
   Activity,
-  Search,
-  Filter,
-  Plus,
-  Award,
-  DollarSign,
+  User,
+  Banknote,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { LanguageContext } from "../../shared/context/LanguageContext";
 import formattedDate from "../../shared/utils/formattedDate";
-import CoachModal from "../components/CoachModal";
 import CoachViewModal from "../components/CoachViewModal";
 import DataTable from "../../shared/components/DataTable";
 import SearchFilter from "../../shared/components/SearchFilter";
 import useFilter from "../../shared/hooks/useFilter";
-import Button from "../../shared/components/Button";
 import StatsCard from "../../shared/components/StatsCard";
 import SectionTitle from "../../shared/components/SectionTitle";
+import formatNum from "../../shared/utils/formatNum";
 
 const Coach = () => {
   const { t } = useContext(LanguageContext);
-  const { data: response, error, isLoading } = useGetCoachesQuery();
-  const coaches = Array.isArray(response)
+  const { data: response, error, isLoading } = useGetEmployeesQuery();
+  const allEmployees = Array.isArray(response)
     ? response
-    : response?.data || response?.coaches || [];
-  const [addCoach, { isLoading: isAdding }] = useAddCoachMutation();
-  const [updateCoach, { isLoading: isUpdating }] = useUpdateCoachMutation();
-  const [deleteCoach] = useDeleteCoachMutation();
+    : response?.data || response?.employees || [];
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const coaches = allEmployees.filter(
+    (emp) =>
+      String(emp.user?.role || emp.role || "").toLowerCase() === "coach",
+  );
+
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [editingCoach, setEditingCoach] = useState(null);
   const [viewingCoach, setViewingCoach] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCoaches = useFilter(coaches, searchTerm, [
     "user.full_name",
-    "specialty",
-    "speciality",
+    "name",
+    "job_number",
+    "user.phone",
+    "phone",
+    "user.email",
+    "email",
   ]);
-
-  const handleOpenAdd = () => {
-    setEditingCoach(null);
-    setIsModalOpen(true);
-  };
-
-  const handleOpenEdit = (coach) => {
-    setEditingCoach(coach);
-    setIsModalOpen(true);
-  };
 
   const handleOpenView = (coach) => {
     setViewingCoach(coach);
     setIsViewModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setEditingCoach(null);
   };
 
   const handleCloseViewModal = () => {
@@ -73,63 +53,38 @@ const Coach = () => {
     setViewingCoach(null);
   };
 
-  const handleSubmitCoach = async (data) => {
-    try {
-      if (editingCoach) {
-        await updateCoach({ id: editingCoach.id, ...data }).unwrap();
-        toast.success(t("update_success") || "Coach updated successfully");
-      } else {
-        await addCoach(data).unwrap();
-        toast.success(t("add_success") || "Coach added successfully");
-      }
-      handleCloseModal();
-    } catch (err) {
-      toast.error(
-        err.data?.message || t("operation_failed") || "Operation failed",
-      );
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (
-      window.confirm(t("confirm_delete") || "Are you sure you want to delete?")
-    ) {
-      try {
-        await deleteCoach(id).unwrap();
-        toast.success(t("delete_success") || "Coach deleted successfully");
-      } catch (err) {
-        toast.error(err.data?.message || t("delete_failed") || "Delete failed");
-      }
-    }
-  };
-
   const columns = [
     {
       header: "coach_details",
-      render: (coach) => (
-        <div className="flex items-center gap-4">
-          <div className="w-12 print:hidden h-12 rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden bg-gray-100 dark:bg-gray-dark relative">
-            <img
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${coach.user?.full_name}`}
-              alt=""
-              className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all font-main"
-            />
+      render: (coach) => {
+        const name =
+          coach.user?.full_name ||
+          coach.user?.name ||
+          coach.name ||
+          `COACH-${coach.id}`;
+        return (
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-orange/10 text-orange flex items-center justify-center shrink-0">
+              <User size={20} />
+            </div>
+            <div>
+              <p className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-tight ">
+                {name}
+              </p>
+              <p className="text-gray-500 dark:text-gray-600 text-[10px] font-bold uppercase tracking-widest">
+                {coach.job_number || `EMP-${coach.id}`}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-tight ">
-              {coach.user?.full_name}
-            </p>
-          </div>
-        </div>
-      ),
+        );
+      },
     },
     {
-      header: "specialty",
+      header: "phone",
       render: (coach) => (
-        <div className="flex items-center gap-2 text-gray-900 dark:text-white">
-          <Award size={14} className="text-orange" />
-          {coach.speciality || coach.specialty}
-        </div>
+        <span className="text-gray-900 dark:text-white text-xs font-bold">
+          {coach.phone || coach.user?.phone || "N/A"}
+        </span>
       ),
     },
     {
@@ -150,14 +105,53 @@ const Coach = () => {
       ),
     },
     {
-      header: "salary",
+      header: "date_of_joining",
       render: (coach) => (
-        <div className="flex items-center gap-1 text-gray-900 dark:text-white">
-          <DollarSign size={14} className="text-green-500" />
-          {coach.salary}
+        <span className="text-gray-600 dark:text-gray-400 text-xs font-bold">
+          {formattedDate(coach.date_of_joining)}
+        </span>
+      ),
+    },
+    {
+      header: "total_salary",
+      render: (coach) => (
+        <div className="flex items-center gap-2 text-gray-900 dark:text-white text-[11px] font-black uppercase tracking-widest">
+          <Banknote size={14} className="text-green-500" />
+          {formatNum(coach.total_salary || 0)}
         </div>
       ),
     },
+  ];
+
+  const exportColumns = [
+    {
+      header: "name",
+      key: "name",
+      render: (coach) =>
+        coach.name || coach.user?.full_name || coach.user?.name || "",
+    },
+    { header: "job_number", key: "job_number" },
+    {
+      header: "email",
+      key: "email",
+      render: (coach) => coach.email || coach.user?.email || "",
+    },
+    {
+      header: "phone",
+      key: "phone",
+      render: (coach) => coach.phone || coach.user?.phone || "",
+    },
+    { header: "gender", key: "gender" },
+    { header: "national_id", key: "national_id" },
+    { header: "nationality", key: "nationality" },
+    { header: "marital_status", key: "marital_status" },
+    { header: "qualification", key: "qualification" },
+    {
+      header: "date_of_joining",
+      key: "date_of_joining",
+      render: (coach) => formattedDate(coach.date_of_joining),
+    },
+    { header: "total_salary", key: "total_salary" },
   ];
 
   const stats = [
@@ -183,8 +177,12 @@ const Coach = () => {
     <div className="space-y-8 animate-in fade-in duration-700">
       {/* Header & Stats */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <SectionTitle title={t("coaches")} description={t("manage_coaches_desc")} t={t}/>
-        <div className="flex gap-4">
+        <SectionTitle
+          title={t("coaches")}
+          description={t("manage_coaches_desc")}
+          t={t}
+        />
+        <div className="flex flex-col sm:flex-row gap-4">
           {stats.map((stat) => (
             <div
               key={stat.label}
@@ -202,13 +200,6 @@ const Coach = () => {
           onSearch={setSearchTerm}
           placeholder={t("search_coaches") || "Search coaches..."}
         />
-
-        <Button
-          onClick={handleOpenAdd}
-          className="btn-orange h-14 px-8 shadow-[0_0_30px_rgba(255,95,31,0.1)] !w-auto"
-          title={t("add_new")}
-          icon={<Plus size={18} />}
-        />
       </div>
 
       {/* DataTable */}
@@ -216,19 +207,9 @@ const Coach = () => {
         columns={columns}
         data={filteredCoaches}
         isLoading={isLoading}
-        onEdit={handleOpenEdit}
-        onDelete={handleDelete}
         onView={handleOpenView}
-      />
-
-      {/* Coach Modal */}
-      <CoachModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmitCoach}
-        initialData={editingCoach}
-        isLoading={isAdding || isUpdating}
-        title={editingCoach ? "update_coach" : "add_coach"}
+        title={t("coaches")}
+        exportColumns={exportColumns}
       />
 
       {/* Coach View Modal */}

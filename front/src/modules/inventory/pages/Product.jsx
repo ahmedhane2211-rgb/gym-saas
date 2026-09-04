@@ -156,7 +156,7 @@ const Product = () => {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <SectionTitle title="products" description="manage_products_desc" t={t} />
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           {stats.map((stat) => (
             <div
               key={stat.label}

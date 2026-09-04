@@ -223,10 +223,8 @@ const UserModal = ({
                 <option value="">{t("select_role")}</option>
                 {[
                   { value: "member", label: t("member") },
-                  { value: "coach", label: t("coach") },
                   { value: "employee", label: t("employee") },
                   { value: "admin", label: t("admin") },
-                  { value: "reception", label: t("reception") },
                 ].map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}

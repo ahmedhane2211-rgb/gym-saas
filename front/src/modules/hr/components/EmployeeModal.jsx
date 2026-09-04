@@ -14,7 +14,8 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
     const [activeTab, setActiveTab] = useState("personal");
     const { data: usersResponse } = useGetUsersQuery();
     const users = Array.isArray(usersResponse) ? usersResponse : (usersResponse?.data || usersResponse?.users || []);
-    const employeeUsers = users.filter((user) => ["employee", "reception"].includes(String(user.role || "").toLowerCase()));
+    const employeeUsers = users.filter((user) => ["employee", "reception", "coach"].includes(String(user.role || "").toLowerCase()));
+    const selectedUserId = watch("user_id");
     const salaryValues = useWatch({
         control,
         name: ["basic_salary", "additional_salary", "allowances", "health_insurance", "social_insurance"]
@@ -23,19 +24,24 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
         - salaryValues.slice(3).reduce((sum, value) => sum + Number(value || 0), 0);
 
     useEffect(() => {
+        if (!initialData && selectedUserId) {
+            const matchedUser = users.find((u) => String(u.id) === String(selectedUserId));
+            if (matchedUser?.role) {
+                setValue("role", matchedUser.role.toLowerCase());
+            }
+        }
+    }, [selectedUserId, users, initialData, setValue]);
+
+    useEffect(() => {
+        const userRole = initialData?.user?.role || initialData?.role || "";
         reset({
-            // name: initialData?.name || initialData?.user?.full_name || initialData?.user?.name || "",
             user_id: initialData?.user_id || initialData?.userId || initialData?.user?.id || "",
+            role: userRole ? userRole.toLowerCase() : "",
             job_number: initialData?.job_number || "",
-            // email: initialData?.email || initialData?.user?.email || "",
-            // phone: initialData?.phone || initialData?.user?.phone || "",
-            // plain_password: initialData?.plain_password || "",
-            // gender: initialData?.gender || "",
             national_id: initialData?.national_id || "",
             nationality: initialData?.nationality || "",
             marital_status: initialData?.marital_status || "",
             qualification: initialData?.qualification || "",
-            // address: initialData?.address || "",
             date_of_joining: initialData?.date_of_joining ? String(initialData.date_of_joining).slice(0, 10) : new Date().toISOString().split('T')[0],
             basic_salary: initialData?.basic_salary || "",
             additional_salary: initialData?.additional_salary || "",
@@ -115,11 +121,24 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, initialData, isLoading, titl
                                 { value: "", label: t("select_user_placeholder") },
                                 ...employeeUsers.map((user) => ({
                                     value: user.id,
-                                    label: user.full_name || user.name || user.email
+                                    label: `${user.full_name || user.name || user.email}`
                                 }))
                             ]}
                         />
-                        {/* <Input label="password" type="password" name="plain_password" register={register} errors={errors} /> */}
+                        <Select
+                            label="role"
+                            name="role"
+                            register={register}
+                            setValue={setValue}
+                            watch={watch}
+                            errors={errors}
+                            options={[
+                                { value: "", label: t("select_role") || t("select_option") },
+                                { value: "coach", label: t("coach") },
+                                { value: "reception", label: t("reception") },
+                                { value: "employee", label: t("employee") }
+                            ]}
+                        />
                         <Input label="national_id" name="national_id" register={register} errors={errors} />
                         <Input label="nationality" name="nationality" register={register} errors={errors} />
                         <Select

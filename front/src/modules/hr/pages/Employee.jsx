@@ -21,6 +21,7 @@ import {
   useGetEmployeesQuery,
   useUpdateEmployeeMutation,
 } from "../services/EmployeeSlice";
+import { useUpdateUserMutation } from "../../users/userSlice";
 import StatsCard from "../../shared/components/StatsCard";
 import SectionTitle from "../../shared/components/SectionTitle";
 import formatNum from "../../shared/utils/formatNum";
@@ -53,17 +54,27 @@ const Employee = () => {
     "national_id",
   ]);
 
+  const [updateUser] = useUpdateUserMutation();
+
   const handleSubmit = async (data) => {
+    const { role, ...employeeData } = data;
     const body = {
-      ...data,
-      name: data.name || data.full_name || data.email || `EMP-${Date.now()}`,
+      ...employeeData,
+      name: employeeData.name || employeeData.full_name || employeeData.email || `EMP-${Date.now()}`,
     };
     try {
       if (editingEmployee) {
         await updateEmployee({ id: editingEmployee.id, body }).unwrap();
+        const userId = editingEmployee.user_id || editingEmployee.user?.id;
+        if (userId && role && role !== editingEmployee.user?.role) {
+          await updateUser({ id: userId, body: { role } }).unwrap();
+        }
         toast.success(t("update_success"));
       } else {
         await addEmployee(body).unwrap();
+        if (body.user_id && role) {
+          await updateUser({ id: body.user_id, body: { role } }).unwrap();
+        }
         toast.success(t("add_success"));
       }
       setIsModalOpen(false);
@@ -109,6 +120,14 @@ const Employee = () => {
           </div>
         );
       },
+    },
+    {
+      header: "role",
+      render: (employee) => (
+        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-orange/10 text-orange border border-orange/20">
+          {t(employee.user?.role) || employee.user?.role || t("employee")}
+        </span>
+      ),
     },
     {
       header: "phone",
@@ -209,7 +228,7 @@ const Employee = () => {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <SectionTitle title="employees" description="manage_employees_desc" t={t} />
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           {stats.map((stat) => (
             <div
               key={stat.label}

@@ -21,6 +21,11 @@ const AuthProvider = () => {
         )
     }
 
+    if (isError) {
+        Cookies.remove("token");
+        return <Navigate to="/login" />;
+    }
+
     // If subscription is expired, redirect to /expired page
     // Unless the user is an owner (owners bypass subscription check)
     if (profile?.data) {

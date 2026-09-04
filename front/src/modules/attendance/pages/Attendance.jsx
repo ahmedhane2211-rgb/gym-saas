@@ -167,7 +167,7 @@ const Attendance = () => {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <SectionTitle title="attendance" description="attendance_desc" t={t} />
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           {stats.map((stat) => (
             <div
               key={stat.label}
